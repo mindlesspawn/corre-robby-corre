@@ -40,7 +40,7 @@ export const CONFIG = {
 
   // --- Pauses between questions (seconds) ----------------------------------
   gapAfterCorrect: 0.8,
-  gapAfterWrong: 2.2, // longer, so the right answer can be seen and heard
+  gapAfterWrong: 2.8, // longer, so the right answer can be seen and heard
 };
 
 // The door colors, which are also the colors taught in the colors game.

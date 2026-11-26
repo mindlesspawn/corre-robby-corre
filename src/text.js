@@ -49,15 +49,20 @@ const es = {
   level: (n) => `Nivel ${n}`,
   levelName: (step) => {
     if (step.kind === 'same') return `oír el número y buscarlo, hasta ${step.max}`;
-    if (step.kind === 'count') return `contar hasta ${step.max}`;
+    if (step.kind === 'count') return step.doors === 'both' ? `contar hasta ${step.max}, número con puntos` : `contar hasta ${step.max}`;
     if (step.kind === 'find') return `del número a los puntos, hasta ${step.max}`;
+    if (step.kind === 'more') return step.gap > 1 ? 'dónde hay más (fácil)' : `dónde hay más, hasta ${step.max}`;
+    if (step.kind === 'fewer') return `dónde hay menos, hasta ${step.max}`;
     if (step.kind === 'color') {
       return step.show ? `ver y encontrar ${step.colors.length} colores` : `escuchar y encontrar ${step.colors.length} colores`;
     }
     if (step.oneMore) return 'uno más';
     if (step.maxSum > 20) return 'sumas con números grandes';
-    return `sumas hasta ${step.maxSum}`;
+    return step.pictures ? `sumas hasta ${step.maxSum}, con dibujos` : `sumas hasta ${step.maxSum}`;
   },
+  advanced: 'para niños mayores',
+  wordMore: 'más',
+  wordFewer: 'menos',
 
   colorNames: {
     red: 'rojo',
@@ -90,6 +95,10 @@ const es = {
         : `${n} ${many}. ¿Dónde hay ${n}?`,
     count: ([, many, g]) => `¿${g === 'm' ? 'Cuántos' : 'Cuántas'} ${many} hay?`,
     find: (n) => `¿Dónde hay ${n}?`,
+    more: '¿Dónde hay más?',
+    fewer: '¿Dónde hay menos?',
+    isMore: (n) => `Aquí hay más. Hay ${n}.`,
+    isFewer: (n) => `Aquí hay menos. Hay ${n}.`,
     add: (a, b) => `¿Cuánto es ${a} más ${b}?`,
     color: (name) => `Busca el color ${name}`,
     isCount: (n, [one, many, g]) => (n === 1 ? `Hay ${g === 'm' ? 'un' : 'una'} ${one}` : `Hay ${n} ${many}`),
@@ -144,15 +153,20 @@ const en = {
   level: (n) => `Level ${n}`,
   levelName: (step) => {
     if (step.kind === 'same') return `hear the number and find it, up to ${step.max}`;
-    if (step.kind === 'count') return `count up to ${step.max}`;
+    if (step.kind === 'count') return step.doors === 'both' ? `count up to ${step.max}, number with dots` : `count up to ${step.max}`;
     if (step.kind === 'find') return `number to dots, up to ${step.max}`;
+    if (step.kind === 'more') return step.gap > 1 ? 'which has more (easy)' : `which has more, up to ${step.max}`;
+    if (step.kind === 'fewer') return `which has fewer, up to ${step.max}`;
     if (step.kind === 'color') {
       return step.show ? `see and find ${step.colors.length} colors` : `listen and find ${step.colors.length} colors`;
     }
     if (step.oneMore) return 'one more';
     if (step.maxSum > 20) return 'sums with big numbers';
-    return `sums up to ${step.maxSum}`;
+    return step.pictures ? `sums up to ${step.maxSum}, with pictures` : `sums up to ${step.maxSum}`;
   },
+  advanced: 'for older children',
+  wordMore: 'more',
+  wordFewer: 'fewer',
 
   colorNames: {
     red: 'red',
@@ -180,6 +194,10 @@ const en = {
     same: (n, [one, many]) => (n === 1 ? `1 ${one}. Where is 1 dot?` : `${n} ${many}. Where are ${n} dots?`),
     count: ([, many]) => `How many ${many}?`,
     find: (n) => (n === 1 ? 'Where is 1 dot?' : `Where are ${n} dots?`),
+    more: 'Which door has more?',
+    fewer: 'Which door has fewer?',
+    isMore: (n) => `This one has more. It has ${n}.`,
+    isFewer: (n) => `This one has fewer. It has ${n}.`,
     add: (a, b) => `What is ${a} plus ${b}?`,
     color: (name) => `Find the color ${name}`,
     isCount: (n, [one, many]) => (n === 1 ? `There is 1 ${one}` : `There are ${n} ${many}`),
@@ -230,6 +248,8 @@ export function askText(question) {
   if (question.kind === 'same') return say.same(question.answer, t.items[question.item]);
   if (question.kind === 'count') return say.count(t.items[question.item]);
   if (question.kind === 'find') return say.find(question.answer);
+  if (question.kind === 'more') return say.more;
+  if (question.kind === 'fewer') return say.fewer;
   if (question.kind === 'color') return say.color(t.colorNames[question.answer]);
   return say.add(question.a, question.b);
 }
@@ -238,6 +258,19 @@ export function answerText(question) {
   const { say } = t;
   if (question.kind === 'same' || question.kind === 'count') return say.isCount(question.answer, t.items[question.item]);
   if (question.kind === 'find') return say.isFind(question.answer);
+  if (question.kind === 'more') return say.isMore(question.answer);
+  if (question.kind === 'fewer') return say.isFewer(question.answer);
   if (question.kind === 'color') return say.isColor(t.colorNames[question.answer]);
   return say.isAdd(question.a, question.b, question.answer);
+}
+
+// What the voice says after a wrong answer. For small amounts it counts them out first
+// ("1, 2, 3. Hay 3 flores."), the way a teacher would, so the last number is heard as the total.
+export function spokenAnswer(question) {
+  const counted = question.kind === 'same' || question.kind === 'count';
+  if (counted && question.answer >= 2 && question.answer <= 5) {
+    const counting = Array.from({ length: question.answer }, (_, i) => i + 1).join(', ');
+    return `${counting}. ${answerText(question)}`;
+  }
+  return answerText(question);
 }

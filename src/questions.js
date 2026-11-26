@@ -9,6 +9,7 @@
 //   same   the banner shows a few things; find the door with the same number of dots
 //   count  the banner shows a few things; find the door with the number that says how many
 //   find   the banner shows a number; find the door with that many dots
+//   more   find the door with the most dots ("fewer": the door with the least)
 //   add    the banner shows a sum; find the door with the answer
 //   color  the banner shows or says a color; find the door of that color
 //
@@ -35,23 +36,33 @@ const MORE_COLORS = ['red', 'blue', 'yellow', 'green', 'orange', 'purple'];
 const ALL_COLORS = [...MORE_COLORS, 'pink'];
 
 export const GAMES = {
+  // The order follows early-childhood teaching guidance (sources are in the README):
+  // small amounts by sight first, then comparing, and written numbers only after that,
+  // arriving together with their dots. Sums stay small and are shown with pictures.
   numbers: {
     icon: '🔢',
     levels: [
-      { kind: 'same', max: 3 }, // three stars -> the door with three dots
-      { kind: 'count', max: 3 }, // three stars -> the door that says 3
-      { kind: 'find', max: 3 }, // the number 3 -> the door with three dots
+      { kind: 'same', max: 3 }, // three stars, said aloud -> the door with three dots
+      { kind: 'find', max: 3 }, // "three", said and shown -> the door with three dots
+      { kind: 'more', max: 6, gap: 3 }, // which door has more? very different amounts
       { kind: 'same', max: 5 },
-      { kind: 'count', max: 5 },
       { kind: 'find', max: 5 },
+      { kind: 'more', max: 5, gap: 1 }, // close amounts
+      { kind: 'fewer', max: 5, gap: 1 },
+      { kind: 'count', max: 3, doors: 'both' }, // written numbers arrive, each with its dots
+      { kind: 'count', max: 5, doors: 'both' },
+      { kind: 'count', max: 5 }, // the number on its own
+      { kind: 'count', max: 7 },
       { kind: 'count', max: 10 },
-      { kind: 'find', max: 10 },
       { kind: 'add', oneMore: true, maxSum: 5, pictures: true }, // 2 + 1, shown with apples
       { kind: 'add', maxSum: 5, pictures: true },
-      { kind: 'add', maxSum: 10 },
-      { kind: 'add', maxSum: 20 },
-      { kind: 'add', maxSum: 50, bigFirst: true }, // 23 + 4
-      { kind: 'add', maxSum: 99, twoDigit: true }, // 23 + 45
+      // Playing alone never goes past this point. The steps below are for older children
+      // and are only reached when a grown-up picks them with the + button.
+      { kind: 'add', maxSum: 10, pictures: true, grownUp: true },
+      { kind: 'add', maxSum: 10, grownUp: true },
+      { kind: 'add', maxSum: 20, grownUp: true },
+      { kind: 'add', maxSum: 50, bigFirst: true, grownUp: true }, // 23 + 4
+      { kind: 'add', maxSum: 99, twoDigit: true, grownUp: true }, // 23 + 45
     ],
   },
 
@@ -115,10 +126,32 @@ function makeSame({ max }) {
   return { kind: 'same', text: `same ${answer}`, item: anyItem(), doors: 'dots', answer, wrong };
 }
 
-// Things in the banner, numbers on the doors.
-function makeCount({ max }) {
+// Things in the banner, numbers on the doors (doors: 'both' adds the dots under each number).
+function makeCount({ max, doors }) {
   const { answer, wrong } = amount(max);
-  return { kind: 'count', text: `count ${answer}`, item: anyItem(), answer, wrong };
+  return { kind: 'count', text: `count ${answer}`, item: anyItem(), doors, answer, wrong };
+}
+
+// Three doors of dots: pick the one with the most (or the fewest).
+// "gap" is how far ahead the right door must be, so early steps are easy to see.
+function makeCompare({ kind, max, gap = 1 }) {
+  let amounts = kind === 'more' ? [1, 2, max] : [1, max - 1, max];
+  for (let tries = 0; tries < 200; tries++) {
+    const three = shuffle(range(1, max)).slice(0, 3).sort((a, b) => a - b);
+    const lead = kind === 'more' ? three[2] - three[1] : three[1] - three[0];
+    if (lead >= gap) {
+      amounts = three;
+      break;
+    }
+  }
+  const answer = kind === 'more' ? amounts[2] : amounts[0];
+  return {
+    kind,
+    text: `${kind} ${amounts.join(' ')}`,
+    doors: 'dots',
+    answer,
+    wrong: amounts.filter((n) => n !== answer),
+  };
 }
 
 // A number in the banner, dots on the doors.
@@ -159,12 +192,28 @@ function makeColor({ colors, show }) {
   return { kind: 'color', text: `color ${answer}`, answer, show: show !== false, wrong: others.slice(0, 2) };
 }
 
-const MAKERS = { same: makeSame, count: makeCount, find: makeFind, add: makeAdd, color: makeColor };
+const MAKERS = {
+  same: makeSame,
+  count: makeCount,
+  find: makeFind,
+  more: makeCompare,
+  fewer: makeCompare,
+  add: makeAdd,
+  color: makeColor,
+};
 
 // Which step a child is on, from their saved progress number for that game.
 export function levelFromSkill(skill, gameId) {
   const top = GAMES[gameOrDefault(gameId)].levels.length - 1;
   return Math.min(top, Math.max(0, Math.floor((skill || 0) / CONFIG.answersPerLevel)));
+}
+
+// Steps marked grownUp are only reached when a grown-up picks them on the start screen.
+// This is the highest progress number that playing alone can reach in a game.
+export function autoTopSkill(gameId) {
+  const levels = GAMES[gameOrDefault(gameId)].levels;
+  const first = levels.findIndex((level) => level.grownUp);
+  return first === -1 ? Infinity : first * CONFIG.answersPerLevel - 1;
 }
 
 // Builds the next question, with the three door choices already shuffled.

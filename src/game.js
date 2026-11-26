@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { COLORS, CONFIG, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { levelFromSkill, makeQuestion, shuffle } from './questions.js';
+import { autoTopSkill, levelFromSkill, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
@@ -80,6 +80,7 @@ export class Game {
     this.character = null;
     this.gameId = CONFIG.game;
     this.skill = 0;
+    this.skillCap = Infinity;
     this.shake = 0;
     this.topClear = 0.28;
 
@@ -285,7 +286,8 @@ export class Game {
     }
 
     const text = String(value);
-    let size = 300;
+    const paired = this.row.question?.doors === 'both'; // a number with its dots underneath
+    let size = paired ? 230 : 300;
     const font = (px) => `900 ${px}px "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif`;
     g.font = font(size);
     while (size > 80 && g.measureText(text).width > w - 56) {
@@ -295,7 +297,17 @@ export class Game {
     g.fillStyle = ink;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText(text, w / 2, h / 2 + size * 0.05);
+    g.fillText(text, w / 2, (paired ? h * 0.4 : h / 2) + size * 0.05);
+    if (paired) {
+      const count = clamp(Math.round(value), 1, 10);
+      const radius = Math.min(28, (w * 0.8) / (count * 2.6));
+      const step = radius * 2.6;
+      for (let i = 0; i < count; i++) {
+        g.beginPath();
+        g.arc(w / 2 + (i - (count - 1) / 2) * step, h * 0.85, radius, 0, Math.PI * 2);
+        g.fill();
+      }
+    }
     door.texture.needsUpdate = true;
   }
 
@@ -374,6 +386,10 @@ export class Game {
     this.resetRun();
     this.gameId = game;
     this.skill = Math.max(0, skill);
+    // Playing alone stops climbing at the last step meant for small children.
+    // If a grown-up has already put the child past that point, there is no limit.
+    const top = autoTopSkill(game);
+    this.skillCap = this.skill > top ? Infinity : top;
     this.gapTimer = 0.6;
     this.mode = 'running';
   }
@@ -503,7 +519,7 @@ export class Game {
     const row = this.row;
     const door = this.doors[row.chosen];
     this.score += 1;
-    this.skill += 1;
+    this.skill = Math.min(this.skill + 1, this.skillCap);
     this.doorsDone += 1;
     this.results.push(true);
     if (this.score % CONFIG.correctPerSpeedStep === 0) this.speedSteps += 1;

@@ -818,3 +818,8 @@ h2 {
   object-fit: contain;
   pointer-events: none;
 }
+
+/* A single word in the banner ("más", "menos"). */
+.question .word {
+  padding: 0 0.35em;
+}

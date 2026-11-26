@@ -9,7 +9,7 @@ import { FINGERS, GAMES, GAME_IDS, ITEMS, levelFromSkill } from './questions.js'
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { canSpeak, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking } from './speech.js';
-import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, t } from './text.js';
+import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, spokenAnswer, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -161,7 +161,9 @@ function renderLevel() {
   const id = store.game();
   const levels = GAMES[id].levels;
   const level = levelFromSkill(store.skill(id), id);
-  el.levelNote.textContent = `${t.level(level + 1)} · ${t.levelName(levels[level])}`;
+  const step = levels[level];
+  // Steps for older children are marked, so a grown-up knows playing alone will not reach them.
+  el.levelNote.textContent = `${t.level(level + 1)} · ${t.levelName(step)}${step.grownUp ? ` · ${t.advanced}` : ''}`;
   el.easier.disabled = level === 0;
   el.harder.disabled = level === levels.length - 1;
 }
@@ -221,6 +223,8 @@ function showQuestion(question, solved = false) {
   } else if (question.kind === 'same' || question.kind === 'count') {
     parts.push(things(question.answer, question.item));
     if (solved) parts.push(' = ', answer());
+  } else if (question.kind === 'more' || question.kind === 'fewer') {
+    parts.push(tag('span', 'word', question.kind === 'more' ? t.wordMore : t.wordFewer));
   } else if (question.kind === 'color') {
     // Listening steps hide the color until it is answered, unless the voice is off.
     if (solved || question.show || !canSpeak()) {
@@ -364,7 +368,7 @@ const gameEvents = {
       speak(pick(t.say.praise));
     } else {
       sfx.wrong();
-      speak(answerText(info.question));
+      speak(spokenAnswer(info.question));
     }
   },
 
