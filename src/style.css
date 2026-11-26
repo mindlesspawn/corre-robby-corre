@@ -885,3 +885,14 @@ h2 {
     font-size: 17px;
   }
 }
+
+/* The note that says this device has no voice for the chosen language. */
+.voice-note {
+  background: #fff8e1;
+  border: 3px solid #ffca28;
+  border-radius: 14px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.25;
+}

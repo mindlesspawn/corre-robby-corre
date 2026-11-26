@@ -1,6 +1,6 @@
 // The spoken voice. It uses the voice built into the phone, tablet, or computer,
 // so there are no recordings to make. If the device has no voice for the chosen
-// language, the game simply stays quiet.
+// language, the game stays quiet and says so on the start screen.
 
 const PREFERRED = {
   es: ['es-MX', 'es-US', 'es-419', 'es-ES'],
@@ -10,6 +10,7 @@ const PREFERRED = {
 let language = 'es';
 let muted = false;
 let voice = null;
+let current = null; // holds on to the line being said; some browsers drop it otherwise
 
 const synth = () => (typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null);
 const tidy = (code) => String(code).replace('_', '-').toLowerCase();
@@ -30,6 +31,14 @@ function pickVoice() {
 // Voices load a moment after the page does, so pick again when they arrive.
 synth()?.addEventListener?.('voiceschanged', pickVoice);
 
+// Runs a function each time the list of voices changes (it arrives late on some devices).
+export function onVoicesChanged(callback) {
+  synth()?.addEventListener?.('voiceschanged', () => {
+    pickVoice();
+    callback();
+  });
+}
+
 export function setSpeechLanguage(code) {
   language = code;
   pickVoice();
@@ -44,13 +53,23 @@ export function stopSpeaking() {
   synth()?.cancel();
 }
 
+// Whether this device can speak the chosen language:
+//   'ok'           it has a voice for it
+//   'loading'      the list of voices has not arrived yet (it probably can)
+//   'none'         it has voices, but none for this language
+//   'unsupported'  the browser cannot speak at all
+export function voiceState() {
+  const engine = synth();
+  if (!engine) return 'unsupported';
+  if (!voice) pickVoice();
+  if (voice) return 'ok';
+  return engine.getVoices().length === 0 ? 'loading' : 'none';
+}
+
 // True when the game can actually say things out loud right now.
 export function canSpeak() {
-  const engine = synth();
-  if (!engine || muted) return false;
-  if (!voice) pickVoice();
-  // No voice list yet (still loading) counts as "probably"; a list without our language does not.
-  return Boolean(voice) || engine.getVoices().length === 0;
+  const state = voiceState();
+  return !muted && (state === 'ok' || state === 'loading');
 }
 
 // Says something. Normally it interrupts whatever is being said.
@@ -58,16 +77,32 @@ export function canSpeak() {
 export function speak(text, { queue = false } = {}) {
   const engine = synth();
   if (!engine || !text || !canSpeak()) return;
-  if (!queue || engine.pending) engine.cancel();
 
   const line = new SpeechSynthesisUtterance(text);
   line.lang = voice?.lang ?? PREFERRED[language]?.[0] ?? language;
   if (voice) line.voice = voice;
   line.rate = 0.9; // a little slower, for small listeners
   line.pitch = 1.15;
-  try {
-    engine.speak(line);
-  } catch {
-    // Some browsers refuse speech before the first touch. The next line will work.
+  current = line;
+
+  const say = () => {
+    if (muted || current !== line) return;
+    try {
+      engine.resume?.(); // iPhones can leave the voice paused after switching apps
+      engine.speak(line);
+    } catch {
+      // Some browsers refuse speech before the first touch. The next line will work.
+    }
+  };
+
+  const busy = engine.speaking || engine.pending;
+  if (!busy || (queue && !engine.pending)) {
+    // Nothing to interrupt (or happy to wait): say it straight away. Saying it inside
+    // the tap is what unlocks the voice on iPhones and iPads.
+    say();
+    return;
   }
+  // Interrupt. Some browsers lose a line spoken straight after a cancel, so wait a beat.
+  engine.cancel();
+  setTimeout(say, 80);
 }

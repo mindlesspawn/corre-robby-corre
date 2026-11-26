@@ -8,7 +8,7 @@ import { renderThumbnails } from './looks.js';
 import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
-import { canSpeak, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking } from './speech.js';
+import { canSpeak, onVoicesChanged, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking, voiceState } from './speech.js';
 import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, spokenAnswer, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
@@ -25,6 +25,7 @@ const el = {
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
   languages: $('languages'),
+  voiceNote: $('voice-note'),
   title: $('title'),
   stats: $('stats'),
   characters: $('characters'),
@@ -185,6 +186,15 @@ function renderStart() {
   renderCharacters();
   renderGames();
   renderLevel();
+  renderVoiceNote();
+}
+
+// Says so, in writing, when this device cannot speak the chosen language.
+function renderVoiceNote() {
+  const state = voiceState();
+  const silent = state === 'none' || state === 'unsupported';
+  el.voiceNote.hidden = !silent || store.get().muted;
+  el.voiceNote.textContent = t.noVoice;
 }
 
 // --- The question banner ---------------------------------------------------------
@@ -385,10 +395,9 @@ const gameEvents = {
     el.question.className = `question ${info.correct ? 'right' : 'wrong'}`;
 
     if (info.correct) {
-      sfx.correct();
-      // Some characters make their own sound when they do a trick (the dinosaur roars).
-      const trickSound = currentCharacter().trickSound;
-      if (info.trick && sfx[trickSound]) setTimeout(() => sfx[trickSound](), 180);
+      // A special trick gets its own, brighter sound in place of the usual chime.
+      if (info.trick) sfx.trick();
+      else sfx.correct();
       replay(el.scorePill, 'pop');
       speak(pick(t.say.praise));
     } else {
@@ -515,6 +524,7 @@ function applyMute() {
 function toggleMute() {
   store.update({ muted: !store.get().muted });
   applyMute();
+  renderVoiceNote();
 }
 
 // --- Wiring ----------------------------------------------------------------------------
@@ -646,6 +656,8 @@ async function init() {
   renderStart();
   show('start');
   measureQuestionArea();
+  // The list of voices can arrive late; when it does, check again whether the game can talk.
+  onVoicesChanged(renderVoiceNote);
 
   // A handle for the automatic test player. Only present while developing.
   if (import.meta.env.DEV) window.__game = game;
