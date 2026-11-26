@@ -83,7 +83,7 @@ The file must contain a line `OPENAI_API_KEY=...`. Only lines without a clip are
 
 ## Play it online
 
-The game is at <https://robbydcox-boop.github.io/corre-robby-corre/>. It works on any phone, tablet, or computer with internet.
+The game is at <https://mindlesspawn.github.io/corre-robby-corre/>. It works on any phone, tablet, or computer with internet.
 
 To make it feel like an app on an iPhone or iPad: open the link in Safari, tap Share, then "Add to Home Screen".
 
