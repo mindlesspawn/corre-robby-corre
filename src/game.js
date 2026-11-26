@@ -551,7 +551,8 @@ export class Game {
     door.opening = true;
     this.drawSign(door, row.question.answer, 'signRight');
     this.popSparks(LANE_X[row.chosen], 1.6, this.runnerZ - 0.6);
-    this.character.react('cheer');
+    // Mostly a jump and a spin; every so often a special trick (a backflip, a dance...).
+    this.character.react(this.score % CONFIG.trickEvery === 0 ? 'trick' : 'cheer');
     this.pushedBack = false; // a right answer brings the runner back to the front
     this.gapTimer = CONFIG.gapAfterCorrect;
     this.report(true);

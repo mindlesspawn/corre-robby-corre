@@ -1,11 +1,14 @@
 // Turns a character's "look" (from src/characters.js) into something the game can show,
-// and makes it move, react, and change expression.
+// and makes it move, react, do tricks, and change expression.
 
 import * as THREE from 'three';
 
 const DEG = Math.PI / 180;
 const X_AXIS = new THREE.Vector3(1, 0, 0);
 const Z_AXIS = new THREE.Vector3(0, 0, 1);
+
+// The tricks a character does when it has none of its own listed.
+const DEFAULT_TRICKS = ['flip', 'bigspin', 'dance'];
 
 function makeGeometry(part) {
   const [a = 1, b = a, c = a] = part.size ?? [];
@@ -86,18 +89,26 @@ export function disposeObject(object) {
   });
 }
 
+const smooth = (p) => p * p * (3 - 2 * p);
+
 // Builds a character ready to place in the scene.
 //   root     put this in the scene and move it around
 //   front    how far it sticks out toward the doors
 //   update   call every frame to animate it
-//   react    'cheer' (jump and spin), 'oops' (dizzy wobble), 'party' (keeps cheering)
+//   react    'cheer' (jump and spin), 'oops' (dizzy wobble), 'party' (keeps celebrating),
+//            'trick' (the character's next special trick), or a trick by name:
+//            'flip' (backflip), 'bigspin' (high jump, two spins), 'dance' (side-to-side wiggle)
 //   calm     back to normal
 export function buildCharacter(def) {
   const root = new THREE.Group();
   const reaction = new THREE.Group(); // jumps, spins and wobbles
+  const flipper = new THREE.Group(); // turns head over heels around the character's middle
+  const unflip = new THREE.Group();
   const lean = new THREE.Group(); // tilts into a lane change
   root.add(reaction);
-  reaction.add(lean);
+  reaction.add(flipper);
+  flipper.add(unflip);
+  unflip.add(lean);
 
   const { group: body, tagged, moods = [] } = buildLook(def.look);
   if (def.facesCamera) body.rotation.y = Math.PI;
@@ -105,6 +116,11 @@ export function buildCharacter(def) {
   const size = new THREE.Box3().setFromObject(body);
   const front = Math.max(0.3, -size.min.z);
   const radius = Math.max(0.2, (size.max.x - size.min.x) / 2);
+  const middle = Math.max(0.3, size.max.y / 2);
+  flipper.position.y = middle;
+  unflip.position.y = -middle;
+  // A backflip goes head-first away from the way the character is looking.
+  const backward = def.facesCamera ? -1 : 1;
 
   let spin = null;
   if (def.move === 'roll') {
@@ -112,7 +128,7 @@ export function buildCharacter(def) {
     spin.position.y = radius;
     body.position.y = -radius;
     spin.add(body);
-    reaction.add(spin);
+    unflip.add(spin);
   } else {
     lean.add(body);
   }
@@ -125,38 +141,76 @@ export function buildCharacter(def) {
   }
   setMood('calm');
 
+  const tricks = def.tricks?.length ? def.tricks : DEFAULT_TRICKS;
+  let nextTrick = 0;
   let phase = 0;
   let acting = null; // { kind, time }
   let blinkIn = 1.5 + Math.random() * 2;
   let blinkFor = 0;
 
-  function calm() {
-    acting = null;
+  function stand() {
     reaction.position.set(0, 0, 0);
     reaction.rotation.set(0, 0, 0);
+    flipper.rotation.set(0, 0, 0);
+  }
+
+  function calm() {
+    acting = null;
+    stand();
     setMood('calm');
   }
 
   function playReaction(dt) {
-    reaction.position.set(0, 0, 0);
-    reaction.rotation.set(0, 0, 0);
+    stand();
     if (!acting) return;
     acting.time += dt;
     const s = acting.time;
 
-    if (acting.kind === 'cheer') {
-      const p = Math.min(1, s / 0.6);
-      reaction.position.y = Math.sin(Math.PI * p) * 0.9;
-      reaction.rotation.y = p * p * (3 - 2 * p) * Math.PI * 2;
-      if (s > 1.0) calm();
-    } else if (acting.kind === 'oops') {
-      const p = Math.min(1, s / 0.9);
-      reaction.rotation.z = Math.sin(s * 22) * 0.3 * (1 - p);
-      if (s > 1.5) calm();
-    } else if (acting.kind === 'party') {
-      const p = (s % 0.7) / 0.7;
-      reaction.position.y = Math.sin(Math.PI * p) * 0.8;
-      reaction.rotation.y = p * Math.PI * 2;
+    switch (acting.kind) {
+      case 'cheer': {
+        const p = Math.min(1, s / 0.6);
+        reaction.position.y = Math.sin(Math.PI * p) * 0.9;
+        reaction.rotation.y = smooth(p) * Math.PI * 2;
+        if (s > 1.0) calm();
+        break;
+      }
+      case 'flip': {
+        const p = Math.min(1, s / 0.8);
+        reaction.position.y = Math.sin(Math.PI * p) * 1.5;
+        flipper.rotation.x = backward * smooth(p) * Math.PI * 2;
+        if (s > 1.15) calm();
+        break;
+      }
+      case 'bigspin': {
+        const p = Math.min(1, s / 0.85);
+        reaction.position.y = Math.sin(Math.PI * p) * 1.3;
+        reaction.rotation.y = smooth(p) * Math.PI * 4;
+        if (s > 1.15) calm();
+        break;
+      }
+      case 'dance': {
+        const fade = 1 - Math.min(1, s / 1.2) * 0.4;
+        reaction.rotation.z = Math.sin(s * 14) * 0.32 * fade;
+        reaction.position.y = Math.abs(Math.sin(s * 14)) * 0.28;
+        if (s > 1.2) calm();
+        break;
+      }
+      case 'oops': {
+        const p = Math.min(1, s / 0.9);
+        reaction.rotation.z = Math.sin(s * 22) * 0.3 * (1 - p);
+        if (s > 1.5) calm();
+        break;
+      }
+      case 'party': {
+        // Keeps going until calm(): a spin, then a backflip, and round again.
+        const p = (s % 0.8) / 0.8;
+        reaction.position.y = Math.sin(Math.PI * p) * 1.0;
+        if (Math.floor(s / 0.8) % 2) flipper.rotation.x = backward * p * Math.PI * 2;
+        else reaction.rotation.y = p * Math.PI * 2;
+        break;
+      }
+      default:
+        calm();
     }
   }
 
@@ -167,8 +221,14 @@ export function buildCharacter(def) {
     calm,
 
     react(kind) {
-      acting = { kind, time: 0 };
-      setMood(kind === 'oops' ? 'oops' : 'yay');
+      let chosen = kind;
+      if (kind === 'trick') {
+        chosen = tricks[nextTrick % tricks.length];
+        nextTrick += 1;
+      }
+      acting = { kind: chosen, time: 0 };
+      setMood(chosen === 'oops' ? 'oops' : 'yay');
+      return chosen;
     },
 
     // speed: how fast the belt moves. sideways: -1..1, how hard it is changing lanes.
@@ -204,6 +264,9 @@ export function buildCharacter(def) {
         body.scale.set(1 + squash * 0.07, 0.93 + air * 0.1, 1 + squash * 0.07);
         lean.rotation.z += Math.sin(phase / 2) * 0.07;
         if (tagged.leaf) tagged.leaf.rotation.z = Math.sin(phase) * 0.18;
+        if (tagged.tail) tagged.tail.rotation.y = Math.sin(phase / 2) * 0.35;
+        if (tagged.armL) tagged.armL.rotation.z = -0.25 - air * 0.5;
+        if (tagged.armR) tagged.armR.rotation.z = 0.25 + air * 0.5;
         return;
       }
 
@@ -212,7 +275,7 @@ export function buildCharacter(def) {
         body.position.y = air * 0.42;
         body.scale.y = 0.92 + air * 0.12;
         if (tagged.tail) tagged.tail.rotation.x = -air * 0.5;
-        if (tagged.ears) tagged.ears.rotation.x = air * 0.25;
+        if (tagged.ears) tagged.ears.rotation.x = -air * 0.22;
         return;
       }
 

@@ -20,7 +20,7 @@ In the numbers game, playing alone stops climbing at sums up to 10 shown with pi
 ## How a run works
 
 - A run is 10 doors. It never ends early.
-- A right door opens, with confetti and a happy spin.
+- A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
 - The belt moves at one steady speed.

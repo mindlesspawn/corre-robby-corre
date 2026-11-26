@@ -30,6 +30,7 @@ export const CONFIG = {
   // A run is a fixed number of doors and never ends early. A wrong door bumps the
   // runner back; the next right door brings it forward again.
   doorsPerRun: 10,
+  trickEvery: 3, // every third right answer the runner does a special trick
   celebrateTime: 2.4, // seconds of confetti at the end of a run
 
   // --- Difficulty ----------------------------------------------------------
