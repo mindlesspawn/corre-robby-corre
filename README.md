@@ -1,8 +1,8 @@
-# Corre, Robby, corre
+# corre, robby, corre
 
 A learning runner for kids. Three doors come down the treadmill, each with an answer on top. Roll through the right one.
 
-The game starts in Spanish. The start screen has an Español / English switch, and each device remembers its choice. The title is the same in both.
+The game starts in Spanish. The start screen has an Español / English switch, and each device remembers its choice. The title is the same in both, and is written all in lower case on purpose.
 
 ## Play it
 
