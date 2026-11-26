@@ -17,7 +17,7 @@ export const CONFIG = {
 
   // --- Speed ---------------------------------------------------------------
   // "Travel time" is how many seconds a row of doors takes to reach the runner.
-  startTravelTime: 6.0,
+  startTravelTime: 5.0,
   minTravelTime: 2.5, // never faster than this, so there is always time to read
   travelTimeStep: 0.25, // how much quicker each speed step is
   correctPerSpeedStep: 3, // right answers needed for one speed step
