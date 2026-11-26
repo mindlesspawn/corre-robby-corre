@@ -20,6 +20,84 @@ export function unlockAudio() {
 
 export function setMuted(value) {
   muted = value;
+  if (value) stopVoiceClip();
+}
+
+// --- Recorded voice clips ----------------------------------------------------------
+// The clips go through the same sound system as the effects, which is what lets them
+// play on iPhones and iPads after the first touch.
+
+const clips = new Map(); // address -> the decoded clip (or a promise of it)
+let playing = null; // the clip being said now
+let waiting = null; // one clip waiting for it to finish
+let request = 0; // goes up whenever speech is interrupted, so a slow download is not played late
+
+function loadClip(url) {
+  if (!clips.has(url)) {
+    const loading = fetch(url)
+      .then((response) => {
+        if (!response.ok) throw new Error(`${response.status} for ${url}`);
+        return response.arrayBuffer();
+      })
+      .then((data) => new Promise((resolve, reject) => ctx.decodeAudioData(data, resolve, reject)));
+    loading.catch(() => clips.delete(url));
+    clips.set(url, loading);
+  }
+  return clips.get(url);
+}
+
+function startClip(url, mine) {
+  loadClip(url)
+    .then((buffer) => {
+      if (mine !== request || muted) return;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      source.connect(ctx.destination);
+      source.onended = () => {
+        if (playing !== source) return;
+        playing = null;
+        if (waiting) {
+          const next = waiting;
+          waiting = null;
+          startClip(next, request);
+        }
+      };
+      playing = source;
+      source.start();
+    })
+    .catch(() => {});
+}
+
+// Plays a clip. Normally it cuts off whatever is being said; with { queue: true } it waits
+// for that to finish. Returns false if sound is not available yet (before the first touch).
+export function playVoiceClip(url, { queue = false } = {}) {
+  if (muted || !ctx) return false;
+  if (queue && playing) {
+    waiting = url;
+    loadClip(url).catch(() => {});
+    return true;
+  }
+  stopVoiceClip();
+  startClip(url, request);
+  return true;
+}
+
+export function stopVoiceClip() {
+  request += 1;
+  waiting = null;
+  if (!playing) return;
+  const source = playing;
+  playing = null;
+  try {
+    source.stop();
+  } catch {
+    // It had already finished.
+  }
+}
+
+// Fetches a clip ahead of time so it starts without a pause.
+export function preloadVoiceClip(url) {
+  if (ctx) loadClip(url).catch(() => {});
 }
 
 function tone({ freq, slideTo, start = 0, length = 0.15, type = 'sine', volume = 0.2 }) {

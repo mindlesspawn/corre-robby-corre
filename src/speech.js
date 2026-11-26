@@ -1,6 +1,16 @@
-// The spoken voice. It uses the voice built into the phone, tablet, or computer,
-// so there are no recordings to make. If the device has no voice for the chosen
-// language, the game stays quiet and says so on the start screen.
+// The spoken voice.
+//
+// Spanish lines are recorded clips (public/voice/es), so the game says the same thing in
+// the same voice on every device. They are made by scripts/record-voice.mjs.
+// Anything without a clip (English, and very large sums) falls back to the voice built
+// into the phone, tablet, or computer. If the device has no voice for that language
+// either, the game stays quiet and says so on the start screen.
+
+import { playVoiceClip, preloadVoiceClip, stopVoiceClip } from './audio.js';
+import spanishClips from './voice/es.json';
+
+// Which recorded clip says each line: { language: { 'the line': 'file.mp3' } }
+const CLIPS = { es: spanishClips };
 
 const PREFERRED = {
   es: ['es-MX', 'es-US', 'es-419', 'es-ES'],
@@ -14,6 +24,16 @@ let current = null; // holds on to the line being said; some browsers drop it ot
 
 const synth = () => (typeof window !== 'undefined' && 'speechSynthesis' in window ? window.speechSynthesis : null);
 const tidy = (code) => String(code).replace('_', '-').toLowerCase();
+
+function clipFor(text) {
+  const file = CLIPS[language]?.[text];
+  return file ? `./voice/${language}/${file}` : null;
+}
+
+// True when this language has recorded clips.
+export function hasRecordedVoice() {
+  return Object.keys(CLIPS[language] ?? {}).length > 0;
+}
 
 function pickVoice() {
   const engine = synth();
@@ -46,19 +66,21 @@ export function setSpeechLanguage(code) {
 
 export function setSpeechMuted(value) {
   muted = value;
-  if (value) synth()?.cancel();
+  if (value) stopSpeaking();
 }
 
 export function stopSpeaking() {
+  stopVoiceClip();
   synth()?.cancel();
 }
 
-// Whether this device can speak the chosen language:
-//   'ok'           it has a voice for it
-//   'loading'      the list of voices has not arrived yet (it probably can)
-//   'none'         it has voices, but none for this language
+// Whether the game can speak the chosen language on this device:
+//   'ok'           it has recorded clips, or the device has a voice for it
+//   'loading'      the device's list of voices has not arrived yet (it probably can)
+//   'none'         the device has voices, but none for this language
 //   'unsupported'  the browser cannot speak at all
 export function voiceState() {
+  if (hasRecordedVoice()) return 'ok';
   const engine = synth();
   if (!engine) return 'unsupported';
   if (!voice) pickVoice();
@@ -72,11 +94,21 @@ export function canSpeak() {
   return !muted && (state === 'ok' || state === 'loading');
 }
 
-// Says something. Normally it interrupts whatever is being said.
-// With { queue: true } it waits its turn, unless a line is already waiting.
-export function speak(text, { queue = false } = {}) {
+// Fetches clips ahead of time, so they start without a pause when they are needed.
+export function preloadSpeech(lines) {
+  for (const text of lines) {
+    const clip = clipFor(text);
+    if (clip) preloadVoiceClip(clip);
+  }
+}
+
+// The device's own voice, for lines that have no clip.
+function speakWithDevice(text, queue) {
   const engine = synth();
-  if (!engine || !text || !canSpeak()) return;
+  if (!engine) return;
+  if (!voice) pickVoice();
+  // Never read one language aloud with another language's voice.
+  if (!voice && engine.getVoices().length > 0) return;
 
   const line = new SpeechSynthesisUtterance(text);
   line.lang = voice?.lang ?? PREFERRED[language]?.[0] ?? language;
@@ -105,4 +137,19 @@ export function speak(text, { queue = false } = {}) {
   // Interrupt. Some browsers lose a line spoken straight after a cancel, so wait a beat.
   engine.cancel();
   setTimeout(say, 80);
+}
+
+// Says something. Normally it interrupts whatever is being said.
+// With { queue: true } it waits for the line being said to finish.
+export function speak(text, { queue = false } = {}) {
+  if (!text || muted) return;
+
+  const clip = clipFor(text);
+  if (clip && playVoiceClip(clip, { queue })) {
+    synth()?.cancel();
+    return;
+  }
+
+  if (!queue) stopVoiceClip();
+  speakWithDevice(text, queue);
 }

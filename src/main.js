@@ -8,7 +8,16 @@ import { renderThumbnails } from './looks.js';
 import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
-import { canSpeak, onVoicesChanged, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking, voiceState } from './speech.js';
+import {
+  canSpeak,
+  onVoicesChanged,
+  preloadSpeech,
+  setSpeechLanguage,
+  setSpeechMuted,
+  speak,
+  stopSpeaking,
+  voiceState,
+} from './speech.js';
 import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, spokenAnswer, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
@@ -382,6 +391,8 @@ const gameEvents = {
     replay(el.question, 'new');
     showProgress();
     speak(askText(question), { queue: true });
+    // Fetch what might be said next, so it comes without a pause.
+    preloadSpeech([spokenAnswer(question), answerText(question), ...t.say.praise]);
   },
 
   onAnswer(info) {
@@ -477,7 +488,7 @@ function showScores(highlight = -1) {
 
 // Fills in every fixed word on the page from src/text.js.
 function applyWords() {
-  document.documentElement.lang = getLanguage();
+  document.documentElement.lang = getLanguage() === 'es' ? 'es-MX' : getLanguage();
   for (const node of document.querySelectorAll('[data-t]')) node.textContent = t[node.dataset.t];
   for (const node of document.querySelectorAll('[data-t-label]')) {
     node.setAttribute('aria-label', t[node.dataset.tLabel]);
