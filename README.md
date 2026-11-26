@@ -4,7 +4,17 @@ A learning runner for kids. Three doors come down the treadmill, each with an an
 
 The game starts in Spanish. The start screen has an Español / English switch, and each device remembers its choice. The title is the same in both, and is written all in lower case on purpose.
 
-## Play it
+## Play it online
+
+The game is at <https://robbydcox-boop.github.io/corre-robby-corre/>. It works on any phone, tablet, or computer with internet.
+
+To make it feel like an app on an iPhone or iPad: open the link in Safari, tap Share, then "Add to Home Screen".
+
+Scores and unlocked characters are saved on each device, so they do not carry over from one device to another.
+
+To update the online game after a change, save the change to GitHub (commit and push to `main`). The new version is live about a minute later.
+
+## Play it from this computer
 
 Start the game from this folder:
 
