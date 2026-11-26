@@ -1,7 +1,11 @@
 // Every number and color you might want to tune lives here.
 
 export const CONFIG = {
-  title: 'Number Run',
+  title: 'Corre, Robby, corre',
+
+  // The language the game starts in: 'es' (Spanish) or 'en' (English).
+  // The player can switch on the start screen. The words themselves are in src/text.js.
+  language: 'es',
 
   // Which kind of question the doors ask. See src/questions.js for the list.
   subject: 'addition',

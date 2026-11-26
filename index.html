@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -10,61 +10,68 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Number Run" />
+    <meta name="apple-mobile-web-app-title" content="Corre Robby" />
     <meta name="theme-color" content="#9ad8ff" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="manifest" href="./manifest.webmanifest" />
-    <title>Number Run</title>
+    <title>Corre, Robby, corre</title>
   </head>
   <body>
+    <!--
+      The words on this page are filled in from src/text.js when the game starts:
+      data-t="key" sets an element's text, data-t-label="key" sets its spoken label.
+    -->
     <canvas id="scene"></canvas>
 
     <!-- Shown while running -->
     <div id="hud" class="hud" hidden>
       <div class="hud-row">
-        <div class="pill" aria-label="Score"><span aria-hidden="true">⭐</span> <span id="score">0</span></div>
+        <div class="pill" data-t-label="labelScore"><span aria-hidden="true">⭐</span> <span id="score">0</span></div>
         <div class="hud-buttons">
-          <button id="btn-mute" class="icon-btn" type="button" aria-label="Sound on or off">🔊</button>
-          <button id="btn-pause" class="icon-btn" type="button" aria-label="Pause">
+          <button id="btn-mute" class="icon-btn" type="button" data-t-label="labelSound">🔊</button>
+          <button id="btn-pause" class="icon-btn" type="button" data-t-label="labelPause">
             <span class="pause-icon" aria-hidden="true"></span>
           </button>
         </div>
       </div>
       <div id="question" class="question" aria-live="polite"></div>
       <div id="catchup" class="catchup" hidden>
-        <span>Catch up!</span>
+        <span data-t="catchUp"></span>
         <span id="catchup-dots" class="dots"></span>
       </div>
-      <div id="hint" class="hint" hidden>Tap the door with the right answer</div>
+      <div id="hint" class="hint" data-t="hint" hidden></div>
     </div>
 
     <!-- Start -->
     <section id="screen-start" class="screen">
       <div class="panel">
-        <h1 id="title">Number Run</h1>
+        <h1 id="title">Corre, Robby, corre</h1>
         <p id="stats" class="stats"></p>
         <div id="characters" class="characters"></div>
         <p id="unlock-note" class="note"></p>
-        <button id="btn-play" class="big-btn" type="button">Play</button>
+        <button id="btn-play" class="big-btn" type="button" data-t="play"></button>
         <div class="button-row">
-          <button id="btn-scores" class="small-btn" type="button">🏆 High scores</button>
-          <button id="btn-mute-start" class="small-btn" type="button">🔊 Sound on</button>
+          <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
+          <button id="btn-mute-start" class="small-btn" type="button"></button>
         </div>
+        <div id="languages" class="lang-row"></div>
       </div>
     </section>
 
     <!-- End of a run -->
     <section id="screen-over" class="screen" hidden>
       <div class="panel">
-        <h2 id="over-title">Nice try!</h2>
-        <p class="score-line">You got <strong id="over-score">0</strong> right!</p>
+        <h2 id="over-title"></h2>
+        <p class="score-line">
+          <span data-t="scoreBefore"></span><strong id="over-score">0</strong><span data-t="scoreAfter"></span>
+        </p>
         <p id="over-best" class="note"></p>
         <div id="over-unlock" class="unlock" hidden>
           <img id="over-unlock-img" alt="" />
           <p id="over-unlock-text"></p>
         </div>
         <form id="name-form" class="name-form" hidden>
-          <label for="name-input">You made the high scores! Type your name:</label>
+          <label for="name-input" data-t="nameLabel"></label>
           <input
             id="name-input"
             type="text"
@@ -75,13 +82,13 @@
             spellcheck="false"
             enterkeyhint="done"
           />
-          <button class="big-btn" type="submit">Save</button>
+          <button class="big-btn" type="submit" data-t="save"></button>
         </form>
         <div id="over-buttons">
-          <button id="btn-again" class="big-btn" type="button">Play again</button>
+          <button id="btn-again" class="big-btn" type="button" data-t="playAgain"></button>
           <div class="button-row">
-            <button id="btn-over-scores" class="small-btn" type="button">🏆 High scores</button>
-            <button id="btn-home" class="small-btn" type="button">Home</button>
+            <button id="btn-over-scores" class="small-btn" type="button" data-t="scoresButton"></button>
+            <button id="btn-home" class="small-btn" type="button" data-t="home"></button>
           </div>
         </div>
       </div>
@@ -90,12 +97,12 @@
     <!-- High scores -->
     <section id="screen-scores" class="screen" hidden>
       <div class="panel">
-        <h2>🏆 High scores</h2>
+        <h2 data-t="scoresTitle"></h2>
         <ol id="score-list" class="score-list"></ol>
-        <p id="score-empty" class="note" hidden>No scores yet. Be the first!</p>
-        <button id="btn-scores-play" class="big-btn" type="button">Play</button>
+        <p id="score-empty" class="note" data-t="noScores" hidden></p>
+        <button id="btn-scores-play" class="big-btn" type="button" data-t="play"></button>
         <div class="button-row">
-          <button id="btn-scores-home" class="small-btn" type="button">Home</button>
+          <button id="btn-scores-home" class="small-btn" type="button" data-t="home"></button>
         </div>
       </div>
     </section>
@@ -103,10 +110,10 @@
     <!-- Paused -->
     <section id="screen-pause" class="screen" hidden>
       <div class="panel">
-        <h2>Paused</h2>
-        <button id="btn-resume" class="big-btn" type="button">Keep going</button>
+        <h2 data-t="paused"></h2>
+        <button id="btn-resume" class="big-btn" type="button" data-t="resume"></button>
         <div class="button-row">
-          <button id="btn-pause-home" class="small-btn" type="button">Home</button>
+          <button id="btn-pause-home" class="small-btn" type="button" data-t="home"></button>
         </div>
       </div>
     </section>

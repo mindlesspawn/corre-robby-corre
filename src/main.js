@@ -7,6 +7,7 @@ import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
+import { LANGUAGES, getLanguage, nameOf, setLanguage, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -21,6 +22,7 @@ const el = {
   hint: $('hint'),
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
+  languages: $('languages'),
   title: $('title'),
   stats: $('stats'),
   characters: $('characters'),
@@ -71,19 +73,19 @@ function currentCharacter() {
 }
 
 function unlockMessage(def, totalPoints) {
-  return `${def.unlockAt - totalPoints} more ⭐ to unlock the ${def.name}`;
+  return t.toUnlock(def.unlockAt - totalPoints, nameOf(def));
 }
 
 function renderStart() {
   const { totalPoints, best } = store.get();
   const current = currentCharacter();
 
-  el.stats.textContent = best > 0 ? `⭐ ${totalPoints} points · Best run: ${best}` : `⭐ ${totalPoints} points`;
+  el.stats.textContent = best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`;
 
   const nextLocked = CHARACTERS.filter((def) => !isUnlocked(def, totalPoints)).sort(
     (a, b) => a.unlockAt - b.unlockAt,
   )[0];
-  el.unlockNote.textContent = nextLocked ? unlockMessage(nextLocked, totalPoints) : 'All characters unlocked!';
+  el.unlockNote.textContent = nextLocked ? unlockMessage(nextLocked, totalPoints) : t.allUnlocked;
 
   el.characters.replaceChildren(
     ...CHARACTERS.map((def) => {
@@ -95,7 +97,7 @@ function renderStart() {
       if (!unlocked) card.classList.add('locked');
       if (def === current) card.classList.add('selected');
       card.setAttribute('aria-pressed', String(def === current));
-      card.setAttribute('aria-label', unlocked ? def.name : `${def.name}, locked. Needs ${def.unlockAt} points.`);
+      card.setAttribute('aria-label', unlocked ? nameOf(def) : t.lockedLabel(nameOf(def), def.unlockAt));
 
       if (thumbs[def.id]) {
         const img = document.createElement('img');
@@ -104,7 +106,7 @@ function renderStart() {
         card.append(img);
       }
       const label = document.createElement('span');
-      label.textContent = unlocked ? def.name : `🔒 ${def.unlockAt} ⭐`;
+      label.textContent = unlocked ? nameOf(def) : `🔒 ${def.unlockAt} ⭐`;
       card.append(label);
 
       card.addEventListener('click', () => {
@@ -207,11 +209,11 @@ const gameEvents = {
 };
 
 function friendlyTitle(score, newBest) {
-  if (newBest && score > 0) return 'New best!';
-  if (score >= 20) return 'Amazing!';
-  if (score >= 8) return 'Great running!';
-  if (score >= 1) return 'Nice try!';
-  return 'Good try!';
+  if (newBest && score > 0) return t.overTitle.newBest;
+  if (score >= 20) return t.overTitle.amazing;
+  if (score >= 8) return t.overTitle.great;
+  if (score >= 1) return t.overTitle.nice;
+  return t.overTitle.zero;
 }
 
 function finishRun(score) {
@@ -220,13 +222,13 @@ function finishRun(score) {
 
   el.overTitle.textContent = friendlyTitle(score, newBest);
   el.overScore.textContent = String(score);
-  el.overBest.textContent = newBest && score > 0 ? 'That is your best run yet!' : `Best run: ${store.get().best}`;
+  el.overBest.textContent = newBest && score > 0 ? t.bestYet : t.bestRun(store.get().best);
 
   el.overUnlock.hidden = !newest;
   if (newest) {
     el.overUnlockImg.hidden = !thumbs[newest.id];
     if (thumbs[newest.id]) el.overUnlockImg.src = thumbs[newest.id];
-    el.overUnlockText.textContent = `You unlocked the ${newest.name}!`;
+    el.overUnlockText.textContent = t.unlocked(nameOf(newest));
   }
 
   const madeTheTable = store.qualifies(score);
@@ -264,13 +266,50 @@ function showScores(highlight = -1) {
   show('scores');
 }
 
+// --- Language ------------------------------------------------------------------------
+
+// Fills in every fixed word on the page from src/text.js.
+function applyWords() {
+  document.documentElement.lang = getLanguage();
+  for (const node of document.querySelectorAll('[data-t]')) node.textContent = t[node.dataset.t];
+  for (const node of document.querySelectorAll('[data-t-label]')) {
+    node.setAttribute('aria-label', t[node.dataset.tLabel]);
+  }
+  for (const button of el.languages.children) {
+    const chosen = button.dataset.lang === getLanguage();
+    button.classList.toggle('selected', chosen);
+    button.setAttribute('aria-pressed', String(chosen));
+  }
+}
+
+function buildLanguageButtons() {
+  el.languages.replaceChildren(
+    ...LANGUAGES.map(({ code, label }) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'lang-btn';
+      button.dataset.lang = code;
+      button.lang = code;
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        setLanguage(code);
+        store.update({ language: code });
+        applyWords();
+        applyMute();
+        renderStart();
+      });
+      return button;
+    }),
+  );
+}
+
 // --- Sound ---------------------------------------------------------------------------
 
 function applyMute() {
   const { muted } = store.get();
   setMuted(muted);
   el.mute.textContent = muted ? '🔇' : '🔊';
-  el.muteStart.textContent = muted ? '🔇 Sound off' : '🔊 Sound on';
+  el.muteStart.textContent = muted ? t.soundOff : t.soundOn;
 }
 
 function toggleMute() {
@@ -363,19 +402,23 @@ function wireTouch() {
 }
 
 async function init() {
+  // The title is the same in every language.
   document.title = CONFIG.title;
   el.title.textContent = CONFIG.title;
   el.nameInput.maxLength = CONFIG.nameMaxLength;
   el.catchupDots.replaceChildren(...Array.from({ length: CONFIG.recoverStreak }, () => document.createElement('i')));
 
   await store.init();
+  setLanguage(store.get().language || CONFIG.language);
+  buildLanguageButtons();
+  applyWords();
   thumbs = renderThumbnails(CHARACTERS);
 
   try {
     game = new Game(el.canvas, gameEvents);
   } catch (error) {
     console.error(error);
-    el.stats.textContent = 'Sorry, this device cannot show the game.';
+    el.stats.textContent = t.cannotShow;
     $('btn-play').hidden = true;
     return;
   }

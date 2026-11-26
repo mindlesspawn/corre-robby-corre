@@ -4,7 +4,7 @@
 // game needs to change.
 //
 //   id        short name used in saved data (do not change once kids have played)
-//   name      what the player sees
+//   name      what the player sees, in each language (see src/text.js)
 //   unlockAt  total points needed to unlock it (0 = free from the start)
 //   move      how it moves: 'roll', 'run', or 'hop'
 //   look      what it looks like (see below)
@@ -27,7 +27,7 @@
 export const CHARACTERS = [
   {
     id: 'apple',
-    name: 'Apple',
+    name: { es: 'Manzana', en: 'Apple' },
     unlockAt: 0,
     move: 'roll',
     look: {
@@ -42,7 +42,7 @@ export const CHARACTERS = [
 
   {
     id: 'dino',
-    name: 'Dinosaur',
+    name: { es: 'Dinosaurio', en: 'Dinosaur' },
     unlockAt: 25,
     move: 'run',
     look: {
@@ -77,7 +77,7 @@ export const CHARACTERS = [
 
   {
     id: 'mouse',
-    name: 'Mouse',
+    name: { es: 'Ratón', en: 'Mouse' },
     unlockAt: 60,
     move: 'hop',
     look: {

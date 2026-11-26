@@ -1,6 +1,8 @@
-# Number Run
+# Corre, Robby, corre
 
 A learning runner for kids. Three doors come down the treadmill, each with an answer on top. Roll through the right one.
+
+The game starts in Spanish. The start screen has an Español / English switch, and each device remembers its choice. The title is the same in both.
 
 ## Play it
 
@@ -26,7 +28,8 @@ The game only works while `npm run dev` is running on this computer.
 | To change | Edit |
 | --- | --- |
 | Characters, their looks, and unlock costs | `src/characters.js` |
-| Speed, difficulty steps, colors, the title | `src/config.js` |
+| Speed, difficulty steps, colors, the title, the starting language | `src/config.js` |
+| Every word the player reads, in Spanish and English | `src/text.js` |
 | The questions (add subtraction, and so on) | `src/questions.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
 | Where scores are saved (swap for iOS storage later) | `src/storage.js` |

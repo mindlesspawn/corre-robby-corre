@@ -1,6 +1,7 @@
 {
-  "name": "Number Run",
-  "short_name": "Number Run",
+  "name": "Corre, Robby, corre",
+  "short_name": "Corre Robby",
+  "lang": "es",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
