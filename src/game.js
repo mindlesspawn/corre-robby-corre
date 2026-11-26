@@ -529,9 +529,10 @@ export class Game {
     if (row.correct) this.answeredRight();
   }
 
-  report(correct) {
+  report(correct, trick = false) {
     this.events.onAnswer?.({
       correct,
+      trick, // true when the runner did one of its special tricks
       question: this.row.question,
       score: this.score,
       results: [...this.results],
@@ -552,10 +553,11 @@ export class Game {
     this.drawSign(door, row.question.answer, 'signRight');
     this.popSparks(LANE_X[row.chosen], 1.6, this.runnerZ - 0.6);
     // Mostly a jump and a spin; every so often a special trick (a backflip, a dance...).
-    this.character.react(this.score % CONFIG.trickEvery === 0 ? 'trick' : 'cheer');
+    const trick = this.score % CONFIG.trickEvery === 0;
+    this.character.react(trick ? 'trick' : 'cheer');
     this.pushedBack = false; // a right answer brings the runner back to the front
     this.gapTimer = CONFIG.gapAfterCorrect;
-    this.report(true);
+    this.report(true, trick);
   }
 
   // A wrong door never ends the run. It bumps the runner back and shows the right door.

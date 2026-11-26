@@ -45,7 +45,7 @@ function buildShapes(parts = []) {
     const [x, y, z] = part.at ?? [0, 0, 0];
     if (part.scale) mesh.scale.set(...part.scale);
     if (part.turn) mesh.rotation.set(part.turn[0] * DEG, part.turn[1] * DEG, part.turn[2] * DEG);
-    if (part.mood) moods.push({ mesh, mood: part.mood });
+    if (part.mood) moods.push({ mesh, moods: [].concat(part.mood) });
 
     if (part.tag) {
       // Parts with the same tag move together around one pivot point.
@@ -135,9 +135,9 @@ export function buildCharacter(def) {
 
   // Expressions: a part with mood 'oops' only shows while the character is in that mood.
   function setMood(name) {
-    const known = moods.some((entry) => entry.mood === name);
+    const known = moods.some((entry) => entry.moods.includes(name));
     const show = known ? name : 'calm';
-    for (const entry of moods) entry.mesh.visible = entry.mood === show;
+    for (const entry of moods) entry.mesh.visible = entry.moods.includes(show);
   }
   setMood('calm');
 

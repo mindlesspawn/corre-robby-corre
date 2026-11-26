@@ -58,6 +58,12 @@ export const sfx = {
       tone({ freq, start: i * 0.12, length: i === 5 ? 0.45 : 0.16, type: 'triangle', volume: 0.22 });
     });
   },
+  // A low growl that drops, for the dinosaur.
+  roar() {
+    tone({ freq: 170, slideTo: 62, length: 0.65, type: 'sawtooth', volume: 0.26 });
+    tone({ freq: 86, slideTo: 40, length: 0.65, type: 'square', volume: 0.1 });
+    tone({ freq: 128, slideTo: 50, start: 0.05, length: 0.55, type: 'sawtooth', volume: 0.14 });
+  },
   unlock() {
     [523, 659, 784, 1047].forEach((freq, i) => {
       tone({ freq, start: i * 0.11, length: 0.2, type: 'triangle', volume: 0.22 });

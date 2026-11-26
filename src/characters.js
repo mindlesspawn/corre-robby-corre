@@ -12,6 +12,7 @@
 //   tricks       optional: the special tricks it does, in order, one on every third right
 //                answer. Choose from 'flip' (backflip), 'bigspin' (high jump with two spins)
 //                and 'dance' (side-to-side wiggle). Leave it out for all three.
+//   trickSound   optional: a sound from src/audio.js to play with each trick, such as 'roar'
 //   look         what it looks like (see below)
 //
 // LOOKS
@@ -34,6 +35,7 @@
 //     pivot   optional point a tagged part swings around (for example, the hip of a leg)
 //     mood    optional: the part only shows in that mood. 'calm' is the everyday face,
 //             'yay' shows after a right answer, 'oops' after a wrong one.
+//             A list such as ['calm', 'oops'] shows the part in each of those moods.
 //   A rolling character spins around a point half its width above the ground.
 
 export const CHARACTERS = [
@@ -120,52 +122,69 @@ export const CHARACTERS = [
   },
 
   {
-    // A round, friendly dinosaur. It leads with a backflip.
+    // A fierce T. rex: big jaws, sharp teeth, angry brows, claws. It roars when it does a trick.
     id: 'dino',
     name: { es: 'Dinosaurio', en: 'Dinosaur' },
     unlockAt: 0,
     move: 'bounce',
     facesCamera: true,
     tricks: ['flip', 'dance', 'bigspin'],
+    trickSound: 'roar',
     look: {
       kind: 'shapes',
       parts: [
-        // tail, peeking out to one side
-        { shape: 'cone', size: [0.5, 1.0], at: [0.34, 0.36, 0.62], turn: [72, 0, -28], color: '#43a047', smooth: true, tag: 'tail', pivot: [0.12, 0.36, 0.25] },
+        // thick tail, swinging out to one side
+        { shape: 'cone', size: [0.62, 1.3], at: [0.4, 0.42, 0.72], turn: [74, 0, -30], color: '#1b5e20', smooth: true, tag: 'tail', pivot: [0.12, 0.4, 0.25] },
         // body and tummy
-        { shape: 'ball', size: [1.05], scale: [1, 1.15, 0.95], at: [0, 0.64, 0], color: '#66bb6a', smooth: true },
-        { shape: 'ball', size: [0.72], scale: [1, 1.1, 0.4], at: [0, 0.56, -0.38], color: '#fff59d', smooth: true },
-        // feet
-        { shape: 'ball', size: [0.4], scale: [1, 0.55, 1.3], at: [-0.28, 0.1, -0.14], color: '#43a047', smooth: true },
-        { shape: 'ball', size: [0.4], scale: [1, 0.55, 1.3], at: [0.28, 0.1, -0.14], color: '#43a047', smooth: true },
-        // little arms that wave as it bounces
-        { shape: 'ball', size: [0.2], scale: [1, 1.7, 1], at: [-0.54, 0.74, -0.16], color: '#43a047', smooth: true, tag: 'armL', pivot: [-0.48, 0.9, -0.16] },
-        { shape: 'ball', size: [0.2], scale: [1, 1.7, 1], at: [0.54, 0.74, -0.16], color: '#43a047', smooth: true, tag: 'armR', pivot: [0.48, 0.9, -0.16] },
-        // head and snout
-        { shape: 'ball', size: [0.92], scale: [1, 0.9, 1], at: [0, 1.46, -0.05], color: '#66bb6a', smooth: true },
-        { shape: 'ball', size: [0.56], scale: [1, 0.7, 0.8], at: [0, 1.32, -0.4], color: '#81c784', smooth: true },
-        { shape: 'ball', size: [0.05], at: [-0.09, 1.41, -0.59], color: '#2e7d32', smooth: true },
-        { shape: 'ball', size: [0.05], at: [0.09, 1.41, -0.59], color: '#2e7d32', smooth: true },
-        // eyes: white, pupil, and a little sparkle
-        { shape: 'ball', size: [0.27], at: [-0.2, 1.64, -0.33], color: '#ffffff', smooth: true, tag: 'eyes', pivot: [0, 1.64, -0.33] },
-        { shape: 'ball', size: [0.27], at: [0.2, 1.64, -0.33], color: '#ffffff', smooth: true, tag: 'eyes' },
-        { shape: 'ball', size: [0.15], at: [-0.2, 1.64, -0.435], color: '#212121', smooth: true, tag: 'eyes' },
-        { shape: 'ball', size: [0.15], at: [0.2, 1.64, -0.435], color: '#212121', smooth: true, tag: 'eyes' },
-        { shape: 'ball', size: [0.05], at: [-0.23, 1.68, -0.5], color: '#ffffff', smooth: true, tag: 'eyes' },
-        { shape: 'ball', size: [0.05], at: [0.17, 1.68, -0.5], color: '#ffffff', smooth: true, tag: 'eyes' },
-        // rosy cheeks
-        { shape: 'ball', size: [0.16], scale: [1, 0.65, 0.3], at: [-0.34, 1.36, -0.3], turn: [0, 40, 0], color: '#f48fb1', smooth: true },
-        { shape: 'ball', size: [0.16], scale: [1, 0.65, 0.3], at: [0.34, 1.36, -0.3], turn: [0, -40, 0], color: '#f48fb1', smooth: true },
-        // mouths, one for each mood
-        { shape: 'arc', size: [0.26, 0.045], at: [0, 1.24, -0.6], turn: [0, 0, 180], color: '#1b5e20', mood: 'calm' },
-        { shape: 'ball', size: [0.26], scale: [1, 0.75, 0.3], at: [0, 1.2, -0.585], color: '#1b5e20', smooth: true, mood: 'yay' },
-        { shape: 'ball', size: [0.14], scale: [1, 0.5, 0.3], at: [0, 1.15, -0.6], color: '#ff5252', smooth: true, mood: 'yay' },
-        { shape: 'ball', size: [0.13], scale: [1, 1.1, 0.3], at: [0, 1.2, -0.6], color: '#1b5e20', smooth: true, mood: 'oops' },
-        // orange spikes over the head and down the back
-        { shape: 'cone', size: [0.18, 0.24], at: [0, 1.95, -0.05], color: '#ffa726', smooth: true },
-        { shape: 'cone', size: [0.18, 0.24], at: [0, 1.86, 0.24], turn: [40, 0, 0], color: '#ffa726', smooth: true },
-        { shape: 'cone', size: [0.18, 0.24], at: [0, 1.5, 0.48], turn: [75, 0, 0], color: '#ffa726', smooth: true },
-        { shape: 'cone', size: [0.18, 0.24], at: [0, 1.0, 0.56], turn: [80, 0, 0], color: '#ffa726', smooth: true },
+        { shape: 'ball', size: [1.08], scale: [1, 1.15, 1], at: [0, 0.68, 0], color: '#2e7d32', smooth: true },
+        { shape: 'ball', size: [0.72], scale: [1, 1.1, 0.4], at: [0, 0.6, -0.41], color: '#aed581', smooth: true },
+        // strong legs, big feet, white claws
+        { shape: 'ball', size: [0.48], scale: [1, 0.95, 1.1], at: [-0.32, 0.24, -0.04], color: '#1b5e20', smooth: true },
+        { shape: 'ball', size: [0.48], scale: [1, 0.95, 1.1], at: [0.32, 0.24, -0.04], color: '#1b5e20', smooth: true },
+        { shape: 'ball', size: [0.46], scale: [1, 0.45, 1.4], at: [-0.32, 0.1, -0.22], color: '#1b5e20', smooth: true },
+        { shape: 'ball', size: [0.46], scale: [1, 0.45, 1.4], at: [0.32, 0.1, -0.22], color: '#1b5e20', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [-0.44, 0.08, -0.52], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [-0.32, 0.08, -0.56], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [-0.2, 0.08, -0.52], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [0.2, 0.08, -0.52], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [0.32, 0.08, -0.56], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        { shape: 'cone', size: [0.1, 0.18], at: [0.44, 0.08, -0.52], turn: [-90, 0, 0], color: '#fafafa', smooth: true },
+        // tiny arms
+        { shape: 'ball', size: [0.18], scale: [1, 1.6, 1], at: [-0.5, 0.84, -0.3], color: '#1b5e20', smooth: true, tag: 'armL', pivot: [-0.46, 0.98, -0.3] },
+        { shape: 'ball', size: [0.18], scale: [1, 1.6, 1], at: [0.5, 0.84, -0.3], color: '#1b5e20', smooth: true, tag: 'armR', pivot: [0.46, 0.98, -0.3] },
+        // big head
+        { shape: 'ball', size: [1.0], scale: [1, 0.85, 1.05], at: [0, 1.52, -0.08], color: '#2e7d32', smooth: true },
+        // upper jaw, the dark inside of the mouth, and nostrils
+        { shape: 'ball', size: [0.72], scale: [1, 0.6, 1], at: [0, 1.44, -0.45], color: '#388e3c', smooth: true },
+        { shape: 'ball', size: [0.62], scale: [1, 0.18, 0.9], at: [0, 1.32, -0.42], color: '#7f0000', smooth: true },
+        { shape: 'ball', size: [0.06], at: [-0.1, 1.6, -0.72], color: '#1b5e20', smooth: true },
+        { shape: 'ball', size: [0.06], at: [0.1, 1.6, -0.72], color: '#1b5e20', smooth: true },
+        // a row of sharp teeth
+        { shape: 'cone', size: [0.1, 0.16], at: [-0.24, 1.28, -0.655], turn: [180, 0, 0], color: '#ffffff', smooth: true },
+        { shape: 'cone', size: [0.1, 0.16], at: [-0.12, 1.28, -0.74], turn: [180, 0, 0], color: '#ffffff', smooth: true },
+        { shape: 'cone', size: [0.1, 0.16], at: [0, 1.28, -0.765], turn: [180, 0, 0], color: '#ffffff', smooth: true },
+        { shape: 'cone', size: [0.1, 0.16], at: [0.12, 1.28, -0.74], turn: [180, 0, 0], color: '#ffffff', smooth: true },
+        { shape: 'cone', size: [0.1, 0.16], at: [0.24, 1.28, -0.655], turn: [180, 0, 0], color: '#ffffff', smooth: true },
+        // lower jaw: shut most of the time, wide open for a roar after a right answer
+        { shape: 'ball', size: [0.64], scale: [1, 0.38, 0.95], at: [0, 1.21, -0.4], color: '#2e7d32', smooth: true, mood: ['calm', 'oops'] },
+        { shape: 'ball', size: [0.64], scale: [1, 0.38, 0.95], at: [0, 1.04, -0.36], turn: [20, 0, 0], color: '#2e7d32', smooth: true, mood: 'yay' },
+        { shape: 'ball', size: [0.56], scale: [1, 0.6, 0.85], at: [0, 1.2, -0.38], color: '#b71c1c', smooth: true, mood: 'yay' },
+        { shape: 'ball', size: [0.3], scale: [1, 0.3, 1.25], at: [0, 1.1, -0.47], color: '#ff5252', smooth: true, mood: 'yay' },
+        { shape: 'cone', size: [0.09, 0.14], at: [-0.17, 1.16, -0.6], color: '#ffffff', smooth: true, mood: 'yay' },
+        { shape: 'cone', size: [0.09, 0.14], at: [0.17, 1.16, -0.6], color: '#ffffff', smooth: true, mood: 'yay' },
+        // yellow eyes with narrow pupils, under heavy angry brows
+        { shape: 'ball', size: [0.22], at: [-0.24, 1.74, -0.4], color: '#ffeb3b', smooth: true, tag: 'eyes', pivot: [0, 1.74, -0.4] },
+        { shape: 'ball', size: [0.22], at: [0.24, 1.74, -0.4], color: '#ffeb3b', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.11], scale: [0.45, 1, 1], at: [-0.24, 1.74, -0.485], color: '#111111', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.11], scale: [0.45, 1, 1], at: [0.24, 1.74, -0.485], color: '#111111', smooth: true, tag: 'eyes' },
+        { shape: 'box', size: [0.34, 0.11, 0.36], at: [-0.25, 1.87, -0.33], turn: [0, 0, -24], color: '#1b5e20' },
+        { shape: 'box', size: [0.34, 0.11, 0.36], at: [0.25, 1.87, -0.33], turn: [0, 0, 24], color: '#1b5e20' },
+        // red spikes over the head and down the back
+        { shape: 'cone', size: [0.2, 0.3], at: [0, 2.0, -0.12], color: '#e53935', smooth: true },
+        { shape: 'cone', size: [0.2, 0.3], at: [0, 1.96, 0.16], turn: [30, 0, 0], color: '#e53935', smooth: true },
+        { shape: 'cone', size: [0.2, 0.3], at: [0, 1.72, 0.44], turn: [62, 0, 0], color: '#e53935', smooth: true },
+        { shape: 'cone', size: [0.2, 0.3], at: [0, 1.28, 0.56], turn: [78, 0, 0], color: '#e53935', smooth: true },
+        { shape: 'cone', size: [0.2, 0.3], at: [0, 0.82, 0.6], turn: [82, 0, 0], color: '#e53935', smooth: true },
       ],
     },
   },

@@ -386,6 +386,9 @@ const gameEvents = {
 
     if (info.correct) {
       sfx.correct();
+      // Some characters make their own sound when they do a trick (the dinosaur roars).
+      const trickSound = currentCharacter().trickSound;
+      if (info.trick && sfx[trickSound]) setTimeout(() => sfx[trickSound](), 180);
       replay(el.scorePill, 'pop');
       speak(pick(t.say.praise));
     } else {
