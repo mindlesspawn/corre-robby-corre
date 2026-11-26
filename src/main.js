@@ -1,13 +1,15 @@
-// Menus, buttons, saving, and sounds. The 3D game itself is in game.js.
+// Menus, buttons, saving, sounds, and the voice. The 3D game itself is in game.js.
 
 import './style.css';
-import { CONFIG } from './config.js';
+import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
+import { GAMES, GAME_IDS, ITEMS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
-import { LANGUAGES, getLanguage, nameOf, setLanguage, t } from './text.js';
+import { canSpeak, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking } from './speech.js';
+import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -17,8 +19,8 @@ const el = {
   score: $('score'),
   scorePill: $('score').parentElement,
   question: $('question'),
-  catchup: $('catchup'),
-  catchupDots: $('catchup-dots'),
+  ask: $('ask'),
+  progress: $('progress'),
   hint: $('hint'),
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
@@ -27,9 +29,13 @@ const el = {
   stats: $('stats'),
   characters: $('characters'),
   unlockNote: $('unlock-note'),
+  games: $('games'),
+  levelNote: $('level-note'),
+  easier: $('btn-easier'),
+  harder: $('btn-harder'),
   overTitle: $('over-title'),
+  overStars: $('over-stars'),
   overScore: $('over-score'),
-  overBest: $('over-best'),
   overUnlock: $('over-unlock'),
   overUnlockImg: $('over-unlock-img'),
   overUnlockText: $('over-unlock-text'),
@@ -46,6 +52,11 @@ let game = null;
 let thumbs = {};
 let screen = 'start';
 let lastScore = 0;
+let runGame = CONFIG.game; // the game the current run is playing
+let runResults = []; // right and wrong so far in this run
+let currentQuestion = null;
+
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
 // --- Screens -----------------------------------------------------------------
 
@@ -61,7 +72,14 @@ function replay(element, className) {
   element.classList.add(className);
 }
 
-// --- Characters ----------------------------------------------------------------
+function tag(name, className, text) {
+  const node = document.createElement(name);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+// --- Start screen --------------------------------------------------------------
 
 const isUnlocked = (def, totalPoints) => totalPoints >= def.unlockAt;
 
@@ -76,11 +94,9 @@ function unlockMessage(def, totalPoints) {
   return t.toUnlock(def.unlockAt - totalPoints, nameOf(def));
 }
 
-function renderStart() {
-  const { totalPoints, best } = store.get();
+function renderCharacters() {
+  const { totalPoints } = store.get();
   const current = currentCharacter();
-
-  el.stats.textContent = best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`;
 
   const nextLocked = CHARACTERS.filter((def) => !isUnlocked(def, totalPoints)).sort(
     (a, b) => a.unlockAt - b.unlockAt,
@@ -90,9 +106,8 @@ function renderStart() {
   el.characters.replaceChildren(
     ...CHARACTERS.map((def) => {
       const unlocked = isUnlocked(def, totalPoints);
-      const card = document.createElement('button');
+      const card = tag('button', 'character');
       card.type = 'button';
-      card.className = 'character';
       card.dataset.id = def.id;
       if (!unlocked) card.classList.add('locked');
       if (def === current) card.classList.add('selected');
@@ -100,14 +115,12 @@ function renderStart() {
       card.setAttribute('aria-label', unlocked ? nameOf(def) : t.lockedLabel(nameOf(def), def.unlockAt));
 
       if (thumbs[def.id]) {
-        const img = document.createElement('img');
+        const img = tag('img');
         img.src = thumbs[def.id];
         img.alt = '';
         card.append(img);
       }
-      const label = document.createElement('span');
-      label.textContent = unlocked ? nameOf(def) : `🔒 ${def.unlockAt} ⭐`;
-      card.append(label);
+      card.append(tag('span', '', unlocked ? nameOf(def) : `🔒 ${def.unlockAt} ⭐`));
 
       card.addEventListener('click', () => {
         if (!unlocked) {
@@ -124,26 +137,125 @@ function renderStart() {
   );
 }
 
+// The game picker: numbers, colors, and whatever is added to src/questions.js.
+function renderGames() {
+  const current = store.game();
+  el.games.replaceChildren(
+    ...GAME_IDS.map((id) => {
+      const button = tag('button', 'game-btn', `${GAMES[id].icon} ${t.games[id] ?? id}`);
+      button.type = 'button';
+      button.dataset.game = id;
+      button.classList.toggle('selected', id === current);
+      button.setAttribute('aria-pressed', String(id === current));
+      button.addEventListener('click', () => {
+        store.update({ game: id });
+        renderStart();
+      });
+      return button;
+    }),
+  );
+}
+
+// The step picker, for grown-ups: shows where the child is and lets you move them.
+function renderLevel() {
+  const id = store.game();
+  const levels = GAMES[id].levels;
+  const level = levelFromSkill(store.skill(id), id);
+  el.levelNote.textContent = `${t.level(level + 1)} · ${t.levelName(levels[level])}`;
+  el.easier.disabled = level === 0;
+  el.harder.disabled = level === levels.length - 1;
+}
+
+function stepLevel(change) {
+  const id = store.game();
+  const top = GAMES[id].levels.length - 1;
+  const level = Math.min(top, Math.max(0, levelFromSkill(store.skill(id), id) + change));
+  store.setSkill(id, level * CONFIG.answersPerLevel);
+  renderLevel();
+}
+
+function renderStart() {
+  const { totalPoints, best } = store.get();
+  el.stats.textContent = best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`;
+  renderCharacters();
+  renderGames();
+  renderLevel();
+}
+
+// --- The question banner ---------------------------------------------------------
+
+// A row of little things to count, five to a line.
+function things(count, item = 'apple') {
+  const group = tag('span', count > 5 ? 'apples many' : 'apples');
+  for (let i = 0; i < count; i++) {
+    if (i > 0 && i % 5 === 0) group.append(tag('br'));
+    group.append(ITEMS[item] ?? ITEMS.apple);
+  }
+  return group;
+}
+
+// Shows a question in the banner. "solved" adds the answer.
+function showQuestion(question, solved = false) {
+  const answer = () => tag('span', 'answer', String(question.answer));
+  const parts = [];
+
+  if (question.kind === 'find') {
+    parts.push(tag('span', solved ? 'numeral answer' : 'numeral', String(question.answer)));
+  } else if (question.kind === 'same' || question.kind === 'count') {
+    parts.push(things(question.answer, question.item));
+    if (solved) parts.push(' = ', answer());
+  } else if (question.kind === 'color') {
+    // Listening steps hide the color until it is answered, unless the voice is off.
+    if (solved || question.show || !canSpeak()) {
+      const swatch = tag('span', 'swatch');
+      swatch.style.background = COLORS[question.answer];
+      parts.push(swatch);
+    } else {
+      parts.push(tag('span', 'listen', '🔊'));
+    }
+  } else {
+    if (question.pictures) {
+      const pictures = tag('span', 'sum-pictures');
+      pictures.append(things(question.a), tag('span', 'plus', '+'), things(question.b));
+      parts.push(pictures);
+    }
+    const sum = tag('span', 'sum');
+    sum.append(`${question.a} + ${question.b} = `, solved ? answer() : '?');
+    parts.push(sum);
+  }
+  el.question.replaceChildren(...parts);
+  // Underneath, the same thing in words: the question, then the answer.
+  el.ask.textContent = solved ? answerText(question) : askText(question);
+}
+
+// One dot per door: gold for right, grey for missed, a ring around the one coming.
+function showProgress() {
+  [...el.progress.children].forEach((dot, i) => {
+    dot.className = i < runResults.length ? (runResults[i] ? 'hit' : 'miss') : i === runResults.length ? 'now' : '';
+  });
+}
+
 // --- A run -----------------------------------------------------------------------
 
-function setCatchUp(visible, streak) {
-  el.catchup.hidden = !visible;
-  [...el.catchupDots.children].forEach((dot, i) => dot.classList.toggle('on', i < streak));
-}
-
 function startRun() {
+  runGame = store.game();
+  runResults = [];
+  currentQuestion = null;
   game.setCharacter(currentCharacter());
   el.score.textContent = '0';
-  el.question.textContent = '';
+  el.question.replaceChildren();
   el.question.className = 'question';
-  setCatchUp(false, 0);
+  el.ask.textContent = '';
+  showProgress();
   el.hint.hidden = false;
   show('play');
-  game.startRun();
+  game.startRun({ game: runGame, skill: store.skill(runGame) });
+  // Said inside the tap, which is what lets the voice work on iPhones and iPads.
+  speak(t.say.go);
 }
 
-// Adds a run's points to the saved totals. Returns what changed.
-function bankRun(score) {
+// Adds a run's points and progress to the saved totals. Returns what changed.
+function bankRun(score, skill) {
   const before = store.get();
   const totalPoints = before.totalPoints + score;
   const unlocked = CHARACTERS.filter((def) => def.unlockAt > before.totalPoints && def.unlockAt <= totalPoints);
@@ -151,15 +263,17 @@ function bankRun(score) {
   store.update({
     totalPoints,
     best: Math.max(before.best, score),
+    skills: { ...before.skills, [runGame]: Math.max(0, Math.floor(skill)) },
     // A newly unlocked character is picked straight away. It can be changed on the start screen.
     ...(newest ? { character: newest.id } : {}),
   });
-  return { newBest: score > before.best, newest, lastName: before.lastName };
+  return { newest, lastName: before.lastName };
 }
 
 function goHome() {
-  // Leaving a run early still keeps the points earned so far.
-  if (screen === 'pause' && game.score > 0) bankRun(game.score);
+  stopSpeaking();
+  // Leaving a run early still keeps the points and progress earned so far.
+  if (screen === 'pause') bankRun(game.score, game.skill);
   game.toIdle();
   game.setCharacter(currentCharacter());
   renderStart();
@@ -167,35 +281,40 @@ function goHome() {
 }
 
 function pauseRun() {
-  if (screen === 'play' && game.pause()) show('pause');
+  if (screen === 'play' && game.pause()) {
+    stopSpeaking();
+    show('pause');
+  }
 }
 
 const gameEvents = {
   onQuestion(question) {
-    el.question.textContent = `${question.text} = ?`;
+    currentQuestion = question;
+    showQuestion(question);
     el.question.className = 'question';
     replay(el.question, 'new');
+    showProgress();
+    speak(askText(question), { queue: true });
   },
 
   onAnswer(info) {
     el.hint.hidden = true;
     el.score.textContent = String(info.score);
+    runResults = info.results;
+    showProgress();
 
-    // Show the finished sum, so the right answer is always seen.
-    const answer = document.createElement('span');
-    answer.className = 'answer';
-    answer.textContent = String(info.question.answer);
-    el.question.replaceChildren(`${info.question.text} = `, answer);
+    // Show the answer, so the right one is always seen.
+    showQuestion(info.question, true);
     el.question.className = `question ${info.correct ? 'right' : 'wrong'}`;
 
     if (info.correct) {
       sfx.correct();
       replay(el.scorePill, 'pop');
-      if (info.caughtUp) setTimeout(() => sfx.catchUp(), 280);
+      speak(pick(t.say.praise));
     } else {
       sfx.wrong();
+      speak(answerText(info.question));
     }
-    setCatchUp(info.pushedBack && !info.fatal, info.streak);
   },
 
   onMove() {
@@ -203,26 +322,35 @@ const gameEvents = {
     sfx.move();
   },
 
-  onGameOver(score) {
-    finishRun(score);
+  onFinishing({ score }) {
+    currentQuestion = null;
+    el.question.replaceChildren();
+    el.ask.textContent = '';
+    sfx.fanfare();
+    speak(score > 0 ? t.say.finish(score) : t.say.finishZero);
+  },
+
+  onRunEnd(result) {
+    finishRun(result);
   },
 };
 
-function friendlyTitle(score, newBest) {
-  if (newBest && score > 0) return t.overTitle.newBest;
-  if (score >= 20) return t.overTitle.amazing;
-  if (score >= 8) return t.overTitle.great;
+function friendlyTitle(score, total) {
+  if (score >= total * 0.9) return t.overTitle.amazing;
+  if (score >= total * 0.6) return t.overTitle.great;
   if (score >= 1) return t.overTitle.nice;
   return t.overTitle.zero;
 }
 
-function finishRun(score) {
+function finishRun({ score, total, skill }) {
   lastScore = score;
-  const { newBest, newest, lastName } = bankRun(score);
+  const { newest, lastName } = bankRun(score, skill);
 
-  el.overTitle.textContent = friendlyTitle(score, newBest);
+  el.overTitle.textContent = friendlyTitle(score, total);
   el.overScore.textContent = String(score);
-  el.overBest.textContent = newBest && score > 0 ? t.bestYet : t.bestRun(store.get().best);
+  el.overStars.replaceChildren(
+    ...Array.from({ length: total }, (_, i) => tag('span', i < score ? 'earned' : '', '⭐')),
+  );
 
   el.overUnlock.hidden = !newest;
   if (newest) {
@@ -238,7 +366,6 @@ function finishRun(score) {
 
   show('over');
   if (newest) sfx.unlock();
-  else sfx.over();
 }
 
 // --- High scores ------------------------------------------------------------------
@@ -249,17 +376,8 @@ function showScores(highlight = -1) {
   el.scoreList.hidden = list.length === 0;
   el.scoreList.replaceChildren(
     ...list.map((row, i) => {
-      const item = document.createElement('li');
-      if (i === highlight) item.classList.add('mine');
-      const rank = document.createElement('span');
-      rank.className = 'rank';
-      rank.textContent = String(i + 1);
-      const name = document.createElement('span');
-      name.className = 'name';
-      name.textContent = row.name;
-      const points = document.createElement('span');
-      points.textContent = `⭐ ${row.score}`;
-      item.append(rank, name, points);
+      const item = tag('li', i === highlight ? 'mine' : '');
+      item.append(tag('span', 'rank', String(i + 1)), tag('span', 'name', row.name), tag('span', '', `⭐ ${row.score}`));
       return item;
     }),
   );
@@ -285,14 +403,13 @@ function applyWords() {
 function buildLanguageButtons() {
   el.languages.replaceChildren(
     ...LANGUAGES.map(({ code, label }) => {
-      const button = document.createElement('button');
+      const button = tag('button', 'lang-btn', label);
       button.type = 'button';
-      button.className = 'lang-btn';
       button.dataset.lang = code;
       button.lang = code;
-      button.textContent = label;
       button.addEventListener('click', () => {
         setLanguage(code);
+        setSpeechLanguage(code);
         store.update({ language: code });
         applyWords();
         applyMute();
@@ -305,9 +422,11 @@ function buildLanguageButtons() {
 
 // --- Sound ---------------------------------------------------------------------------
 
+// The sound button turns off both the sound effects and the voice.
 function applyMute() {
   const { muted } = store.get();
   setMuted(muted);
+  setSpeechMuted(muted);
   el.mute.textContent = muted ? '🔇' : '🔊';
   el.muteStart.textContent = muted ? t.soundOff : t.soundOn;
 }
@@ -335,6 +454,13 @@ function wireButtons() {
   });
   el.mute.addEventListener('click', toggleMute);
   el.muteStart.addEventListener('click', toggleMute);
+  el.easier.addEventListener('click', () => stepLevel(-1));
+  el.harder.addEventListener('click', () => stepLevel(1));
+
+  // Tapping the question says it again.
+  el.question.addEventListener('click', () => {
+    if (currentQuestion) speak(askText(currentQuestion));
+  });
 
   el.nameForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -345,9 +471,10 @@ function wireButtons() {
   // iOS can leave the page scrolled after the keyboard closes.
   el.nameInput.addEventListener('blur', () => window.scrollTo(0, 0));
 
-  // Every button makes a small click sound.
+  // Every button makes a small click sound, except the question, which talks instead.
   document.addEventListener('click', (event) => {
-    if (event.target.closest?.('button')) sfx.tap();
+    const button = event.target.closest?.('button');
+    if (button && button !== el.question) sfx.tap();
   });
 }
 
@@ -406,10 +533,11 @@ async function init() {
   document.title = CONFIG.title;
   el.title.textContent = CONFIG.title;
   el.nameInput.maxLength = CONFIG.nameMaxLength;
-  el.catchupDots.replaceChildren(...Array.from({ length: CONFIG.recoverStreak }, () => document.createElement('i')));
+  el.progress.replaceChildren(...Array.from({ length: CONFIG.doorsPerRun }, () => tag('i')));
 
   await store.init();
   setLanguage(store.get().language || CONFIG.language);
+  setSpeechLanguage(getLanguage());
   buildLanguageButtons();
   applyWords();
   thumbs = renderThumbnails(CHARACTERS);

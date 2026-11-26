@@ -4,11 +4,17 @@
 // For the iOS app, swap their insides for native storage and nothing else changes.
 
 import { CONFIG } from './config.js';
+import { GAME_IDS, gameOrDefault } from './questions.js';
 import { t } from './text.js';
 
 const KEY = 'number-run-save-v1';
 
+// Raised when the rules of a run change so much that old scores no longer compare.
+// Older saves keep their points and characters but start a fresh high score table.
+const RULES = 2;
+
 const DEFAULTS = {
+  rules: RULES,
   totalPoints: 0, // points across all games, used for unlocks
   best: 0, // best single run
   highScores: [], // [{ name, score, date }]
@@ -16,6 +22,8 @@ const DEFAULTS = {
   character: 'apple',
   muted: false,
   language: '', // empty means: use the starting language from config.js
+  game: '', // empty means: use the starting game from config.js
+  skills: {}, // progress up each game's ladder: { numbers: 12, colors: 3 }
 };
 
 async function readRaw() {
@@ -58,7 +66,13 @@ function cleanScores(list) {
     .slice(0, CONFIG.highScoreSlots);
 }
 
-let state = { ...DEFAULTS };
+function cleanSkills(saved) {
+  const skills = {};
+  for (const id of GAME_IDS) skills[id] = wholeNumber(saved?.[id]);
+  return skills;
+}
+
+let state = { ...DEFAULTS, skills: cleanSkills({}) };
 
 export const store = {
   async init() {
@@ -66,17 +80,21 @@ export const store = {
     if (!raw) return state;
     try {
       const saved = JSON.parse(raw);
+      const sameRules = saved.rules === RULES;
       state = {
+        rules: RULES,
         totalPoints: wholeNumber(saved.totalPoints),
-        best: wholeNumber(saved.best),
-        highScores: cleanScores(saved.highScores),
+        best: sameRules ? wholeNumber(saved.best) : 0,
+        highScores: sameRules ? cleanScores(saved.highScores) : [],
         lastName: typeof saved.lastName === 'string' ? saved.lastName.slice(0, CONFIG.nameMaxLength) : '',
         character: typeof saved.character === 'string' ? saved.character : DEFAULTS.character,
         muted: saved.muted === true,
         language: typeof saved.language === 'string' ? saved.language : '',
+        game: typeof saved.game === 'string' ? saved.game : '',
+        skills: cleanSkills(saved.skills),
       };
     } catch {
-      state = { ...DEFAULTS };
+      state = { ...DEFAULTS, skills: cleanSkills({}) };
     }
     return state;
   },
@@ -89,6 +107,19 @@ export const store = {
     state = { ...state, ...patch };
     writeRaw(JSON.stringify(state));
     return state;
+  },
+
+  // The game being played, and the child's progress in it.
+  game() {
+    return gameOrDefault(state.game);
+  },
+
+  skill(gameId = this.game()) {
+    return state.skills[gameId] ?? 0;
+  },
+
+  setSkill(gameId, value) {
+    this.update({ skills: { ...state.skills, [gameId]: wholeNumber(value) } });
   },
 
   // True when a score earns a place in the high score table.

@@ -34,11 +34,12 @@
           </button>
         </div>
       </div>
-      <div id="question" class="question" aria-live="polite"></div>
-      <div id="catchup" class="catchup" hidden>
-        <span data-t="catchUp"></span>
-        <span id="catchup-dots" class="dots"></span>
-      </div>
+      <!-- Tapping the question says it out loud again. -->
+      <button id="question" class="question" type="button" data-t-label="labelRepeat"></button>
+      <!-- The same question in words, for a grown-up to read aloud if the device has no voice. -->
+      <div id="ask" class="ask"></div>
+      <!-- One dot for each door in the run: gold for right, grey for missed. -->
+      <div id="progress" class="progress" aria-hidden="true"></div>
       <div id="hint" class="hint" data-t="hint" hidden></div>
     </div>
 
@@ -49,6 +50,12 @@
         <p id="stats" class="stats"></p>
         <div id="characters" class="characters"></div>
         <p id="unlock-note" class="note"></p>
+        <div id="games" class="games"></div>
+        <div class="level-row">
+          <button id="btn-easier" class="step-btn" type="button" data-t-label="labelEasier">−</button>
+          <p id="level-note" class="level-note"></p>
+          <button id="btn-harder" class="step-btn" type="button" data-t-label="labelHarder">+</button>
+        </div>
         <button id="btn-play" class="big-btn" type="button" data-t="play"></button>
         <div class="button-row">
           <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
@@ -62,10 +69,10 @@
     <section id="screen-over" class="screen" hidden>
       <div class="panel">
         <h2 id="over-title"></h2>
+        <div id="over-stars" class="over-stars" aria-hidden="true"></div>
         <p class="score-line">
           <span data-t="scoreBefore"></span><strong id="over-score">0</strong><span data-t="scoreAfter"></span>
         </p>
-        <p id="over-best" class="note"></p>
         <div id="over-unlock" class="unlock" hidden>
           <img id="over-unlock-img" alt="" />
           <p id="over-unlock-text"></p>

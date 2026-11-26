@@ -1,30 +1,60 @@
 // The 3D world and the rules of a run: treadmill, runner, doors, right and wrong.
-// It knows nothing about menus or saving. It reports what happens through "events".
+// It knows nothing about menus, saving, or speech. It reports what happens through "events".
 
 import * as THREE from 'three';
-import { CONFIG, THEME } from './config.js';
+import { COLORS, CONFIG, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { levelForCorrect, makeQuestion, shuffle } from './questions.js';
+import { levelFromSkill, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
 
 const FRONT_Z = 0; // where the runner normally is
-const BACK_Z = 2.9; // where a miss pushes it
+const BACK_Z = 2.9; // where a wrong door bumps it to
 const EDGE_Z = 5.4; // back end of the treadmill (nearest the camera)
 const FAR_Z = -100; // far end, hidden in the haze
 const FLOOR_Y = -1;
 
 const CAMERA_HEIGHT_ANGLE = (24 * Math.PI) / 180; // how steeply the camera looks down on the runner
-const RUNNER_SCREEN_SPOT = 0.84; // how far down the screen the pushed-back runner sits (0 top, 1 bottom)
+const RUNNER_SCREEN_SPOT = 0.84; // how far down the screen the bumped-back runner sits (0 top, 1 bottom)
 
 const IDLE_SPEED = 4;
 const LOCK_TIME = 0.16; // the lane choice is fixed this many seconds before the doors arrive
 const DOOR_OPEN_TIME = 0.13;
 const DOOR_HEIGHT = 2.8;
 const MARK_SPACING = 4;
+const SPARKS_PER_POP = 14;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+// Where the dots go on a door sign, like the faces of a dice up to 6,
+// then rows of five. Returns [x, y, radius] for each dot.
+function dotLayout(count, w, h) {
+  const n = clamp(Math.round(count), 1, 10);
+  const spots = [];
+  if (n <= 6) {
+    const r = Math.min(w, h) * 0.13;
+    const [left, mid, right] = [w * 0.24, w * 0.5, w * 0.76];
+    const [top, centre, bottom] = [h * 0.24, h * 0.5, h * 0.76];
+    const faces = {
+      1: [[mid, centre]],
+      2: [[left, top], [right, bottom]],
+      3: [[left, top], [mid, centre], [right, bottom]],
+      4: [[left, top], [right, top], [left, bottom], [right, bottom]],
+      5: [[left, top], [right, top], [mid, centre], [left, bottom], [right, bottom]],
+      6: [[left, top], [mid, top], [right, top], [left, bottom], [mid, bottom], [right, bottom]],
+    };
+    for (const [x, y] of faces[n]) spots.push([x, y, r]);
+    return spots;
+  }
+  const r = w * 0.075;
+  for (let i = 0; i < n; i++) {
+    const column = i % 5;
+    const row = Math.floor(i / 5);
+    spots.push([w * (0.14 + column * 0.18), h * (row === 0 ? 0.32 : 0.68), r]);
+  }
+  return spots;
+}
 const lambert = (color) => new THREE.MeshLambertMaterial({ color });
 
 export class Game {
@@ -43,12 +73,12 @@ export class Game {
     this.cameraHome = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster();
 
-    this.mode = 'idle'; // idle | running | falling | over | paused
+    this.mode = 'idle'; // idle | running | finishing | over | paused
     this.speed = IDLE_SPEED;
     this.character = null;
+    this.gameId = CONFIG.game;
+    this.skill = 0;
     this.shake = 0;
-    this.fallView = 0;
-    this.cameraPitch = 0;
 
     this.buildWorld();
     this.buildRow();
@@ -191,6 +221,7 @@ export class Game {
       hinge.add(knob);
 
       // The sign on top, showing this door's answer. The game writes the number itself.
+      // Games without written answers (colors) hide the sign.
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 400;
@@ -198,15 +229,20 @@ export class Game {
       texture.colorSpace = THREE.SRGBColorSpace;
       texture.anisotropy = anisotropy;
       const signMaterial = new THREE.MeshBasicMaterial({ map: texture });
+      const signGroup = new THREE.Group();
+      signGroup.position.set(0, signY, 0);
+      door.add(signGroup);
       const sign = new THREE.Mesh(new THREE.PlaneGeometry(signWidth, signHeight), signMaterial);
-      sign.position.set(0, signY, 0.16);
-      door.add(sign);
+      sign.position.z = 0.16;
+      signGroup.add(sign);
       const signBack = new THREE.Mesh(new THREE.BoxGeometry(signWidth + 0.06, signHeight + 0.06, 0.12), frameMaterial);
-      signBack.position.set(0, signY, 0.09);
-      door.add(signBack);
+      signBack.position.z = 0.09;
+      signGroup.add(signBack);
 
       return {
+        group: door,
         hinge,
+        signGroup,
         canvas,
         texture,
         frameMaterial,
@@ -214,13 +250,16 @@ export class Game {
         materials: [frameMaterial, panelMaterial, knobMaterial, signMaterial],
         opening: false,
         open: 0,
+        pulse: 0,
       };
     });
 
     this.row = { group, state: 'none', z: 0, age: 0, fade: 1, locked: false, correct: false, chosen: 1, question: null };
   }
 
-  drawSign(door, text, mood = 'signPlain') {
+  // Writes a door's answer on its sign: a number, or that many dots.
+  drawSign(door, value, mood = 'signPlain') {
+    if (!door.signGroup.visible) return;
     const { canvas } = door;
     const g = canvas.getContext('2d');
     const { back, text: ink } = THEME[mood];
@@ -231,6 +270,18 @@ export class Game {
     g.fillStyle = back;
     g.fillRect(0, 0, w, h);
 
+    if (this.row.question?.doors === 'dots') {
+      g.fillStyle = ink;
+      for (const [x, y, r] of dotLayout(value, w, h)) {
+        g.beginPath();
+        g.arc(x, y, r, 0, Math.PI * 2);
+        g.fill();
+      }
+      door.texture.needsUpdate = true;
+      return;
+    }
+
+    const text = String(value);
     let size = 300;
     const font = (px) => `900 ${px}px "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif`;
     g.font = font(size);
@@ -255,24 +306,28 @@ export class Game {
     }
   }
 
-  // Little cubes that pop out on a right answer.
+  // Confetti: little cubes that pop out on a right answer and at the end of a run.
   buildSparks() {
-    const geometry = new THREE.BoxGeometry(0.18, 0.18, 0.18);
-    const colors = ['#fff176', '#ffffff', '#ffd54f', '#aed581'];
+    const geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
     this.sparks = [];
-    for (let i = 0; i < 16; i++) {
-      const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color: colors[i % colors.length] }));
+    this.nextSpark = 0;
+    for (let i = 0; i < SPARKS_PER_POP * 4; i++) {
+      const color = THEME.confetti[i % THEME.confetti.length];
+      const mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ color }));
       mesh.visible = false;
       this.scene.add(mesh);
-      this.sparks.push({ mesh, velocity: new THREE.Vector3(), life: 0 });
+      this.sparks.push({ mesh, velocity: new THREE.Vector3(), turn: new THREE.Vector3(), life: 0 });
     }
   }
 
-  popSparks(x, y, z) {
-    for (const spark of this.sparks) {
+  popSparks(x, y, z, power = 1) {
+    for (let i = 0; i < SPARKS_PER_POP; i++) {
+      const spark = this.sparks[this.nextSpark];
+      this.nextSpark = (this.nextSpark + 1) % this.sparks.length;
       spark.mesh.position.set(x, y, z);
-      spark.velocity.set((Math.random() - 0.5) * 6, 3 + Math.random() * 5, (Math.random() - 0.5) * 3);
-      spark.life = 0.7;
+      spark.velocity.set((Math.random() - 0.5) * 7 * power, (3 + Math.random() * 5) * power, (Math.random() - 0.5) * 4);
+      spark.turn.set(Math.random() * 10, Math.random() * 10, Math.random() * 10);
+      spark.life = 0.9;
       spark.mesh.visible = true;
     }
   }
@@ -293,29 +348,30 @@ export class Game {
 
   resetRun() {
     this.score = 0;
-    this.correctCount = 0;
+    this.doorsDone = 0;
+    this.results = [];
     this.speedSteps = 0;
     this.pushedBack = false;
-    this.streak = 0;
     this.lane = 1;
     this.runnerX = 0;
-    this.runnerY = 0;
     this.runnerZ = FRONT_Z;
-    this.fallSpeed = 0;
-    this.fallView = 0;
-    this.overTimer = 0;
     this.lastText = '';
     this.gapTimer = 0;
+    this.finishTimer = 0;
+    this.confettiTimer = 0;
     this.inputLocked = false;
     this.shake = 0;
     this.row.state = 'none';
     this.row.group.visible = false;
-    if (this.character) this.character.root.rotation.set(0, 0, 0);
+    this.character?.calm();
   }
 
-  startRun() {
+  // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
+  startRun({ game = CONFIG.game, skill = 0 } = {}) {
     this.resetRun();
-    this.gapTimer = 0.5;
+    this.gameId = game;
+    this.skill = Math.max(0, skill);
+    this.gapTimer = 0.6;
     this.mode = 'running';
   }
 
@@ -325,7 +381,7 @@ export class Game {
   }
 
   pause() {
-    if (this.mode !== 'running' && this.mode !== 'falling') return false;
+    if (this.mode !== 'running' && this.mode !== 'finishing') return false;
     this.modeBeforePause = this.mode;
     this.mode = 'paused';
     return true;
@@ -386,8 +442,8 @@ export class Game {
   }
 
   nextQuestion() {
-    const level = levelForCorrect(this.correctCount);
-    const question = makeQuestion(level, this.lastText);
+    const level = levelFromSkill(this.skill, this.gameId);
+    const question = makeQuestion(this.gameId, level, this.lastText);
     this.lastText = question.text;
 
     const row = this.row;
@@ -400,17 +456,24 @@ export class Game {
     row.group.visible = true;
     this.setRowFade(1);
 
-    const colors = shuffle(THEME.doors);
+    // In the colors game the doors themselves are the answers, with plain frames and no signs.
+    // In other games the doors get three random colors and a sign with the answer on top.
+    const isColor = question.kind === 'color';
+    const hexes = isColor ? question.choices.map((id) => COLORS[id]) : shuffle(Object.values(COLORS)).slice(0, 3);
     this.doors.forEach((door, i) => {
-      door.panelMaterial.color.set(colors[i]);
-      door.frameMaterial.color.set(colors[i]).multiplyScalar(0.7);
+      door.panelMaterial.color.set(hexes[i]);
+      if (isColor) door.frameMaterial.color.set('#fafafa');
+      else door.frameMaterial.color.set(hexes[i]).multiplyScalar(0.7);
       door.hinge.rotation.y = 0;
       door.opening = false;
       door.open = 0;
-      this.drawSign(door, String(question.choices[i]));
+      door.pulse = 0;
+      door.group.scale.set(1, 1, 1);
+      door.signGroup.visible = !isColor;
+      this.drawSign(door, question.choices[i]);
     });
 
-    this.events.onQuestion?.(question, level);
+    this.events.onQuestion?.(question, { level, index: this.doorsDone, total: CONFIG.doorsPerRun });
   }
 
   // The lane choice is fixed just before the doors arrive.
@@ -423,67 +486,62 @@ export class Game {
     if (row.correct) this.answeredRight();
   }
 
+  report(correct) {
+    this.events.onAnswer?.({
+      correct,
+      question: this.row.question,
+      score: this.score,
+      results: [...this.results],
+      total: CONFIG.doorsPerRun,
+    });
+  }
+
   answeredRight() {
     const row = this.row;
     const door = this.doors[row.chosen];
     this.score += 1;
-    this.correctCount += 1;
-    if (this.correctCount % CONFIG.correctPerSpeedStep === 0) this.speedSteps += 1;
+    this.skill += 1;
+    this.doorsDone += 1;
+    this.results.push(true);
+    if (this.score % CONFIG.correctPerSpeedStep === 0) this.speedSteps += 1;
 
     door.opening = true;
-    this.drawSign(door, String(row.question.answer), 'signRight');
+    this.drawSign(door, row.question.answer, 'signRight');
     this.popSparks(LANE_X[row.chosen], 1.6, this.runnerZ - 0.6);
-
-    let caughtUp = false;
-    if (this.pushedBack) {
-      this.streak += 1;
-      if (this.streak >= CONFIG.recoverStreak) {
-        this.pushedBack = false;
-        this.streak = 0;
-        caughtUp = true;
-      }
-    }
+    this.character.react('cheer');
+    this.pushedBack = false; // a right answer brings the runner back to the front
     this.gapTimer = CONFIG.gapAfterCorrect;
-    this.events.onAnswer?.({
-      correct: true,
-      fatal: false,
-      caughtUp,
-      question: row.question,
-      score: this.score,
-      pushedBack: this.pushedBack,
-      streak: this.streak,
-    });
+    this.report(true);
   }
 
+  // A wrong door never ends the run. It bumps the runner back and shows the right door.
   answeredWrong() {
     const row = this.row;
     const q = row.question;
-    this.drawSign(this.doors[row.chosen], String(q.choices[row.chosen]), 'signWrong');
-    this.drawSign(this.doors[q.correctIndex], String(q.answer), 'signRight');
+    this.skill = Math.max(0, this.skill - 1);
+    this.doorsDone += 1;
+    this.results.push(false);
     this.speedSteps = Math.max(0, this.speedSteps - CONFIG.speedStepsLostOnMiss);
-    this.shake = 0.3;
 
-    const fatal = this.pushedBack;
-    if (fatal) {
-      this.mode = 'falling';
-      row.state = 'shoving';
-      this.fallSpeed = 0;
-      this.overTimer = 0;
-    } else {
-      this.pushedBack = true;
-      this.streak = 0;
-      row.state = 'pushing';
-      this.gapTimer = CONFIG.gapAfterWrong;
-    }
-    this.events.onAnswer?.({
-      correct: false,
-      fatal,
-      caughtUp: false,
-      question: q,
-      score: this.score,
-      pushedBack: true,
-      streak: 0,
-    });
+    this.drawSign(this.doors[row.chosen], q.choices[row.chosen], 'signWrong');
+    this.drawSign(this.doors[q.correctIndex], q.answer, 'signRight');
+    this.doors[q.correctIndex].pulse = 1.2;
+    this.shake = 0.3;
+    this.character.react('oops');
+    this.pushedBack = true;
+    row.state = 'pushing';
+    this.gapTimer = CONFIG.gapAfterWrong;
+    this.report(false);
+  }
+
+  // After the last door: confetti and a happy dance, then the end screen.
+  startFinish() {
+    this.mode = 'finishing';
+    this.finishTimer = 0;
+    this.confettiTimer = 0;
+    this.pushedBack = false;
+    this.character.react('party');
+    this.events.onFinishing?.({ score: this.score, total: CONFIG.doorsPerRun });
   }
 
   // --- Every frame ----------------------------------------------------------
@@ -497,7 +555,7 @@ export class Game {
   }
 
   update(dt) {
-    const playing = this.mode === 'running' || this.mode === 'falling';
+    const playing = this.mode === 'running' || this.mode === 'finishing';
     const targetSpeed = playing ? CONFIG.spawnDistance / this.travelTime() : IDLE_SPEED;
     this.speed += (targetSpeed - this.speed) * Math.min(1, dt * 2.5);
 
@@ -510,39 +568,33 @@ export class Game {
     const dx = this.runnerX - before;
 
     if (this.mode === 'running') this.updateRow(dt);
-    if (this.mode === 'falling') this.updateFall(dt);
+    if (this.mode === 'finishing') this.updateFinish(dt);
 
-    if (this.mode !== 'falling' && this.mode !== 'over' && this.row.state !== 'pushing') {
+    if (this.row.state !== 'pushing') {
       const targetZ = this.pushedBack ? BACK_Z : FRONT_Z;
       this.runnerZ += (targetZ - this.runnerZ) * Math.min(1, dt * 4);
     }
 
     if (this.character) {
-      this.character.root.position.set(this.runnerX, this.runnerY, this.runnerZ);
-      const landed = this.runnerY <= FLOOR_Y;
-      if (!landed) this.character.update(dt, this.speed, clamp(targetX - this.runnerX, -1, 1), dx);
+      this.character.root.position.set(this.runnerX, 0, this.runnerZ);
+      this.character.update(dt, this.speed, clamp(targetX - this.runnerX, -1, 1), dx);
     }
     this.shadow.position.x = this.runnerX;
     this.shadow.position.z = this.runnerZ;
-    this.shadow.visible = this.runnerZ < EDGE_Z;
 
     for (const spark of this.sparks) {
       if (spark.life <= 0) continue;
       spark.life -= dt;
-      spark.velocity.y -= 16 * dt;
+      spark.velocity.y -= 14 * dt;
       spark.mesh.position.addScaledVector(spark.velocity, dt);
-      spark.mesh.scale.setScalar(Math.max(0.01, spark.life / 0.7));
+      spark.mesh.rotation.x += spark.turn.x * dt;
+      spark.mesh.rotation.y += spark.turn.y * dt;
+      spark.mesh.scale.setScalar(Math.max(0.01, Math.min(1, spark.life / 0.5)));
       if (spark.life <= 0) spark.mesh.visible = false;
     }
 
-    // The camera sits at its home spot, pulled back and tipped down during a fall.
-    const view = this.fallView * this.fallView * (3 - 2 * this.fallView);
+    // A small wobble of the camera after a bump.
     this.camera.position.copy(this.cameraHome);
-    this.camera.position.y += 2.5 * view;
-    this.camera.position.z += 7 * view;
-    this.camera.rotation.x = -(this.cameraPitch + 0.13 * view);
-
-    // A small wobble after a bump.
     if (this.shake > 0) {
       this.shake -= dt;
       const strength = Math.max(0, this.shake) * 0.5;
@@ -556,13 +608,16 @@ export class Game {
     this.gapTimer -= dt;
 
     if (row.state === 'none') {
-      if (this.gapTimer <= 0) this.nextQuestion();
+      if (this.gapTimer > 0) return;
+      if (this.doorsDone >= CONFIG.doorsPerRun) this.startFinish();
+      else this.nextQuestion();
       return;
     }
 
     row.z += this.speed * dt;
     row.age += dt;
-    const contactZ = this.runnerZ - this.character.front; // where the doors touch the runner
+    const front = this.character.front;
+    const contactZ = this.runnerZ - front; // where the doors touch the runner
 
     if (row.state === 'approach') {
       if (!row.locked && row.z >= contactZ - this.speed * LOCK_TIME) this.lockIn();
@@ -574,15 +629,17 @@ export class Game {
 
     if (row.state === 'pushing') {
       // The closed door shoves the runner back, then fades away.
-      this.runnerZ = Math.min(BACK_Z, row.z + this.character.front);
+      this.runnerZ = Math.min(BACK_Z, Math.max(this.runnerZ, row.z + front));
       if (this.runnerZ >= BACK_Z) row.state = 'passing';
     }
 
     if (row.state === 'passing') {
       if (row.z > this.runnerZ + 0.4) this.inputLocked = false;
-      const fadeFrom = row.correct ? this.runnerZ + 0.9 : this.runnerZ - this.character.front;
+      // After a wrong answer the doors fade slowly, so the right one can be seen.
+      const fadeFrom = row.correct ? this.runnerZ + 0.9 : this.runnerZ - front;
+      const fadeTime = row.correct ? 0.25 : 0.55;
       if (row.z > fadeFrom) {
-        this.setRowFade(Math.max(0, row.fade - dt / 0.25));
+        this.setRowFade(Math.max(0, row.fade - dt / fadeTime));
         if (row.fade <= 0) {
           row.state = 'none';
           row.group.visible = false;
@@ -594,35 +651,27 @@ export class Game {
     this.placeRow(dt);
   }
 
-  // Second miss: the closed door carries the runner off the back of the treadmill,
-  // while the camera pulls back so the tumble can be seen.
-  updateFall(dt) {
-    const row = this.row;
-    const front = this.character.front;
-    row.z += this.speed * dt;
-    this.fallView = Math.min(1, this.fallView + dt / 0.5);
-
-    if (this.runnerZ <= EDGE_Z + 0.1) {
-      this.runnerZ = Math.max(this.runnerZ, row.z + front);
-    } else {
-      if (this.runnerY > FLOOR_Y) {
-        this.runnerZ += this.speed * 0.5 * dt;
-        this.fallSpeed += 30 * dt;
-        this.runnerY = Math.max(FLOOR_Y, this.runnerY - this.fallSpeed * dt);
-        this.character.root.rotation.x += dt * 6;
-      }
-      this.overTimer += dt;
-      if (this.overTimer > 1.15) {
-        this.mode = 'over';
-        row.state = 'none';
-        row.group.visible = false;
-        this.events.onGameOver?.(this.score);
-      }
+  updateFinish(dt) {
+    this.finishTimer += dt;
+    this.confettiTimer -= dt;
+    if (this.confettiTimer <= 0) {
+      this.confettiTimer = 0.26;
+      this.popSparks(
+        this.runnerX + (Math.random() - 0.5) * 5,
+        1.5 + Math.random() * 2.5,
+        this.runnerZ - 0.5 - Math.random() * 3,
+        1.25,
+      );
     }
-
-    // The doors fade out as they reach the end of the belt.
-    if (row.z + front > EDGE_Z - 0.3) this.setRowFade(Math.max(0, row.fade - dt / 0.25));
-    this.placeRow(dt);
+    if (this.finishTimer >= CONFIG.celebrateTime) {
+      this.mode = 'over';
+      this.events.onRunEnd?.({
+        score: this.score,
+        total: CONFIG.doorsPerRun,
+        skill: this.skill,
+        results: [...this.results],
+      });
+    }
   }
 
   placeRow(dt) {
@@ -631,9 +680,16 @@ export class Game {
     const drop = 1 - Math.min(1, row.age / 0.35);
     row.group.position.set(0, 7 * drop * drop * drop, row.z);
     for (const door of this.doors) {
-      if (!door.opening) continue;
-      door.open = Math.min(1, door.open + dt / DOOR_OPEN_TIME);
-      door.hinge.rotation.y = door.open * 1.7;
+      if (door.opening) {
+        door.open = Math.min(1, door.open + dt / DOOR_OPEN_TIME);
+        door.hinge.rotation.y = door.open * 1.7;
+      }
+      // The right door grows and shrinks to say "it was this one".
+      if (door.pulse > 0) {
+        door.pulse -= dt;
+        const grow = 1 + 0.14 * Math.abs(Math.sin(door.pulse * Math.PI * 2.5));
+        door.group.scale.set(grow, grow, 1);
+      }
     }
   }
 
@@ -652,7 +708,7 @@ export class Game {
     camera.fov = aspect < 0.62 ? 46 : aspect < 1.1 ? 44 : 40;
     const tanUp = Math.tan((camera.fov / 2) * (Math.PI / 180));
 
-    // Pull the camera back until all three lanes fit where the runner stands when pushed back.
+    // Pull the camera back until all three lanes fit where the runner stands when bumped back.
     const needHalfWidth = CONFIG.laneWidth + 0.8;
     const distance = clamp(needHalfWidth / (tanUp * aspect), 10, 26);
     this.cameraHome.set(
@@ -661,13 +717,12 @@ export class Game {
       BACK_Z + distance * Math.cos(CAMERA_HEIGHT_ANGLE),
     );
 
-    // Tilt so that pushed-back spot sits low on the screen, leaving the top for the question.
+    // Tilt so that bumped-back spot sits low on the screen, leaving the top for the question.
     // On a wide screen the scene sits a little lower, so the doors stay clear of the question.
     const spot = aspect > 1 ? Math.max(RUNNER_SCREEN_SPOT, 0.9) : RUNNER_SCREEN_SPOT;
     const spotBelowCentre = Math.atan(tanUp * (spot * 2 - 1));
-    this.cameraPitch = CAMERA_HEIGHT_ANGLE - spotBelowCentre; // how far the camera looks down
     camera.position.copy(this.cameraHome);
-    camera.rotation.set(-this.cameraPitch, 0, 0);
+    camera.rotation.set(-(CAMERA_HEIGHT_ANGLE - spotBelowCentre), 0, 0);
     camera.updateProjectionMatrix();
   }
 
@@ -675,10 +730,12 @@ export class Game {
   debugState() {
     return {
       mode: this.mode,
+      game: this.gameId,
       lane: this.lane,
       score: this.score,
+      skill: this.skill,
+      doorsDone: this.doorsDone,
       pushedBack: this.pushedBack,
-      streak: this.streak,
       speed: this.speed,
       rowState: this.row.state,
       rowZ: this.row.z,

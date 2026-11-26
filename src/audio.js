@@ -53,15 +53,10 @@ export const sfx = {
     // A soft low bump, not a harsh buzzer.
     tone({ freq: 240, slideTo: 150, length: 0.28, type: 'sine', volume: 0.3 });
   },
-  catchUp() {
-    tone({ freq: 523, length: 0.1, type: 'triangle' });
-    tone({ freq: 659, start: 0.09, length: 0.1, type: 'triangle' });
-    tone({ freq: 784, start: 0.18, length: 0.2, type: 'triangle' });
-  },
-  over() {
-    tone({ freq: 523, length: 0.18, type: 'sine', volume: 0.22 });
-    tone({ freq: 440, start: 0.17, length: 0.18, type: 'sine', volume: 0.22 });
-    tone({ freq: 392, start: 0.34, length: 0.35, type: 'sine', volume: 0.22 });
+  fanfare() {
+    [523, 659, 784, 659, 784, 1047].forEach((freq, i) => {
+      tone({ freq, start: i * 0.12, length: i === 5 ? 0.45 : 0.16, type: 'triangle', volume: 0.22 });
+    });
   },
   unlock() {
     [523, 659, 784, 1047].forEach((freq, i) => {

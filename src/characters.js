@@ -3,25 +3,33 @@
 // Add, remove, or change a runner by editing this list. Nothing else in the
 // game needs to change.
 //
-//   id        short name used in saved data (do not change once kids have played)
-//   name      what the player sees, in each language (see src/text.js)
-//   unlockAt  total points needed to unlock it (0 = free from the start)
-//   move      how it moves: 'roll', 'run', or 'hop'
-//   look      what it looks like (see below)
+//   id           short name used in saved data (do not change once kids have played)
+//   name         what the player sees, in each language
+//   unlockAt     total points needed to unlock it (0 = free from the start)
+//   move         how it moves: 'bounce', 'run', 'hop', or 'roll'
+//   facesCamera  true if it should look at the player instead of at the doors
+//   look         what it looks like (see below)
 //
 // LOOKS
 //   kind: 'shapes' builds the character from simple colored shapes.
 //   Art comes later: a picture or 3D model look will be a new "kind" in src/looks.js.
 //
 // SHAPES
-//   Each part is a ball, box, cylinder, or cone.
-//     size   ball: [width]   box: [width, height, depth]   cylinder/cone: [width, height]
-//     at     where its centre sits: [left/right, up, front/back]. The ground is 0.
-//            The character faces away from the camera, so "front" is a negative last number.
-//     turn   optional tilt in degrees: [x, y, z]
-//     scale  optional stretch: [x, y, z]
-//     tag    optional name for a part that moves: legL, legR, armL, armR, tail, ears
-//     pivot  optional point a tagged part swings around (for example, the hip of a leg)
+//   Each part is a ball, box, cylinder, cone, or arc (half a ring, used for smiles).
+//     size    ball: [width]   box: [width, height, depth]   cylinder/cone: [width, height]
+//             arc: [width, thickness]
+//     at      where its centre sits: [left/right, up, front/back]. The ground is 0.
+//             Build every character facing away from you, so its face is on the negative
+//             front/back side. facesCamera then turns the whole character around.
+//     turn    optional tilt in degrees: [x, y, z]
+//     scale   optional stretch: [x, y, z]
+//     smooth  optional: true for a smooth surface instead of a faceted, blocky one
+//     shiny   optional: true for a glossy surface
+//     tag     optional name for a part that moves: legL, legR, armL, armR, tail, ears, leaf,
+//             eyes (which blink)
+//     pivot   optional point a tagged part swings around (for example, the hip of a leg)
+//     mood    optional: the part only shows in that mood. 'calm' is the everyday face,
+//             'yay' shows after a right answer, 'oops' after a wrong one.
 //   A rolling character spins around a point half its width above the ground.
 
 export const CHARACTERS = [
@@ -29,13 +37,31 @@ export const CHARACTERS = [
     id: 'apple',
     name: { es: 'Manzana', en: 'Apple' },
     unlockAt: 0,
-    move: 'roll',
+    move: 'bounce',
+    facesCamera: true,
     look: {
       kind: 'shapes',
       parts: [
-        { shape: 'ball', size: [1.1], at: [0, 0.55, 0], color: '#e53935' },
-        { shape: 'cylinder', size: [0.1, 0.3], at: [0, 1.17, 0], color: '#6d4c41' },
-        { shape: 'ball', size: [0.4], scale: [1, 0.3, 0.6], at: [0.22, 1.2, 0], turn: [0, 0, 20], color: '#43a047' },
+        // body
+        { shape: 'ball', size: [1.25], scale: [1, 0.92, 1], at: [0, 0.6, 0], color: '#e53935', smooth: true, shiny: true },
+        // stem and leaf
+        { shape: 'cylinder', size: [0.11, 0.34], at: [0, 1.28, 0], turn: [0, 0, -8], color: '#6d4c41' },
+        { shape: 'ball', size: [0.52], scale: [1, 0.22, 0.55], at: [0.28, 1.36, 0], turn: [0, 0, 22], color: '#4caf50', smooth: true, tag: 'leaf', pivot: [0.04, 1.3, 0] },
+        // eyes: white, pupil, and a little sparkle
+        { shape: 'ball', size: [0.3], at: [-0.21, 0.74, -0.5], color: '#ffffff', smooth: true, tag: 'eyes', pivot: [0, 0.74, -0.5] },
+        { shape: 'ball', size: [0.3], at: [0.21, 0.74, -0.5], color: '#ffffff', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.17], at: [-0.21, 0.74, -0.615], color: '#212121', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.17], at: [0.21, 0.74, -0.615], color: '#212121', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.06], at: [-0.24, 0.79, -0.685], color: '#ffffff', smooth: true, tag: 'eyes' },
+        { shape: 'ball', size: [0.06], at: [0.18, 0.79, -0.685], color: '#ffffff', smooth: true, tag: 'eyes' },
+        // rosy cheeks
+        { shape: 'ball', size: [0.2], scale: [1, 0.65, 0.3], at: [-0.41, 0.54, -0.49], turn: [0, 40, 0], color: '#ff8a80', smooth: true },
+        { shape: 'ball', size: [0.2], scale: [1, 0.65, 0.3], at: [0.41, 0.54, -0.49], turn: [0, -40, 0], color: '#ff8a80', smooth: true },
+        // mouths, one for each mood
+        { shape: 'arc', size: [0.3, 0.06], at: [0, 0.54, -0.63], turn: [0, 0, 180], color: '#4e342e', mood: 'calm' },
+        { shape: 'ball', size: [0.32], scale: [1, 0.8, 0.3], at: [0, 0.46, -0.615], color: '#4e342e', smooth: true, mood: 'yay' },
+        { shape: 'ball', size: [0.17], scale: [1, 0.5, 0.3], at: [0, 0.4, -0.645], color: '#ff5252', smooth: true, mood: 'yay' },
+        { shape: 'ball', size: [0.17], scale: [1, 1.1, 0.3], at: [0, 0.47, -0.625], color: '#4e342e', smooth: true, mood: 'oops' },
       ],
     },
   },
