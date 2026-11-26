@@ -17,6 +17,16 @@ Each game is a ladder of small steps. A right answer moves a child a little way 
 
 In the numbers game, playing alone stops climbing at sums up to 10 shown with pictures. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks them with the + button.
 
+## Endless mode
+
+The purple "Sin fin" button starts an endless run, and endless runs are what the high score table records.
+
+- Questions come at random from every step the child has reached in the chosen game.
+- Every right answer makes the belt faster, down to under a second per row of doors.
+- The first miss bumps the runner back. Three right answers in a row bring it forward again. A second miss while bumped back ends the run.
+- The voice says each question only while there is time for it. Once the belt is fast, it is chimes only.
+- An endless run does not move a child up or down the learning steps.
+
 ## How a run works
 
 - A run is 10 doors. It never ends early.
@@ -26,7 +36,7 @@ In the numbers game, playing alone stops climbing at sums up to 10 shown with pi
 - The belt has three speeds, picked on the start screen: slow, normal, and fast. It keeps that speed through a run.
 - The next doors wait until the voice has finished talking, and a long question slows the belt for that row, so there is always time to think after hearing it (about 3.5 seconds on slow, 2.5 on normal, 2 on fast).
 - Praise is spoken with every other right answer and with every trick, not every time.
-- Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The best runs go on the high score table.
+- Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The high score table is for endless runs.
 
 ## What the learning steps are based on
 

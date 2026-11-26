@@ -67,6 +67,7 @@ let screen = 'start';
 let lastScore = 0;
 let runGame = CONFIG.game; // the game the current run is playing
 let runResults = []; // right and wrong so far in this run
+let runEndless = false; // true while playing (or having just played) an endless run
 let currentQuestion = null;
 
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
@@ -358,7 +359,10 @@ function showProgress() {
 
 // --- A run -----------------------------------------------------------------------
 
-function startRun() {
+// endless: true for the mode that gets faster and faster and goes on the high score table.
+function startRun(endless = false) {
+  runEndless = endless === true;
+  el.progress.hidden = runEndless; // an endless run has no fixed number of doors to count off
   runGame = store.game();
   runResults = [];
   currentQuestion = null;
@@ -370,7 +374,7 @@ function startRun() {
   showProgress();
   el.hint.hidden = false;
   show('play');
-  game.startRun({ game: runGame, skill: store.skill(runGame), pace: currentPace() });
+  game.startRun({ game: runGame, skill: store.skill(runGame), pace: currentPace(), endless: runEndless });
   // Said inside the tap, which is what lets the voice work on iPhones and iPads.
   speak(t.say.go);
 }
@@ -383,8 +387,9 @@ function bankRun(score, skill) {
   const newest = unlocked[unlocked.length - 1];
   store.update({
     totalPoints,
-    best: Math.max(before.best, score),
-    skills: { ...before.skills, [runGame]: Math.max(0, Math.floor(skill)) },
+    // "Best" is the best endless run. An endless run does not move a child up or down the steps.
+    best: runEndless ? Math.max(before.best, score) : before.best,
+    skills: runEndless ? before.skills : { ...before.skills, [runGame]: Math.max(0, Math.floor(skill)) },
     // A newly unlocked character is picked straight away. It can be changed on the start screen.
     ...(newest ? { character: newest.id } : {}),
   });
@@ -415,6 +420,12 @@ const gameEvents = {
     el.question.className = 'question';
     replay(el.question, 'new');
     showProgress();
+    if (runEndless) {
+      // An endless run gets too fast for talking: a question is only said while there is time for it.
+      if (game.row.travelTime >= speechSeconds(askText(question)) + 1) speak(askText(question));
+      else stopSpeaking();
+      return;
+    }
     speak(askText(question), { queue: true });
     // Fetch what might be said next, so it comes without a pause.
     preloadSpeech([spokenAnswer(question), answerText(question), ...t.say.praise]);
@@ -437,10 +448,10 @@ const gameEvents = {
       replay(el.scorePill, 'pop');
       // Spoken praise comes with every other right answer and with every trick,
       // so the voice is not talking all the time.
-      if (info.trick || info.score % 2 === 1) speak(pick(t.say.praise));
+      if (!info.endless && (info.trick || info.score % 2 === 1)) speak(pick(t.say.praise));
     } else {
       sfx.wrong();
-      speak(spokenAnswer(info.question));
+      if (!info.endless || info.travel >= CONFIG.endless.voiceUntil) speak(spokenAnswer(info.question));
     }
   },
 
@@ -453,12 +464,13 @@ const gameEvents = {
     sfx.move();
   },
 
-  onFinishing({ score }) {
+  onFinishing({ score, endless }) {
     currentQuestion = null;
     el.question.replaceChildren();
     el.ask.textContent = '';
     sfx.fanfare();
-    speak(score > 0 ? t.say.finish(score) : t.say.finishZero);
+    if (score === 0) speak(t.say.finishZero);
+    else speak(endless ? pick(t.say.praise) : t.say.finish(score));
   },
 
   onRunEnd(result) {
@@ -466,19 +478,25 @@ const gameEvents = {
   },
 };
 
-function friendlyTitle(score, total) {
+function friendlyTitle(score, total, endless) {
+  if (endless) {
+    if (score >= 30) return t.overTitle.amazing;
+    if (score >= 12) return t.overTitle.great;
+    return score >= 1 ? t.overTitle.nice : t.overTitle.zero;
+  }
   if (score >= total * 0.9) return t.overTitle.amazing;
   if (score >= total * 0.6) return t.overTitle.great;
   if (score >= 1) return t.overTitle.nice;
   return t.overTitle.zero;
 }
 
-function finishRun({ score, total, skill }) {
+function finishRun({ score, total, skill, endless }) {
   lastScore = score;
   const { newest, lastName } = bankRun(score, skill);
 
-  el.overTitle.textContent = friendlyTitle(score, total);
+  el.overTitle.textContent = friendlyTitle(score, total, endless);
   el.overScore.textContent = String(score);
+  el.overStars.hidden = endless; // the row of ten stars only makes sense for a run of ten doors
   el.overStars.replaceChildren(
     ...Array.from({ length: total }, (_, i) => tag('span', i < score ? 'earned' : '', '⭐')),
   );
@@ -490,7 +508,8 @@ function finishRun({ score, total, skill }) {
     el.overUnlockText.textContent = t.unlocked(nameOf(newest));
   }
 
-  const madeTheTable = store.qualifies(score);
+  // Only endless runs go on the high score table.
+  const madeTheTable = endless && store.qualifies(score);
   el.nameForm.hidden = !madeTheTable;
   el.overButtons.hidden = madeTheTable;
   if (madeTheTable) el.nameInput.value = lastName;
@@ -572,9 +591,11 @@ function toggleMute() {
 // --- Wiring ----------------------------------------------------------------------------
 
 function wireButtons() {
-  $('btn-play').addEventListener('click', startRun);
-  $('btn-again').addEventListener('click', startRun);
-  $('btn-scores-play').addEventListener('click', startRun);
+  $('btn-play').addEventListener('click', () => startRun(false));
+  $('btn-endless').addEventListener('click', () => startRun(true));
+  // "Play again" repeats whichever kind of run was just played.
+  $('btn-again').addEventListener('click', () => startRun(runEndless));
+  $('btn-scores-play').addEventListener('click', () => startRun(runEndless));
   $('btn-scores').addEventListener('click', () => showScores());
   $('btn-over-scores').addEventListener('click', () => showScores());
   $('btn-home').addEventListener('click', goHome);

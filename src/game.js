@@ -392,6 +392,8 @@ export class Game {
     this.results = [];
     this.speedSteps = 0;
     this.pushedBack = false;
+    this.streak = 0;
+    this.endless = false;
     this.lane = 1;
     this.runnerX = 0;
     this.runnerZ = FRONT_Z;
@@ -408,9 +410,12 @@ export class Game {
 
   // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
   // pace: 'slow', 'normal' or 'fast' (see config.js).
-  startRun({ game = CONFIG.game, skill = 0, pace = CONFIG.pace } = {}) {
+  // endless: true for the mode that gets faster and faster until two misses end it.
+  startRun({ game = CONFIG.game, skill = 0, pace = CONFIG.pace, endless = false } = {}) {
     this.resetRun();
     this.pace = CONFIG.paces[pace] ?? CONFIG.paces[CONFIG.pace];
+    this.endless = endless;
+    this.endlessTravel = this.pace.travel;
     this.gameId = game;
     this.skill = Math.max(0, skill);
     // Playing alone stops climbing at the last step meant for small children.
@@ -484,11 +489,16 @@ export class Game {
   // --- Questions ------------------------------------------------------------
 
   travelTime() {
+    if (this.endless) return this.endlessTravel;
     return Math.max(CONFIG.minTravelTime, this.pace.travel - CONFIG.travelTimeStep * this.speedSteps);
   }
 
   nextQuestion() {
-    const level = levelFromSkill(this.skill, this.gameId);
+    const reached = levelFromSkill(this.skill, this.gameId);
+    // Endless runs pull questions at random from every step up to the one the child has reached.
+    const level = this.endless
+      ? Math.floor(Math.random() * (Math.max(reached, CONFIG.endless.minSteps - 1) + 1))
+      : reached;
     const question = makeQuestion(this.gameId, level, this.lastText);
     this.lastText = question.text;
 
@@ -499,7 +509,8 @@ export class Game {
     const spoken = this.events.questionSeconds?.(question) ?? 0;
     // (The extra half second covers the belt getting up to speed and the choice being
     // fixed a moment before the doors arrive.)
-    row.travelTime = Math.max(this.travelTime(), spoken + this.pace.think + 0.5);
+    // Endless runs do not wait for anybody.
+    row.travelTime = this.endless ? this.travelTime() : Math.max(this.travelTime(), spoken + this.pace.think + 0.5);
     row.age = 0;
     row.state = 'approach';
     row.locked = false;
@@ -545,6 +556,8 @@ export class Game {
       score: this.score,
       results: [...this.results],
       total: CONFIG.doorsPerRun,
+      endless: this.endless,
+      travel: this.row.travelTime, // seconds this row of doors took to arrive
     });
   }
 
@@ -552,7 +565,7 @@ export class Game {
     const row = this.row;
     const door = this.doors[row.chosen];
     this.score += 1;
-    this.skill = Math.min(this.skill + 1, this.skillCap);
+    if (!this.endless) this.skill = Math.min(this.skill + 1, this.skillCap);
     this.doorsDone += 1;
     this.results.push(true);
     if (this.score % CONFIG.correctPerSpeedStep === 0) this.speedSteps += 1;
@@ -563,16 +576,25 @@ export class Game {
     // Mostly a jump and a spin; every so often a special trick (a backflip, a dance...).
     const trick = this.score % CONFIG.trickEvery === 0;
     this.character.react(trick ? 'trick' : 'cheer');
-    this.pushedBack = false; // a right answer brings the runner back to the front
-    this.gapTimer = CONFIG.gapAfterCorrect;
+    if (this.endless) {
+      // Every right answer makes the belt faster, and it takes a few in a row to catch up.
+      this.endlessTravel = Math.max(CONFIG.endless.minTravel, this.endlessTravel * CONFIG.endless.faster);
+      this.streak += 1;
+      if (this.streak >= CONFIG.endless.recoverStreak) this.pushedBack = false;
+      this.gapTimer = Math.min(CONFIG.gapAfterCorrect, this.endlessTravel * 0.12);
+    } else {
+      this.pushedBack = false; // a right answer brings the runner back to the front
+      this.gapTimer = CONFIG.gapAfterCorrect;
+    }
     this.report(true, trick);
   }
 
-  // A wrong door never ends the run. It bumps the runner back and shows the right door.
+  // A wrong door bumps the runner back and shows the right door. In an ordinary run that is
+  // all. In an endless run, a second miss while still bumped back ends it.
   answeredWrong() {
     const row = this.row;
     const q = row.question;
-    this.skill = Math.max(0, this.skill - 1);
+    if (!this.endless) this.skill = Math.max(0, this.skill - 1);
     this.doorsDone += 1;
     this.results.push(false);
     this.speedSteps = Math.max(0, this.speedSteps - CONFIG.speedStepsLostOnMiss);
@@ -582,20 +604,33 @@ export class Game {
     this.doors[q.correctIndex].pulse = 1.2;
     this.shake = 0.3;
     this.character.react('oops');
+    if (this.endless) {
+      this.streak = 0;
+      this.endlessTravel = Math.min(this.pace.travel, this.endlessTravel * CONFIG.endless.slowerOnMiss);
+      if (this.pushedBack) {
+        this.report(false);
+        this.startFinish();
+        return;
+      }
+    }
     this.pushedBack = true;
     row.state = 'pushing';
-    this.gapTimer = CONFIG.gapAfterWrong;
+    this.gapTimer = this.endless ? Math.min(CONFIG.gapAfterWrong, 0.9) : CONFIG.gapAfterWrong;
     this.report(false);
   }
 
-  // After the last door: confetti and a happy dance, then the end screen.
+  // The run is over (the last door, or the last miss of an endless run):
+  // confetti and a happy dance either way, then the end screen.
   startFinish() {
     this.mode = 'finishing';
     this.finishTimer = 0;
     this.confettiTimer = 0;
     this.pushedBack = false;
+    this.inputLocked = false;
+    this.row.state = 'none';
+    this.row.group.visible = false;
     this.character.react('party');
-    this.events.onFinishing?.({ score: this.score, total: CONFIG.doorsPerRun });
+    this.events.onFinishing?.({ score: this.score, total: CONFIG.doorsPerRun, endless: this.endless });
   }
 
   // --- Every frame ----------------------------------------------------------
@@ -665,8 +700,8 @@ export class Game {
     if (row.state === 'none') {
       if (this.gapTimer > 0) return;
       // Let the voice finish what it is saying before the next doors come, within reason.
-      if (this.gapTimer > -CONFIG.maxWaitForVoice && this.events.isSpeaking?.()) return;
-      if (this.doorsDone >= CONFIG.doorsPerRun) this.startFinish();
+      if (!this.endless && this.gapTimer > -CONFIG.maxWaitForVoice && this.events.isSpeaking?.()) return;
+      if (!this.endless && this.doorsDone >= CONFIG.doorsPerRun) this.startFinish();
       else this.nextQuestion();
       return;
     }
@@ -723,6 +758,7 @@ export class Game {
     if (this.finishTimer >= CONFIG.celebrateTime) {
       this.mode = 'over';
       this.events.onRunEnd?.({
+        endless: this.endless,
         score: this.score,
         total: CONFIG.doorsPerRun,
         skill: this.skill,
@@ -831,6 +867,8 @@ export class Game {
     return {
       mode: this.mode,
       game: this.gameId,
+      endless: this.endless,
+      travel: this.travelTime(),
       lane: this.lane,
       score: this.score,
       skill: this.skill,

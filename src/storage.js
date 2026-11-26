@@ -11,7 +11,7 @@ const KEY = 'number-run-save-v1';
 
 // Raised when the rules of a run change so much that old scores no longer compare.
 // Older saves keep their points and characters but start a fresh high score table.
-const RULES = 2;
+const RULES = 3;
 
 const DEFAULTS = {
   rules: RULES,

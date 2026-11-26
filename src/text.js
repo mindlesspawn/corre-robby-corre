@@ -7,9 +7,10 @@ import { CONFIG } from './config.js';
 
 const es = {
   play: 'Jugar',
+  endless: '♾️ Sin fin',
   playAgain: 'Jugar otra vez',
   scoresButton: '🏆 Récords',
-  scoresTitle: '🏆 Mejores puntajes',
+  scoresTitle: '🏆 Récords de Sin fin',
   home: 'Inicio',
   save: 'Guardar',
   paused: 'En pausa',
@@ -33,7 +34,7 @@ const es = {
   labelRepeat: 'Repetir la pregunta',
   paces: { slow: '🐢 Lento', normal: 'Normal', fast: '🐇 Rápido' },
   points: (n) => (n === 1 ? '1 punto' : `${n} puntos`),
-  bestRun: (n) => `Mejor carrera: ${n}`,
+  bestRun: (n) => `Récord sin fin: ${n}`,
   toUnlock: (need, name) => `${need === 1 ? 'Falta' : 'Faltan'} ${need} ⭐ para desbloquear: ${name}`,
   lockedLabel: (name, cost) => `${name}, bloqueado. Necesita ${cost} puntos.`,
   unlocked: (name) => `¡Desbloqueaste: ${name}!`,
@@ -137,9 +138,10 @@ const es = {
 
 const en = {
   play: 'Play',
+  endless: '♾️ Endless',
   playAgain: 'Play again',
   scoresButton: '🏆 High scores',
-  scoresTitle: '🏆 High scores',
+  scoresTitle: '🏆 Endless high scores',
   home: 'Home',
   save: 'Save',
   paused: 'Paused',
@@ -163,7 +165,7 @@ const en = {
   labelRepeat: 'Say the question again',
   paces: { slow: '🐢 Slow', normal: 'Normal', fast: '🐇 Fast' },
   points: (n) => (n === 1 ? '1 point' : `${n} points`),
-  bestRun: (n) => `Best run: ${n}`,
+  bestRun: (n) => `Endless best: ${n}`,
   toUnlock: (need, name) => `${need} more ⭐ to unlock: ${name}`,
   lockedLabel: (name, cost) => `${name}, locked. Needs ${cost} points.`,
   unlocked: (name) => `You unlocked: ${name}!`,
