@@ -43,7 +43,7 @@ const es = {
   },
 
   // The games on the start screen.
-  games: { numbers: 'Números', colors: 'Colores' },
+  games: { numbers: 'Números', colors: 'Colores', princess: 'Princesa', shapes: 'Figuras' },
 
   // The step picker on the start screen, for grown-ups.
   level: (n) => `Nivel ${n}`,
@@ -56,6 +56,8 @@ const es = {
     if (step.kind === 'color') {
       return step.show ? `ver y encontrar ${step.colors.length} colores` : `escuchar y encontrar ${step.colors.length} colores`;
     }
+    if (step.kind === 'thing') return `${step.show ? 'ver' : 'escuchar'} y encontrar ${step.pool.length} cosas`;
+    if (step.kind === 'shape') return `${step.show ? 'ver' : 'escuchar'} y encontrar ${step.pool.length} figuras`;
     if (step.oneMore) return 'uno más';
     if (step.maxSum > 20) return 'sumas con números grandes';
     return step.pictures ? `sumas hasta ${step.maxSum}, con dibujos` : `sumas hasta ${step.maxSum}`;
@@ -86,9 +88,29 @@ const es = {
     fingers: ['dedo', 'dedos', 'm'],
   },
 
+  // Princess things and shapes, each with its "el" or "la".
+  nouns: {
+    crown: ['la', 'corona'],
+    castle: ['el', 'castillo'],
+    unicorn: ['el', 'unicornio'],
+    dress: ['el', 'vestido'],
+    ring: ['el', 'anillo'],
+    wand: ['la', 'varita'],
+    shoe: ['el', 'zapato'],
+    rose: ['la', 'rosa'],
+    frog: ['la', 'rana'],
+    circle: ['el', 'círculo'],
+    square: ['el', 'cuadrado'],
+    triangle: ['el', 'triángulo'],
+    star: ['la', 'estrella'],
+    heart: ['el', 'corazón'],
+  },
+
   // What the voice says. Numbers are written as digits; the voice reads them as words.
   say: {
     go: '¡Vamos!',
+    findIt: ([article, noun]) => `Busca ${article} ${noun}`,
+    hereIs: ([article, noun]) => `Aquí está ${article} ${noun}`,
     same: (n, [one, many, g]) =>
       n === 1
         ? `${g === 'm' ? 'Un' : 'Una'} ${one}. ¿Dónde hay ${g === 'm' ? 'uno' : 'una'}?`
@@ -148,7 +170,7 @@ const en = {
     zero: 'Keep trying!',
   },
 
-  games: { numbers: 'Numbers', colors: 'Colors' },
+  games: { numbers: 'Numbers', colors: 'Colors', princess: 'Princess', shapes: 'Shapes' },
 
   level: (n) => `Level ${n}`,
   levelName: (step) => {
@@ -160,6 +182,8 @@ const en = {
     if (step.kind === 'color') {
       return step.show ? `see and find ${step.colors.length} colors` : `listen and find ${step.colors.length} colors`;
     }
+    if (step.kind === 'thing') return `${step.show ? 'see' : 'listen'} and find ${step.pool.length} things`;
+    if (step.kind === 'shape') return `${step.show ? 'see' : 'listen'} and find ${step.pool.length} shapes`;
     if (step.oneMore) return 'one more';
     if (step.maxSum > 20) return 'sums with big numbers';
     return step.pictures ? `sums up to ${step.maxSum}, with pictures` : `sums up to ${step.maxSum}`;
@@ -189,8 +213,27 @@ const en = {
     fingers: ['finger', 'fingers'],
   },
 
+  nouns: {
+    crown: ['the', 'crown'],
+    castle: ['the', 'castle'],
+    unicorn: ['the', 'unicorn'],
+    dress: ['the', 'dress'],
+    ring: ['the', 'ring'],
+    wand: ['the', 'wand'],
+    shoe: ['the', 'shoe'],
+    rose: ['the', 'rose'],
+    frog: ['the', 'frog'],
+    circle: ['the', 'circle'],
+    square: ['the', 'square'],
+    triangle: ['the', 'triangle'],
+    star: ['the', 'star'],
+    heart: ['the', 'heart'],
+  },
+
   say: {
     go: "Let's go!",
+    findIt: ([article, noun]) => `Find ${article} ${noun}`,
+    hereIs: ([article, noun]) => `Here is ${article} ${noun}`,
     same: (n, [one, many]) => (n === 1 ? `1 ${one}. Where is 1 dot?` : `${n} ${many}. Where are ${n} dots?`),
     count: ([, many]) => `How many ${many}?`,
     find: (n) => (n === 1 ? 'Where is 1 dot?' : `Where are ${n} dots?`),
@@ -251,6 +294,7 @@ export function askText(question) {
   if (question.kind === 'more') return say.more;
   if (question.kind === 'fewer') return say.fewer;
   if (question.kind === 'color') return say.color(t.colorNames[question.answer]);
+  if (question.kind === 'thing' || question.kind === 'shape') return say.findIt(t.nouns[question.answer]);
   return say.add(question.a, question.b);
 }
 
@@ -261,6 +305,7 @@ export function answerText(question) {
   if (question.kind === 'more') return say.isMore(question.answer);
   if (question.kind === 'fewer') return say.isFewer(question.answer);
   if (question.kind === 'color') return say.isColor(t.colorNames[question.answer]);
+  if (question.kind === 'thing' || question.kind === 'shape') return say.hereIs(t.nouns[question.answer]);
   return say.isAdd(question.a, question.b, question.answer);
 }
 

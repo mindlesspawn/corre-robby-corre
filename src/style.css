@@ -823,3 +823,64 @@ h2 {
 .question .word {
   padding: 0 0.35em;
 }
+
+/* Pictures and shapes in the question banner. */
+.question .picture {
+  font-size: 1.5em;
+  line-height: 1.15;
+}
+
+.question .shape {
+  width: 1.6em;
+  height: 1.6em;
+  margin: 0.05em 0;
+  fill: currentColor;
+}
+
+/* The game picker holds four games: small tiles, picture above the name. */
+.games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+  gap: 8px;
+}
+
+.game-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 2px;
+  min-height: 0;
+  font-size: clamp(11px, 3.3vw, 14px);
+}
+
+.game-btn .game-icon {
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+/* Four characters fit in one row. */
+.characters {
+  grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
+  gap: 8px;
+}
+
+.character {
+  font-size: clamp(11px, 3.2vw, 15px);
+  padding: 6px 2px;
+  border-width: 4px;
+  overflow: hidden;
+}
+
+@media (min-width: 600px) and (min-height: 700px) {
+  .game-btn {
+    font-size: 18px;
+    padding: 10px 4px;
+  }
+  .game-btn .game-icon {
+    font-size: 34px;
+  }
+  .character {
+    font-size: 17px;
+  }
+}

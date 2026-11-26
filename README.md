@@ -10,10 +10,12 @@ Pick a game on the start screen.
 
 - **Números (numbers):** small amounts as dots, comparing more and fewer, counting pictures and fingers, then written numbers, then small sums with pictures.
 - **Colores (colors):** see a color and find the door of that color, then find it from hearing its name alone.
+- **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Made for a three year old.
+- **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star and a heart.
 
 Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough. Progress is saved for each game. The − and + buttons on the start screen let a grown-up move a child to an easier or harder step.
 
-In the numbers game, playing alone stops climbing at sums up to 5. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks them with the + button.
+In the numbers game, playing alone stops climbing at sums up to 10 shown with pictures. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks them with the + button.
 
 ## How a run works
 
@@ -34,7 +36,8 @@ The steps were checked on 26 November 2026 against published early-childhood tea
 | Asks "more" and "fewer" before any written numbers | Comparing comes straight after counting, and before numerals | 1, 2 |
 | Brings in written numbers late, each with its dots, then on their own | Numerals are taught once children can recognise, count, and compare amounts; linking a numeral to an amount up to 5 is expected by about age 5 | 1, 2, 4 |
 | Uses fingers and dice-style dots | Fingers are a recommended informal tool; dice patterns are standard examples | 1, 3 |
-| Stops automatic progress at sums up to 5, shown with pictures | Adding up to 5 is expected by about age 5; sums to 10 at age 4 are only found with objects or fingers; sums to 20 are first-grade work | 2, 5, 6 |
+| Stops automatic progress at sums up to 10, shown with pictures | Adding up to 5 is expected by about age 5; some four year olds can find sums up to 10 with objects or fingers; sums written only as numbers, and sums to 20, come later | 2, 5, 6 |
+| Starts shapes with a circle, a square, and a triangle | Recognising and naming a typical circle, square, and sometimes a triangle is expected at 3 to 4; matching identical shapes comes earlier | 2, 3 |
 | Shows and says the right answer after a mistake, and adjusts difficulty in small steps | Feedback that explains, plus levelling, is what separated maths apps that helped from those that did not | 7, 8 |
 | Teaches pink, orange, and purple alongside the other colors | Most basic color words are learned in any order at about age 3 | 9 |
 
@@ -42,6 +45,7 @@ Limits worth knowing:
 
 - The order of steps is expert judgment. The main guide (source 1) says its panel found no direct evidence for any one particular order.
 - Nearly all of this research was done with English-speaking children.
+- The princess game (finding a picture from its name) fits the general goal of fast-growing vocabulary at this age (source 2), but the sources do not prescribe that particular activity. It is a design choice.
 - Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes after", and dots in varied layouts.
 - The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore moves at one steady speed and no longer speeds up. The doors still arrive on a timer, so a child cannot stop to think for as long as they like. The speed settings are in `src/config.js`.
 - The sources give no direct evidence on how long a round should be or on penalties.

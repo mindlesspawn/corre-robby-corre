@@ -12,6 +12,8 @@
 //   more   find the door with the most dots ("fewer": the door with the least)
 //   add    the banner shows a sum; find the door with the answer
 //   color  the banner shows or says a color; find the door of that color
+//   thing  the banner shows or names a thing (a crown, a castle...); find its picture
+//   shape  the banner shows or names a shape; find the door with that shape
 //
 // To add a step, add a line to a game's levels.
 // To add a game, add an entry to GAMES and its name to src/text.js.
@@ -35,6 +37,38 @@ const FIRST_COLORS = ['red', 'blue', 'yellow'];
 const MORE_COLORS = ['red', 'blue', 'yellow', 'green', 'orange', 'purple'];
 const ALL_COLORS = [...MORE_COLORS, 'pink'];
 
+// Princess things, shown as little pictures. Their names in each language are in src/text.js.
+export const THINGS = {
+  crown: '👑',
+  castle: '🏰',
+  unicorn: '🦄',
+  dress: '👗',
+  ring: '💍',
+  wand: '🪄',
+  shoe: '👠',
+  rose: '🌹',
+  frog: '🐸',
+};
+const ALL_THINGS = Object.keys(THINGS);
+const FIRST_THINGS = ALL_THINGS.slice(0, 3);
+const MORE_THINGS = ALL_THINGS.slice(0, 6);
+
+// Shapes, as outlines inside a 100 x 100 box. Their names are in src/text.js.
+const starPoints = Array.from({ length: 10 }, (_, i) => {
+  const radius = i % 2 ? 19 : 46;
+  const angle = ((-90 + i * 36) * Math.PI) / 180;
+  return `${(50 + radius * Math.cos(angle)).toFixed(1)} ${(53 + radius * Math.sin(angle)).toFixed(1)}`;
+});
+export const SHAPES = {
+  circle: 'M50 6a44 44 0 1 0 0.01 0z',
+  square: 'M10 10h80v80h-80z',
+  triangle: 'M50 8L95 90H5z',
+  star: `M${starPoints.join('L')}z`,
+  heart: 'M50 90C20 68 6 50 6 32a22.3 22.3 0 0 1 44-6a22.3 22.3 0 0 1 44 6c0 18-14 36-44 58z',
+};
+const ALL_SHAPES = Object.keys(SHAPES);
+const FIRST_SHAPES = ALL_SHAPES.slice(0, 3);
+
 export const GAMES = {
   // The order follows early-childhood teaching guidance (sources are in the README):
   // small amounts by sight first, then comparing, and written numbers only after that,
@@ -56,9 +90,9 @@ export const GAMES = {
       { kind: 'count', max: 10 },
       { kind: 'add', oneMore: true, maxSum: 5, pictures: true }, // 2 + 1, shown with apples
       { kind: 'add', maxSum: 5, pictures: true },
+      { kind: 'add', maxSum: 10, pictures: true },
       // Playing alone never goes past this point. The steps below are for older children
       // and are only reached when a grown-up picks them with the + button.
-      { kind: 'add', maxSum: 10, pictures: true, grownUp: true },
       { kind: 'add', maxSum: 10, grownUp: true },
       { kind: 'add', maxSum: 20, grownUp: true },
       { kind: 'add', maxSum: 50, bigFirst: true, grownUp: true }, // 23 + 4
@@ -76,6 +110,29 @@ export const GAMES = {
       { kind: 'color', colors: FIRST_COLORS, show: false },
       { kind: 'color', colors: MORE_COLORS, show: false },
       { kind: 'color', colors: ALL_COLORS, show: false },
+    ],
+  },
+
+  // Finding princess things by sight, then by name. Aimed at a three year old.
+  princess: {
+    icon: '👑',
+    levels: [
+      { kind: 'thing', pool: FIRST_THINGS, show: true },
+      { kind: 'thing', pool: MORE_THINGS, show: true },
+      { kind: 'thing', pool: FIRST_THINGS, show: false },
+      { kind: 'thing', pool: MORE_THINGS, show: false },
+      { kind: 'thing', pool: ALL_THINGS, show: false },
+    ],
+  },
+
+  // Circle, square and triangle come first: those are the shapes expected at three to four.
+  shapes: {
+    icon: '🔷',
+    levels: [
+      { kind: 'shape', pool: FIRST_SHAPES, show: true },
+      { kind: 'shape', pool: FIRST_SHAPES, show: false },
+      { kind: 'shape', pool: ALL_SHAPES, show: true },
+      { kind: 'shape', pool: ALL_SHAPES, show: false },
     ],
   },
 };
@@ -192,7 +249,22 @@ function makeColor({ colors, show }) {
   return { kind: 'color', text: `color ${answer}`, answer, show: show !== false, wrong: others.slice(0, 2) };
 }
 
+// One thing or shape to find among three. "show" shows it; without it, only its name is said.
+function makePick({ kind, pool, show }) {
+  const [answer, ...others] = shuffle(pool);
+  return {
+    kind,
+    text: `${kind} ${answer}`,
+    doors: kind === 'thing' ? 'things' : 'shapes',
+    answer,
+    show: show !== false,
+    wrong: others.slice(0, 2),
+  };
+}
+
 const MAKERS = {
+  thing: makePick,
+  shape: makePick,
   same: makeSame,
   count: makeCount,
   find: makeFind,
@@ -224,6 +296,7 @@ export function makeQuestion(gameId, levelIndex, previousText = '') {
   const make = MAKERS[level.kind];
   let q = make(level);
   for (let tries = 0; tries < 8 && q.text === previousText; tries++) q = make(level);
+  if (!q.kind) q.kind = level.kind;
 
   const choices = shuffle([q.answer, ...q.wrong]);
   const { wrong, ...question } = q;

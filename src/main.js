@@ -5,7 +5,7 @@ import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
-import { FINGERS, GAMES, GAME_IDS, ITEMS, levelFromSkill } from './questions.js';
+import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { canSpeak, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking } from './speech.js';
@@ -142,7 +142,8 @@ function renderGames() {
   const current = store.game();
   el.games.replaceChildren(
     ...GAME_IDS.map((id) => {
-      const button = tag('button', 'game-btn', `${GAMES[id].icon} ${t.games[id] ?? id}`);
+      const button = tag('button', 'game-btn');
+      button.append(tag('span', 'game-icon', GAMES[id].icon), tag('span', '', t.games[id] ?? id));
       button.type = 'button';
       button.dataset.game = id;
       button.classList.toggle('selected', id === current);
@@ -213,6 +214,18 @@ function things(count, item = 'apple') {
   return group;
 }
 
+// A shape for the banner, drawn from the same outline the doors use.
+function shapePicture(id) {
+  const space = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(space, 'svg');
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('class', 'shape');
+  const outline = document.createElementNS(space, 'path');
+  outline.setAttribute('d', SHAPES[id] ?? '');
+  svg.append(outline);
+  return svg;
+}
+
 // Shows a question in the banner. "solved" adds the answer.
 function showQuestion(question, solved = false) {
   const answer = () => tag('span', 'answer', String(question.answer));
@@ -223,6 +236,13 @@ function showQuestion(question, solved = false) {
   } else if (question.kind === 'same' || question.kind === 'count') {
     parts.push(things(question.answer, question.item));
     if (solved) parts.push(' = ', answer());
+  } else if (question.kind === 'thing' || question.kind === 'shape') {
+    // Listening steps hide the picture until it is answered, unless the voice is off.
+    if (solved || question.show || !canSpeak()) {
+      parts.push(question.kind === 'thing' ? tag('span', 'picture', THINGS[question.answer]) : shapePicture(question.answer));
+    } else {
+      parts.push(tag('span', 'listen', '🔊'));
+    }
   } else if (question.kind === 'more' || question.kind === 'fewer') {
     parts.push(tag('span', 'word', question.kind === 'more' ? t.wordMore : t.wordFewer));
   } else if (question.kind === 'color') {

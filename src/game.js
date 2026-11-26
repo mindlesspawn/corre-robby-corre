@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { COLORS, CONFIG, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { autoTopSkill, levelFromSkill, makeQuestion, shuffle } from './questions.js';
+import { SHAPES, THINGS, autoTopSkill, levelFromSkill, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
@@ -281,6 +281,30 @@ export class Game {
         g.arc(x, y, r, 0, Math.PI * 2);
         g.fill();
       }
+      door.texture.needsUpdate = true;
+      return;
+    }
+
+    // A little picture of a thing (the princess game).
+    if (this.row.question?.doors === 'things') {
+      g.font = `${Math.round(h * 0.62)}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+      g.fillStyle = ink;
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(THINGS[value] ?? '', w / 2, h * 0.54);
+      door.texture.needsUpdate = true;
+      return;
+    }
+
+    // A shape, drawn in one color so only the shape tells the doors apart.
+    if (this.row.question?.doors === 'shapes') {
+      const scale = (h * 0.82) / 100;
+      g.save();
+      g.translate(w / 2 - 50 * scale, h / 2 - 50 * scale);
+      g.scale(scale, scale);
+      g.fillStyle = ink;
+      g.fill(new Path2D(SHAPES[value] ?? ''));
+      g.restore();
       door.texture.needsUpdate = true;
       return;
     }
