@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"
+    />
+    <!-- Lets the game open full-screen, like an app, when added to the iPhone or iPad home screen. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Number Run" />
+    <meta name="theme-color" content="#9ad8ff" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <title>Number Run</title>
+  </head>
+  <body>
+    <canvas id="scene"></canvas>
+
+    <!-- Shown while running -->
+    <div id="hud" class="hud" hidden>
+      <div class="hud-row">
+        <div class="pill" aria-label="Score"><span aria-hidden="true">⭐</span> <span id="score">0</span></div>
+        <div class="hud-buttons">
+          <button id="btn-mute" class="icon-btn" type="button" aria-label="Sound on or off">🔊</button>
+          <button id="btn-pause" class="icon-btn" type="button" aria-label="Pause">
+            <span class="pause-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+      <div id="question" class="question" aria-live="polite"></div>
+      <div id="catchup" class="catchup" hidden>
+        <span>Catch up!</span>
+        <span id="catchup-dots" class="dots"></span>
+      </div>
+      <div id="hint" class="hint" hidden>Tap the door with the right answer</div>
+    </div>
+
+    <!-- Start -->
+    <section id="screen-start" class="screen">
+      <div class="panel">
+        <h1 id="title">Number Run</h1>
+        <p id="stats" class="stats"></p>
+        <div id="characters" class="characters"></div>
+        <p id="unlock-note" class="note"></p>
+        <button id="btn-play" class="big-btn" type="button">Play</button>
+        <div class="button-row">
+          <button id="btn-scores" class="small-btn" type="button">🏆 High scores</button>
+          <button id="btn-mute-start" class="small-btn" type="button">🔊 Sound on</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- End of a run -->
+    <section id="screen-over" class="screen" hidden>
+      <div class="panel">
+        <h2 id="over-title">Nice try!</h2>
+        <p class="score-line">You got <strong id="over-score">0</strong> right!</p>
+        <p id="over-best" class="note"></p>
+        <div id="over-unlock" class="unlock" hidden>
+          <img id="over-unlock-img" alt="" />
+          <p id="over-unlock-text"></p>
+        </div>
+        <form id="name-form" class="name-form" hidden>
+          <label for="name-input">You made the high scores! Type your name:</label>
+          <input
+            id="name-input"
+            type="text"
+            maxlength="10"
+            autocomplete="off"
+            autocapitalize="words"
+            autocorrect="off"
+            spellcheck="false"
+            enterkeyhint="done"
+          />
+          <button class="big-btn" type="submit">Save</button>
+        </form>
+        <div id="over-buttons">
+          <button id="btn-again" class="big-btn" type="button">Play again</button>
+          <div class="button-row">
+            <button id="btn-over-scores" class="small-btn" type="button">🏆 High scores</button>
+            <button id="btn-home" class="small-btn" type="button">Home</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- High scores -->
+    <section id="screen-scores" class="screen" hidden>
+      <div class="panel">
+        <h2>🏆 High scores</h2>
+        <ol id="score-list" class="score-list"></ol>
+        <p id="score-empty" class="note" hidden>No scores yet. Be the first!</p>
+        <button id="btn-scores-play" class="big-btn" type="button">Play</button>
+        <div class="button-row">
+          <button id="btn-scores-home" class="small-btn" type="button">Home</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paused -->
+    <section id="screen-pause" class="screen" hidden>
+      <div class="panel">
+        <h2>Paused</h2>
+        <button id="btn-resume" class="big-btn" type="button">Keep going</button>
+        <div class="button-row">
+          <button id="btn-pause-home" class="small-btn" type="button">Home</button>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

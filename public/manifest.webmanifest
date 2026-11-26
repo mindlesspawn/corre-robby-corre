@@ -1,0 +1,10 @@
+{
+  "name": "Number Run",
+  "short_name": "Number Run",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#9ad8ff",
+  "theme_color": "#9ad8ff"
+}
