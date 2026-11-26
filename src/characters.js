@@ -5,7 +5,8 @@
 //
 //   id           short name used in saved data (do not change once kids have played)
 //   name         what the player sees, in each language
-//   unlockAt     total points needed to unlock it (0 = free from the start)
+//   unlockAt     total points needed to unlock it (0 = free from the start).
+//                Every character is free for now. Give one a number, such as 25, to make it a prize.
 //   move         how it moves: 'bounce', 'run', 'hop', or 'roll'
 //   facesCamera  true if it should look at the player instead of at the doors
 //   look         what it looks like (see below)
@@ -116,7 +117,7 @@ export const CHARACTERS = [
   {
     id: 'dino',
     name: { es: 'Dinosaurio', en: 'Dinosaur' },
-    unlockAt: 25,
+    unlockAt: 0,
     move: 'run',
     look: {
       kind: 'shapes',
@@ -151,7 +152,7 @@ export const CHARACTERS = [
   {
     id: 'mouse',
     name: { es: 'Ratón', en: 'Mouse' },
-    unlockAt: 60,
+    unlockAt: 0,
     move: 'hop',
     look: {
       kind: 'shapes',

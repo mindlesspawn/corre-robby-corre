@@ -24,7 +24,7 @@ In the numbers game, playing alone stops climbing at sums up to 10 shown with pi
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
 - The belt moves at one steady speed.
-- Stars from every run add up to unlock characters. The best runs go on the high score table.
+- Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The best runs go on the high score table.
 
 ## What the learning steps are based on
 

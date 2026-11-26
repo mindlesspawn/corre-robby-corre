@@ -101,7 +101,9 @@ function renderCharacters() {
   const nextLocked = CHARACTERS.filter((def) => !isUnlocked(def, totalPoints)).sort(
     (a, b) => a.unlockAt - b.unlockAt,
   )[0];
-  el.unlockNote.textContent = nextLocked ? unlockMessage(nextLocked, totalPoints) : t.allUnlocked;
+  // With nothing left to unlock, the line about unlocking is hidden.
+  el.unlockNote.hidden = !nextLocked;
+  el.unlockNote.textContent = nextLocked ? unlockMessage(nextLocked, totalPoints) : '';
 
   el.characters.replaceChildren(
     ...CHARACTERS.map((def) => {
