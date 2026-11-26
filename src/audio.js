@@ -4,7 +4,61 @@
 let ctx = null;
 let muted = false;
 
+// iPhones and iPads silence "game" sound when the switch on the side is set to silent.
+// Music and video are not silenced by it, so the game asks for that kind of sound.
+let mediaSound = false;
+let silence = null;
+
+function useMediaSound() {
+  if (mediaSound) return;
+  mediaSound = true;
+  try {
+    // Newer iPhones and iPads let a page say what kind of sound it makes.
+    if (navigator.audioSession) {
+      navigator.audioSession.type = 'playback';
+      return;
+    }
+  } catch {
+    // Not allowed here; try the older way below.
+  }
+  // Older ones: quietly play a silent sound as ordinary media, which has the same effect.
+  const apple =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (!apple) return;
+  try {
+    if (!silence) {
+      // A quarter of a second of silence, built here so there is no extra file to load.
+      const samples = 2000;
+      const wav = new DataView(new ArrayBuffer(44 + samples));
+      const text = (at, word) => [...word].forEach((letter, i) => wav.setUint8(at + i, letter.charCodeAt(0)));
+      text(0, 'RIFF');
+      wav.setUint32(4, 36 + samples, true);
+      text(8, 'WAVEfmt ');
+      wav.setUint32(16, 16, true);
+      wav.setUint16(20, 1, true); // plain sound
+      wav.setUint16(22, 1, true); // one channel
+      wav.setUint32(24, 8000, true); // samples a second
+      wav.setUint32(28, 8000, true);
+      wav.setUint16(32, 1, true);
+      wav.setUint16(34, 8, true); // 8 bits each
+      text(36, 'data');
+      wav.setUint32(40, samples, true);
+      for (let i = 0; i < samples; i++) wav.setUint8(44 + i, 128); // 128 is silence
+      silence = new Audio(URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })));
+      silence.loop = true;
+      silence.setAttribute('playsinline', '');
+    }
+    // This only works inside a touch, so if it is refused, try again on the next one.
+    silence.play().catch(() => {
+      mediaSound = false;
+    });
+  } catch {
+    mediaSound = false;
+  }
+}
+
 export function unlockAudio() {
+  useMediaSound();
   if (!ctx) {
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtx) return;
@@ -46,7 +100,7 @@ function loadClip(url) {
   return clips.get(url);
 }
 
-function startClip(url, mine) {
+function startClip(url, mine, onFail) {
   loadClip(url)
     .then((buffer) => {
       if (mine !== request || muted) return;
@@ -59,26 +113,30 @@ function startClip(url, mine) {
         if (waiting) {
           const next = waiting;
           waiting = null;
-          startClip(next, request);
+          startClip(next.url, request, next.onFail);
         }
       };
       playing = source;
       source.start();
     })
-    .catch(() => {});
+    .catch(() => {
+      // The clip could not be fetched or understood (no internet, perhaps).
+      if (mine === request) onFail?.();
+    });
 }
 
 // Plays a clip. Normally it cuts off whatever is being said; with { queue: true } it waits
 // for that to finish. Returns false if sound is not available yet (before the first touch).
-export function playVoiceClip(url, { queue = false } = {}) {
+// onFail is called if the clip turns out not to be playable.
+export function playVoiceClip(url, { queue = false, onFail } = {}) {
   if (muted || !ctx) return false;
   if (queue && playing) {
-    waiting = url;
+    waiting = { url, onFail };
     loadClip(url).catch(() => {});
     return true;
   }
   stopVoiceClip();
-  startClip(url, request);
+  startClip(url, request, onFail);
   return true;
 }
 

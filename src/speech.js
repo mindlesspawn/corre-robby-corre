@@ -145,7 +145,8 @@ export function speak(text, { queue = false } = {}) {
   if (!text || muted) return;
 
   const clip = clipFor(text);
-  if (clip && playVoiceClip(clip, { queue })) {
+  // If the clip cannot be played after all, the device's own voice says the line instead.
+  if (clip && playVoiceClip(clip, { queue, onFail: () => speakWithDevice(text, queue) })) {
     synth()?.cancel();
     return;
   }
