@@ -21,7 +21,7 @@ In the numbers game, playing alone stops climbing at sums up to 5. Harder sums a
 - A right door opens, with confetti and a happy spin.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
-- The belt speeds up a little every 3 right answers and eases off after a miss.
+- The belt moves at one steady speed.
 - Stars from every run add up to unlock characters. The best runs go on the high score table.
 
 ## What the learning steps are based on
@@ -43,7 +43,7 @@ Limits worth knowing:
 - The order of steps is expert judgment. The main guide (source 1) says its panel found no direct evidence for any one particular order.
 - Nearly all of this research was done with English-speaking children.
 - Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes after", and dots in varied layouts.
-- The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt speeding up runs against that. The speed settings are in `src/config.js`.
+- The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore moves at one steady speed and no longer speeds up. The doors still arrive on a timer, so a child cannot stop to think for as long as they like. The speed settings are in `src/config.js`.
 - The sources give no direct evidence on how long a round should be or on penalties.
 
 Sources:

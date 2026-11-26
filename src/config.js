@@ -17,9 +17,12 @@ export const CONFIG = {
 
   // --- Speed ---------------------------------------------------------------
   // "Travel time" is how many seconds a row of doors takes to reach the runner.
+  // The belt moves at one steady speed, because guidance for small children says to avoid
+  // fast-paced games. To make it speed up during a run (for older children), set
+  // travelTimeStep to something like 0.25.
   startTravelTime: 5.0,
   minTravelTime: 2.5, // never faster than this, so there is always time to look
-  travelTimeStep: 0.25, // how much quicker each speed step is
+  travelTimeStep: 0, // how much quicker each speed step is; 0 means no speeding up
   correctPerSpeedStep: 3, // right answers needed for one speed step
   speedStepsLostOnMiss: 2, // a wrong answer slows things down again
 
