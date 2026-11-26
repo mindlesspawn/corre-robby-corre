@@ -85,6 +85,12 @@ const clips = new Map(); // address -> the decoded clip (or a promise of it)
 let playing = null; // the clip being said now
 let waiting = null; // one clip waiting for it to finish
 let request = 0; // goes up whenever speech is interrupted, so a slow download is not played late
+let starting = 0; // clips that have been asked for but have not begun yet
+
+// True while a clip is being said, is waiting its turn, or is about to start.
+export function voiceBusy() {
+  return Boolean(playing || waiting || starting > 0);
+}
 
 function loadClip(url) {
   if (!clips.has(url)) {
@@ -101,7 +107,11 @@ function loadClip(url) {
 }
 
 function startClip(url, mine, onFail) {
+  starting += 1;
   loadClip(url)
+    .finally(() => {
+      starting -= 1;
+    })
     .then((buffer) => {
       if (mine !== request || muted) return;
       const source = ctx.createBufferSource();

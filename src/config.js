@@ -16,11 +16,21 @@ export const CONFIG = {
   spawnDistance: 32, // how far away a row of doors appears
 
   // --- Speed ---------------------------------------------------------------
-  // "Travel time" is how many seconds a row of doors takes to reach the runner.
-  // The belt moves at one steady speed, because guidance for small children says to avoid
-  // fast-paced games. To make it speed up during a run (for older children), set
+  // The belt has three speeds, picked on the start screen.
+  //   travel  seconds a row of doors takes to reach the runner
+  //   think   seconds left to think after the question has been said. A long question
+  //           slows the belt for that row, so this time is always there.
+  paces: {
+    slow: { travel: 6.5, think: 3.5 },
+    normal: { travel: 5.0, think: 2.5 },
+    fast: { travel: 4.0, think: 1.8 },
+  },
+  pace: 'normal', // the speed picked the first time someone plays
+  maxWaitForVoice: 6, // the next doors wait up to this long for the voice to finish talking
+
+  // The belt keeps one steady speed through a run, because guidance for small children says
+  // to avoid fast-paced games. To make it speed up during a run (for older children), set
   // travelTimeStep to something like 0.25.
-  startTravelTime: 5.0,
   minTravelTime: 2.5, // never faster than this, so there is always time to look
   travelTimeStep: 0, // how much quicker each speed step is; 0 means no speeding up
   correctPerSpeedStep: 3, // right answers needed for one speed step
@@ -43,8 +53,9 @@ export const CONFIG = {
   nameMaxLength: 10,
 
   // --- Pauses between questions (seconds) ----------------------------------
-  gapAfterCorrect: 0.8,
-  gapAfterWrong: 2.8, // longer, so the right answer can be seen and heard
+  // The next doors also wait for the voice to finish, so these are the shortest pauses.
+  gapAfterCorrect: 0.6,
+  gapAfterWrong: 1.6, // longer, so the right door can be seen
 };
 
 // The door colors, which are also the colors taught in the colors game.

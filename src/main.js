@@ -10,8 +10,10 @@ import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import {
   canSpeak,
+  isSpeaking,
   onVoicesChanged,
   preloadSpeech,
+  speechSeconds,
   setSpeechLanguage,
   setSpeechMuted,
   speak,
@@ -34,6 +36,7 @@ const el = {
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
   languages: $('languages'),
+  paces: $('paces'),
   voiceNote: $('voice-note'),
   title: $('title'),
   stats: $('stats'),
@@ -195,7 +198,29 @@ function renderStart() {
   renderCharacters();
   renderGames();
   renderLevel();
+  renderPaces();
   renderVoiceNote();
+}
+
+const currentPace = () => (CONFIG.paces[store.get().pace] ? store.get().pace : CONFIG.pace);
+
+// The belt speed picker.
+function renderPaces() {
+  const chosen = currentPace();
+  el.paces.replaceChildren(
+    ...Object.keys(CONFIG.paces).map((id) => {
+      const button = tag('button', 'lang-btn', t.paces[id] ?? id);
+      button.type = 'button';
+      button.dataset.pace = id;
+      button.classList.toggle('selected', id === chosen);
+      button.setAttribute('aria-pressed', String(id === chosen));
+      button.addEventListener('click', () => {
+        store.update({ pace: id });
+        renderPaces();
+      });
+      return button;
+    }),
+  );
 }
 
 // Says so, in writing, when this device cannot speak the chosen language.
@@ -345,7 +370,7 @@ function startRun() {
   showProgress();
   el.hint.hidden = false;
   show('play');
-  game.startRun({ game: runGame, skill: store.skill(runGame) });
+  game.startRun({ game: runGame, skill: store.skill(runGame), pace: currentPace() });
   // Said inside the tap, which is what lets the voice work on iPhones and iPads.
   speak(t.say.go);
 }
@@ -410,12 +435,18 @@ const gameEvents = {
       if (info.trick) sfx.trick();
       else sfx.correct();
       replay(el.scorePill, 'pop');
-      speak(pick(t.say.praise));
+      // Spoken praise comes with every other right answer and with every trick,
+      // so the voice is not talking all the time.
+      if (info.trick || info.score % 2 === 1) speak(pick(t.say.praise));
     } else {
       sfx.wrong();
       speak(spokenAnswer(info.question));
     }
   },
+
+  // The game asks these two things so it can wait for the voice and leave time to think.
+  isSpeaking,
+  questionSeconds: (question) => speechSeconds(askText(question)),
 
   onMove() {
     el.hint.hidden = true;

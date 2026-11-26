@@ -1,346 +1,1378 @@
 {
-  "¡Bravo!": "679678776b11.mp3",
-  "¡Buen intento! Vamos otra vez.": "a343db1e2579.mp3",
-  "¡Eso es!": "4e255d25e0c5.mp3",
-  "¡Excelente!": "53c623d005a5.mp3",
-  "¡Ganaste 10 estrellas!": "621fe0e4b0bf.mp3",
-  "¡Ganaste 2 estrellas!": "e6b1019d02c8.mp3",
-  "¡Ganaste 3 estrellas!": "a0ef636e6d53.mp3",
-  "¡Ganaste 4 estrellas!": "698b88404adc.mp3",
-  "¡Ganaste 5 estrellas!": "5fb97f3f8275.mp3",
-  "¡Ganaste 6 estrellas!": "21507bd36e42.mp3",
-  "¡Ganaste 7 estrellas!": "ec44720d51f0.mp3",
-  "¡Ganaste 8 estrellas!": "3a62cd6be216.mp3",
-  "¡Ganaste 9 estrellas!": "89b5c8a7841d.mp3",
-  "¡Ganaste una estrella!": "430ca869726b.mp3",
-  "¡Genial!": "318a97045303.mp3",
-  "¡Muy bien!": "e4c25caccf3e.mp3",
-  "¡Sí!": "dd4bed981005.mp3",
-  "¡Vamos!": "c5b5b6332ad6.mp3",
-  "¿Cuántas estrellas hay?": "f44d6f71d25b.mp3",
-  "¿Cuántas flores hay?": "b894ec6b0ef7.mp3",
-  "¿Cuántas fresas hay?": "cb53a986e8ca.mp3",
-  "¿Cuántas manzanas hay?": "0525fc17dd3c.mp3",
-  "¿Cuántas mariposas hay?": "4be86c49085b.mp3",
-  "¿Cuántas pelotas hay?": "bdad36061208.mp3",
-  "¿Cuántas ranas hay?": "18e58fbfac45.mp3",
-  "¿Cuánto es 1 más 1?": "2c9a21c22306.mp3",
-  "¿Cuánto es 1 más 2?": "28e9644990dc.mp3",
-  "¿Cuánto es 1 más 3?": "4ce0c4a3c1de.mp3",
-  "¿Cuánto es 1 más 4?": "ce2d2209d1e9.mp3",
-  "¿Cuánto es 1 más 5?": "780f428167d4.mp3",
-  "¿Cuánto es 1 más 6?": "a548a5fde1f8.mp3",
-  "¿Cuánto es 1 más 7?": "e91c2a893b18.mp3",
-  "¿Cuánto es 1 más 8?": "10b101ce4fb7.mp3",
-  "¿Cuánto es 1 más 9?": "0b142b3ad9d9.mp3",
-  "¿Cuánto es 2 más 1?": "9401f4f25ccf.mp3",
-  "¿Cuánto es 2 más 2?": "7ebf94a42868.mp3",
-  "¿Cuánto es 2 más 3?": "80c9fabef111.mp3",
-  "¿Cuánto es 2 más 4?": "9b6dd1ba381b.mp3",
-  "¿Cuánto es 2 más 5?": "678d8a5c916e.mp3",
-  "¿Cuánto es 2 más 6?": "ca79eb3660df.mp3",
-  "¿Cuánto es 2 más 7?": "3bcd036af407.mp3",
-  "¿Cuánto es 2 más 8?": "5f68b5ae0260.mp3",
-  "¿Cuánto es 3 más 1?": "f0f9b257a1be.mp3",
-  "¿Cuánto es 3 más 2?": "b4fc217b983e.mp3",
-  "¿Cuánto es 3 más 3?": "4124417b266c.mp3",
-  "¿Cuánto es 3 más 4?": "4210596740da.mp3",
-  "¿Cuánto es 3 más 5?": "1754d9d88af9.mp3",
-  "¿Cuánto es 3 más 6?": "5506dec12619.mp3",
-  "¿Cuánto es 3 más 7?": "37c8ce67a10a.mp3",
-  "¿Cuánto es 4 más 1?": "ae0188851894.mp3",
-  "¿Cuánto es 4 más 2?": "1c4844fb8822.mp3",
-  "¿Cuánto es 4 más 3?": "b10acdd35b90.mp3",
-  "¿Cuánto es 4 más 4?": "3e3c1ddb0563.mp3",
-  "¿Cuánto es 4 más 5?": "836af31e0347.mp3",
-  "¿Cuánto es 4 más 6?": "edd6b0a34703.mp3",
-  "¿Cuánto es 5 más 1?": "6c9f151128ad.mp3",
-  "¿Cuánto es 5 más 2?": "ec4cb11e9cc5.mp3",
-  "¿Cuánto es 5 más 3?": "e5063da17107.mp3",
-  "¿Cuánto es 5 más 4?": "380696067c0e.mp3",
-  "¿Cuánto es 5 más 5?": "be56d178110d.mp3",
-  "¿Cuánto es 6 más 1?": "9b7acb175895.mp3",
-  "¿Cuánto es 6 más 2?": "d300c6dea43e.mp3",
-  "¿Cuánto es 6 más 3?": "a0721c259f4f.mp3",
-  "¿Cuánto es 6 más 4?": "b80ce1599557.mp3",
-  "¿Cuánto es 7 más 1?": "d60a00cd27ce.mp3",
-  "¿Cuánto es 7 más 2?": "36212c06e50f.mp3",
-  "¿Cuánto es 7 más 3?": "ea7f46501e6b.mp3",
-  "¿Cuánto es 8 más 1?": "bf9976a8f1e5.mp3",
-  "¿Cuánto es 8 más 2?": "d7761740f1bb.mp3",
-  "¿Cuánto es 9 más 1?": "553d52b546f0.mp3",
-  "¿Cuántos dedos hay?": "2f2bd2f06dca.mp3",
-  "¿Dónde hay 1?": "948b1237fcb6.mp3",
-  "¿Dónde hay 10?": "aaecf0cd81ab.mp3",
-  "¿Dónde hay 2?": "73e9530720bc.mp3",
-  "¿Dónde hay 3?": "6e7ecbb5b572.mp3",
-  "¿Dónde hay 4?": "30685d4febc2.mp3",
-  "¿Dónde hay 5?": "771d6027921e.mp3",
-  "¿Dónde hay 6?": "3656eae32b82.mp3",
-  "¿Dónde hay 7?": "e323e3c251e0.mp3",
-  "¿Dónde hay 8?": "c459e06ab2b1.mp3",
-  "¿Dónde hay 9?": "90dcd9a43452.mp3",
-  "¿Dónde hay más?": "0d90cf560adb.mp3",
-  "¿Dónde hay menos?": "450e63b0c3f4.mp3",
-  "1 más 1 son 2": "9e52435cae11.mp3",
-  "1 más 2 son 3": "046531ac689c.mp3",
-  "1 más 3 son 4": "03375a624d9e.mp3",
-  "1 más 4 son 5": "f33cb4311c1f.mp3",
-  "1 más 5 son 6": "9110efcda30d.mp3",
-  "1 más 6 son 7": "6b91c3ed738a.mp3",
-  "1 más 7 son 8": "b419c5f72ce9.mp3",
-  "1 más 8 son 9": "f6bb712be398.mp3",
-  "1 más 9 son 10": "d3b8e456042a.mp3",
-  "1, 2, 3, 4, 5. Hay 5 dedos": "1f736144059f.mp3",
-  "1, 2, 3, 4, 5. Hay 5 estrellas": "0bfbbb8adf07.mp3",
-  "1, 2, 3, 4, 5. Hay 5 flores": "d35da96d9f24.mp3",
-  "1, 2, 3, 4, 5. Hay 5 fresas": "3b59296f890d.mp3",
-  "1, 2, 3, 4, 5. Hay 5 manzanas": "986d0d8afd99.mp3",
-  "1, 2, 3, 4, 5. Hay 5 mariposas": "9cb9297a5d59.mp3",
-  "1, 2, 3, 4, 5. Hay 5 pelotas": "03d5713ea19b.mp3",
-  "1, 2, 3, 4, 5. Hay 5 ranas": "a9cc09cae212.mp3",
-  "1, 2, 3, 4. Hay 4 dedos": "6a4af3950006.mp3",
-  "1, 2, 3, 4. Hay 4 estrellas": "629d2349ce80.mp3",
-  "1, 2, 3, 4. Hay 4 flores": "9cef830a7a28.mp3",
-  "1, 2, 3, 4. Hay 4 fresas": "782c6008c6d2.mp3",
-  "1, 2, 3, 4. Hay 4 manzanas": "01b0cf539fef.mp3",
-  "1, 2, 3, 4. Hay 4 mariposas": "ad0a8b031b1e.mp3",
-  "1, 2, 3, 4. Hay 4 pelotas": "779e47d036ec.mp3",
-  "1, 2, 3, 4. Hay 4 ranas": "574b31f28135.mp3",
-  "1, 2, 3. Hay 3 dedos": "60f9e1d5de0d.mp3",
-  "1, 2, 3. Hay 3 estrellas": "cb22e9462a6a.mp3",
-  "1, 2, 3. Hay 3 flores": "878059b6d525.mp3",
-  "1, 2, 3. Hay 3 fresas": "6a897aa7f0bb.mp3",
-  "1, 2, 3. Hay 3 manzanas": "f3ca93bd0fbb.mp3",
-  "1, 2, 3. Hay 3 mariposas": "b41ac86ff19a.mp3",
-  "1, 2, 3. Hay 3 pelotas": "4bfe7aef523a.mp3",
-  "1, 2, 3. Hay 3 ranas": "b38f9b46c8cd.mp3",
-  "1, 2. Hay 2 dedos": "98d405264deb.mp3",
-  "1, 2. Hay 2 estrellas": "6c70dcc2dc6c.mp3",
-  "1, 2. Hay 2 flores": "6af8833f90cd.mp3",
-  "1, 2. Hay 2 fresas": "d9c7aafb483e.mp3",
-  "1, 2. Hay 2 manzanas": "ed4dcca62f13.mp3",
-  "1, 2. Hay 2 mariposas": "cd53ac3a6327.mp3",
-  "1, 2. Hay 2 pelotas": "679d7888b8b7.mp3",
-  "1, 2. Hay 2 ranas": "a44f25500eae.mp3",
-  "2 dedos. ¿Dónde hay 2?": "1ead62b02ad1.mp3",
-  "2 estrellas. ¿Dónde hay 2?": "1300a198882b.mp3",
-  "2 flores. ¿Dónde hay 2?": "67031bd96857.mp3",
-  "2 fresas. ¿Dónde hay 2?": "fa23e60e7848.mp3",
-  "2 manzanas. ¿Dónde hay 2?": "cfa2e3131adf.mp3",
-  "2 mariposas. ¿Dónde hay 2?": "7f4f5a9bbcad.mp3",
-  "2 más 1 son 3": "6f4ed930f001.mp3",
-  "2 más 2 son 4": "8b223fc111bb.mp3",
-  "2 más 3 son 5": "550e98c4e8bc.mp3",
-  "2 más 4 son 6": "35bdace854b9.mp3",
-  "2 más 5 son 7": "3f7334e4d26c.mp3",
-  "2 más 6 son 8": "b6a47d020abf.mp3",
-  "2 más 7 son 9": "0d6cfffb38e3.mp3",
-  "2 más 8 son 10": "20b85622533e.mp3",
-  "2 pelotas. ¿Dónde hay 2?": "8700f5a37fd0.mp3",
-  "2 ranas. ¿Dónde hay 2?": "9f48de56ef38.mp3",
-  "3 dedos. ¿Dónde hay 3?": "295f2fbfc941.mp3",
-  "3 estrellas. ¿Dónde hay 3?": "55239e11f553.mp3",
-  "3 flores. ¿Dónde hay 3?": "d3896b4eb6e5.mp3",
-  "3 fresas. ¿Dónde hay 3?": "3897c482d4a3.mp3",
-  "3 manzanas. ¿Dónde hay 3?": "e8415ee7aa9f.mp3",
-  "3 mariposas. ¿Dónde hay 3?": "0e12a1368e3a.mp3",
-  "3 más 1 son 4": "d297296ec343.mp3",
-  "3 más 2 son 5": "a9cb3b2cab9e.mp3",
-  "3 más 3 son 6": "827f2888b79c.mp3",
-  "3 más 4 son 7": "5b7f9fdb0f9b.mp3",
-  "3 más 5 son 8": "bdaed2f86da7.mp3",
-  "3 más 6 son 9": "fb7c36eebe1e.mp3",
-  "3 más 7 son 10": "ad9d058fbe75.mp3",
-  "3 pelotas. ¿Dónde hay 3?": "2a31d93101e7.mp3",
-  "3 ranas. ¿Dónde hay 3?": "1ba7093cb662.mp3",
-  "4 dedos. ¿Dónde hay 4?": "77ccf5ee29ab.mp3",
-  "4 estrellas. ¿Dónde hay 4?": "c1bc200f7279.mp3",
-  "4 flores. ¿Dónde hay 4?": "2722d29dc221.mp3",
-  "4 fresas. ¿Dónde hay 4?": "b09b653d94b2.mp3",
-  "4 manzanas. ¿Dónde hay 4?": "fa353bfe4a6f.mp3",
-  "4 mariposas. ¿Dónde hay 4?": "177c1848d0f4.mp3",
-  "4 más 1 son 5": "2d7ab6872d94.mp3",
-  "4 más 2 son 6": "d4cf105bc1a3.mp3",
-  "4 más 3 son 7": "c2d53ed5a8e1.mp3",
-  "4 más 4 son 8": "3e00c67a19ad.mp3",
-  "4 más 5 son 9": "c3a7b30dc4db.mp3",
-  "4 más 6 son 10": "da8e1fa934a5.mp3",
-  "4 pelotas. ¿Dónde hay 4?": "f49e7bd9cd9a.mp3",
-  "4 ranas. ¿Dónde hay 4?": "b8f2f50cf5cb.mp3",
-  "5 dedos. ¿Dónde hay 5?": "942b60e61371.mp3",
-  "5 estrellas. ¿Dónde hay 5?": "91dd82377725.mp3",
-  "5 flores. ¿Dónde hay 5?": "bddee6b7437b.mp3",
-  "5 fresas. ¿Dónde hay 5?": "7d2f04b1381c.mp3",
-  "5 manzanas. ¿Dónde hay 5?": "cefab30c8b4b.mp3",
-  "5 mariposas. ¿Dónde hay 5?": "ad14a17d3a52.mp3",
-  "5 más 1 son 6": "9d948b901e84.mp3",
-  "5 más 2 son 7": "cdefef901716.mp3",
-  "5 más 3 son 8": "ab730e7f5eaa.mp3",
-  "5 más 4 son 9": "632eb406e8b8.mp3",
-  "5 más 5 son 10": "3b210e2dc606.mp3",
-  "5 pelotas. ¿Dónde hay 5?": "03901f0d2b55.mp3",
-  "5 ranas. ¿Dónde hay 5?": "ef59201bbe10.mp3",
-  "6 más 1 son 7": "b5819aa5fabd.mp3",
-  "6 más 2 son 8": "b3179a7adb8c.mp3",
-  "6 más 3 son 9": "afaf040f8b1b.mp3",
-  "6 más 4 son 10": "7a092a5cd49c.mp3",
-  "7 más 1 son 8": "4f39d5ec1262.mp3",
-  "7 más 2 son 9": "4ea11c2f3aba.mp3",
-  "7 más 3 son 10": "5640ce8158c9.mp3",
-  "8 más 1 son 9": "1b61107ddc27.mp3",
-  "8 más 2 son 10": "f7aaa493599d.mp3",
-  "9 más 1 son 10": "1a93e60d69c7.mp3",
-  "Aquí está el anillo": "25c1870674b3.mp3",
-  "Aquí está el castillo": "626abb601350.mp3",
-  "Aquí está el círculo": "128114721ca4.mp3",
-  "Aquí está el corazón": "dd5e77a1c480.mp3",
-  "Aquí está el cuadrado": "ff0c7531eb72.mp3",
-  "Aquí está el triángulo": "35fffc8db7d0.mp3",
-  "Aquí está el unicornio": "f4d2559d387f.mp3",
-  "Aquí está el vestido": "a5fdcd43a39e.mp3",
-  "Aquí está el zapato": "815fcef34513.mp3",
-  "Aquí está la corona": "4ca441678041.mp3",
-  "Aquí está la estrella": "f90e25d8fc2d.mp3",
-  "Aquí está la rana": "3c75c087ba49.mp3",
-  "Aquí está la rosa": "e9e27ea7bbb7.mp3",
-  "Aquí está la varita": "463a14bfbf55.mp3",
-  "Aquí hay 1": "b25c5260784f.mp3",
-  "Aquí hay 10": "e16fc17390a5.mp3",
-  "Aquí hay 2": "de033454e499.mp3",
-  "Aquí hay 3": "dc31347f0a85.mp3",
-  "Aquí hay 4": "403dd1c2d800.mp3",
-  "Aquí hay 5": "79451037eff6.mp3",
-  "Aquí hay 6": "343a63890078.mp3",
-  "Aquí hay 7": "29c798aba297.mp3",
-  "Aquí hay 8": "6e3b9e001135.mp3",
-  "Aquí hay 9": "01822ae7d53f.mp3",
-  "Aquí hay más. Hay 1.": "b5cd3c3f97e0.mp3",
-  "Aquí hay más. Hay 2.": "787c8a8fc096.mp3",
-  "Aquí hay más. Hay 3.": "567ef32ff0a7.mp3",
-  "Aquí hay más. Hay 4.": "409e65abb170.mp3",
-  "Aquí hay más. Hay 5.": "87914974f01a.mp3",
-  "Aquí hay más. Hay 6.": "196213609b73.mp3",
-  "Aquí hay menos. Hay 1.": "bb25f080c65e.mp3",
-  "Aquí hay menos. Hay 2.": "462050fae180.mp3",
-  "Aquí hay menos. Hay 3.": "0f2aa65baf56.mp3",
-  "Aquí hay menos. Hay 4.": "3e493106f5f1.mp3",
-  "Aquí hay menos. Hay 5.": "b0bd891d189f.mp3",
-  "Aquí hay menos. Hay 6.": "3712f2ee3741.mp3",
-  "Busca el anillo": "0af07ece725e.mp3",
-  "Busca el castillo": "87b9e6fb9f89.mp3",
-  "Busca el círculo": "ab5da2d48bd1.mp3",
-  "Busca el color amarillo": "05897b1e7c0a.mp3",
-  "Busca el color azul": "a3d3edcd28f3.mp3",
-  "Busca el color morado": "fa6a12a8964d.mp3",
-  "Busca el color naranja": "5177493cb4c7.mp3",
-  "Busca el color rojo": "44834a7b9111.mp3",
-  "Busca el color rosa": "0aa8811e3992.mp3",
-  "Busca el color verde": "64e81522882b.mp3",
-  "Busca el corazón": "a5976cee2185.mp3",
-  "Busca el cuadrado": "b6df78dd5f86.mp3",
-  "Busca el triángulo": "dc99f80a2733.mp3",
-  "Busca el unicornio": "91b3763110bf.mp3",
-  "Busca el vestido": "6ba1ea830dca.mp3",
-  "Busca el zapato": "4485280be2a6.mp3",
-  "Busca la corona": "4ac76aa9a18a.mp3",
-  "Busca la estrella": "4e3bec676b9c.mp3",
-  "Busca la rana": "afc599a56b15.mp3",
-  "Busca la rosa": "1d981b0a517c.mp3",
-  "Busca la varita": "50e88c4218d1.mp3",
-  "Este es el amarillo": "95236302c58f.mp3",
-  "Este es el azul": "252af7921064.mp3",
-  "Este es el morado": "6db3b0daf61a.mp3",
-  "Este es el naranja": "873bce10772d.mp3",
-  "Este es el rojo": "9748dadcbf12.mp3",
-  "Este es el rosa": "98717915421d.mp3",
-  "Este es el verde": "89d556d1b340.mp3",
-  "Hay 10 dedos": "d29e41d8ffeb.mp3",
-  "Hay 10 estrellas": "f310fe867cd6.mp3",
-  "Hay 10 flores": "a5e4ccc89765.mp3",
-  "Hay 10 fresas": "803a3c05ac86.mp3",
-  "Hay 10 manzanas": "0a2a5ce3364f.mp3",
-  "Hay 10 mariposas": "4c06f286698a.mp3",
-  "Hay 10 pelotas": "74905809422c.mp3",
-  "Hay 10 ranas": "0ab2daa6d3a6.mp3",
-  "Hay 2 dedos": "41626908cbac.mp3",
-  "Hay 2 estrellas": "9cd8199ac8c9.mp3",
-  "Hay 2 flores": "815f67e1cfff.mp3",
-  "Hay 2 fresas": "c8c974e0b68d.mp3",
-  "Hay 2 manzanas": "ecbde8da0e04.mp3",
-  "Hay 2 mariposas": "bf1ab53f6f78.mp3",
-  "Hay 2 pelotas": "6a00b6ed3fcb.mp3",
-  "Hay 2 ranas": "55ef9e4ad3bd.mp3",
-  "Hay 3 dedos": "c373e15438a4.mp3",
-  "Hay 3 estrellas": "0666a34823b6.mp3",
-  "Hay 3 flores": "99ea9cb7e811.mp3",
-  "Hay 3 fresas": "d646257a7b22.mp3",
-  "Hay 3 manzanas": "29bea5d3e085.mp3",
-  "Hay 3 mariposas": "260627813b57.mp3",
-  "Hay 3 pelotas": "1eb33cafb271.mp3",
-  "Hay 3 ranas": "e33364f0953b.mp3",
-  "Hay 4 dedos": "3fd0cc416293.mp3",
-  "Hay 4 estrellas": "85fc02a6f234.mp3",
-  "Hay 4 flores": "f97d4d69567a.mp3",
-  "Hay 4 fresas": "644de70d0076.mp3",
-  "Hay 4 manzanas": "f340dffb602b.mp3",
-  "Hay 4 mariposas": "a57d5f2c7c15.mp3",
-  "Hay 4 pelotas": "2c211527ff75.mp3",
-  "Hay 4 ranas": "9434af5a62cd.mp3",
-  "Hay 5 dedos": "ea32be15d7d9.mp3",
-  "Hay 5 estrellas": "0341c59dc904.mp3",
-  "Hay 5 flores": "653cd390e521.mp3",
-  "Hay 5 fresas": "d3aab52ba376.mp3",
-  "Hay 5 manzanas": "a7c0f6d34ca8.mp3",
-  "Hay 5 mariposas": "5ccc3241f587.mp3",
-  "Hay 5 pelotas": "b8bd163c4a2d.mp3",
-  "Hay 5 ranas": "ab8015bf3b40.mp3",
-  "Hay 6 dedos": "86778cccd63d.mp3",
-  "Hay 6 estrellas": "2071f72cc864.mp3",
-  "Hay 6 flores": "1a3051ed2df1.mp3",
-  "Hay 6 fresas": "ccdc071a8433.mp3",
-  "Hay 6 manzanas": "25e3d731cb10.mp3",
-  "Hay 6 mariposas": "bdaff66f718d.mp3",
-  "Hay 6 pelotas": "8a5729d5b99e.mp3",
-  "Hay 6 ranas": "539a86d509aa.mp3",
-  "Hay 7 dedos": "590c3c764e1b.mp3",
-  "Hay 7 estrellas": "bfdfdcd6d452.mp3",
-  "Hay 7 flores": "664e8ad7247a.mp3",
-  "Hay 7 fresas": "abd1501876e9.mp3",
-  "Hay 7 manzanas": "40f37fe0778e.mp3",
-  "Hay 7 mariposas": "aef0da957ca6.mp3",
-  "Hay 7 pelotas": "38bf257f4738.mp3",
-  "Hay 7 ranas": "017f17aac29e.mp3",
-  "Hay 8 dedos": "b6692a4c6787.mp3",
-  "Hay 8 estrellas": "41d233ef847f.mp3",
-  "Hay 8 flores": "72e86361464d.mp3",
-  "Hay 8 fresas": "fa15621dbda1.mp3",
-  "Hay 8 manzanas": "4268752bb1c1.mp3",
-  "Hay 8 mariposas": "e161e38c8269.mp3",
-  "Hay 8 pelotas": "080187d44652.mp3",
-  "Hay 8 ranas": "370f2fe4774d.mp3",
-  "Hay 9 dedos": "1d13abd9e75d.mp3",
-  "Hay 9 estrellas": "ec0028aef608.mp3",
-  "Hay 9 flores": "860cff29213d.mp3",
-  "Hay 9 fresas": "2f739df5dfb9.mp3",
-  "Hay 9 manzanas": "9fa67a334736.mp3",
-  "Hay 9 mariposas": "078b4e65d398.mp3",
-  "Hay 9 pelotas": "208b4e0aa5e9.mp3",
-  "Hay 9 ranas": "81f700a9d793.mp3",
-  "Hay un dedo": "e90c857055da.mp3",
-  "Hay una estrella": "db74c17c4ace.mp3",
-  "Hay una flor": "a49d47886a55.mp3",
-  "Hay una fresa": "5480c37fbbcb.mp3",
-  "Hay una manzana": "094928346fd5.mp3",
-  "Hay una mariposa": "60a7548d3ff8.mp3",
-  "Hay una pelota": "3a2d2df6387f.mp3",
-  "Hay una rana": "73031a6089c3.mp3",
-  "Un dedo. ¿Dónde hay uno?": "12312e2da89f.mp3",
-  "Una estrella. ¿Dónde hay una?": "fd9ce8245680.mp3",
-  "Una flor. ¿Dónde hay una?": "9092ad59fb8b.mp3",
-  "Una fresa. ¿Dónde hay una?": "e674574950b9.mp3",
-  "Una manzana. ¿Dónde hay una?": "9c964ba6144e.mp3",
-  "Una mariposa. ¿Dónde hay una?": "b6ebe0c73a42.mp3",
-  "Una pelota. ¿Dónde hay una?": "6c283d110709.mp3",
-  "Una rana. ¿Dónde hay una?": "bc41d1586063.mp3"
+  "¡Bravo!": [
+    "679678776b11.mp3",
+    1.51
+  ],
+  "¡Buen intento! Vamos otra vez.": [
+    "a343db1e2579.mp3",
+    3.82
+  ],
+  "¡Eso es!": [
+    "4e255d25e0c5.mp3",
+    1.46
+  ],
+  "¡Excelente!": [
+    "53c623d005a5.mp3",
+    1.7
+  ],
+  "¡Ganaste 10 estrellas!": [
+    "621fe0e4b0bf.mp3",
+    3.65
+  ],
+  "¡Ganaste 2 estrellas!": [
+    "e6b1019d02c8.mp3",
+    3
+  ],
+  "¡Ganaste 3 estrellas!": [
+    "a0ef636e6d53.mp3",
+    4.32
+  ],
+  "¡Ganaste 4 estrellas!": [
+    "698b88404adc.mp3",
+    2.9
+  ],
+  "¡Ganaste 5 estrellas!": [
+    "5fb97f3f8275.mp3",
+    2.9
+  ],
+  "¡Ganaste 6 estrellas!": [
+    "21507bd36e42.mp3",
+    2.35
+  ],
+  "¡Ganaste 7 estrellas!": [
+    "ec44720d51f0.mp3",
+    3.05
+  ],
+  "¡Ganaste 8 estrellas!": [
+    "3a62cd6be216.mp3",
+    3.22
+  ],
+  "¡Ganaste 9 estrellas!": [
+    "89b5c8a7841d.mp3",
+    3.31
+  ],
+  "¡Ganaste una estrella!": [
+    "430ca869726b.mp3",
+    2.86
+  ],
+  "¡Genial!": [
+    "318a97045303.mp3",
+    1.75
+  ],
+  "¡Muy bien!": [
+    "e4c25caccf3e.mp3",
+    2.66
+  ],
+  "¡Sí!": [
+    "dd4bed981005.mp3",
+    1.25
+  ],
+  "¡Vamos!": [
+    "c5b5b6332ad6.mp3",
+    1.46
+  ],
+  "¿Cuántas estrellas hay?": [
+    "f44d6f71d25b.mp3",
+    2.52
+  ],
+  "¿Cuántas flores hay?": [
+    "b894ec6b0ef7.mp3",
+    4.06
+  ],
+  "¿Cuántas fresas hay?": [
+    "cb53a986e8ca.mp3",
+    1.85
+  ],
+  "¿Cuántas manzanas hay?": [
+    "0525fc17dd3c.mp3",
+    3.96
+  ],
+  "¿Cuántas mariposas hay?": [
+    "4be86c49085b.mp3",
+    3.36
+  ],
+  "¿Cuántas pelotas hay?": [
+    "bdad36061208.mp3",
+    2.26
+  ],
+  "¿Cuántas ranas hay?": [
+    "18e58fbfac45.mp3",
+    2.71
+  ],
+  "¿Cuánto es 1 más 1?": [
+    "2c9a21c22306.mp3",
+    3.17
+  ],
+  "¿Cuánto es 1 más 2?": [
+    "28e9644990dc.mp3",
+    3.12
+  ],
+  "¿Cuánto es 1 más 3?": [
+    "4ce0c4a3c1de.mp3",
+    3.46
+  ],
+  "¿Cuánto es 1 más 4?": [
+    "ce2d2209d1e9.mp3",
+    4.15
+  ],
+  "¿Cuánto es 1 más 5?": [
+    "780f428167d4.mp3",
+    3.72
+  ],
+  "¿Cuánto es 1 más 6?": [
+    "a548a5fde1f8.mp3",
+    3.6
+  ],
+  "¿Cuánto es 1 más 7?": [
+    "e91c2a893b18.mp3",
+    2.86
+  ],
+  "¿Cuánto es 1 más 8?": [
+    "10b101ce4fb7.mp3",
+    3.05
+  ],
+  "¿Cuánto es 1 más 9?": [
+    "0b142b3ad9d9.mp3",
+    2.76
+  ],
+  "¿Cuánto es 2 más 1?": [
+    "9401f4f25ccf.mp3",
+    2.9
+  ],
+  "¿Cuánto es 2 más 2?": [
+    "7ebf94a42868.mp3",
+    3.41
+  ],
+  "¿Cuánto es 2 más 3?": [
+    "80c9fabef111.mp3",
+    2.95
+  ],
+  "¿Cuánto es 2 más 4?": [
+    "9b6dd1ba381b.mp3",
+    3.12
+  ],
+  "¿Cuánto es 2 más 5?": [
+    "678d8a5c916e.mp3",
+    2.86
+  ],
+  "¿Cuánto es 2 más 6?": [
+    "ca79eb3660df.mp3",
+    3.26
+  ],
+  "¿Cuánto es 2 más 7?": [
+    "3bcd036af407.mp3",
+    2.81
+  ],
+  "¿Cuánto es 2 más 8?": [
+    "5f68b5ae0260.mp3",
+    2.3
+  ],
+  "¿Cuánto es 3 más 1?": [
+    "f0f9b257a1be.mp3",
+    2.86
+  ],
+  "¿Cuánto es 3 más 2?": [
+    "b4fc217b983e.mp3",
+    3.05
+  ],
+  "¿Cuánto es 3 más 3?": [
+    "4124417b266c.mp3",
+    3.17
+  ],
+  "¿Cuánto es 3 más 4?": [
+    "4210596740da.mp3",
+    2.9
+  ],
+  "¿Cuánto es 3 más 5?": [
+    "1754d9d88af9.mp3",
+    2.52
+  ],
+  "¿Cuánto es 3 más 6?": [
+    "5506dec12619.mp3",
+    2.66
+  ],
+  "¿Cuánto es 3 más 7?": [
+    "37c8ce67a10a.mp3",
+    3.46
+  ],
+  "¿Cuánto es 4 más 1?": [
+    "ae0188851894.mp3",
+    4.01
+  ],
+  "¿Cuánto es 4 más 2?": [
+    "1c4844fb8822.mp3",
+    3.6
+  ],
+  "¿Cuánto es 4 más 3?": [
+    "b10acdd35b90.mp3",
+    3.55
+  ],
+  "¿Cuánto es 4 más 4?": [
+    "3e3c1ddb0563.mp3",
+    3.6
+  ],
+  "¿Cuánto es 4 más 5?": [
+    "836af31e0347.mp3",
+    3.77
+  ],
+  "¿Cuánto es 4 más 6?": [
+    "edd6b0a34703.mp3",
+    3.31
+  ],
+  "¿Cuánto es 5 más 1?": [
+    "6c9f151128ad.mp3",
+    4.06
+  ],
+  "¿Cuánto es 5 más 2?": [
+    "ec4cb11e9cc5.mp3",
+    2.66
+  ],
+  "¿Cuánto es 5 más 3?": [
+    "e5063da17107.mp3",
+    4.06
+  ],
+  "¿Cuánto es 5 más 4?": [
+    "380696067c0e.mp3",
+    4.32
+  ],
+  "¿Cuánto es 5 más 5?": [
+    "be56d178110d.mp3",
+    2.52
+  ],
+  "¿Cuánto es 6 más 1?": [
+    "9b7acb175895.mp3",
+    2.9
+  ],
+  "¿Cuánto es 6 más 2?": [
+    "d300c6dea43e.mp3",
+    3.22
+  ],
+  "¿Cuánto es 6 más 3?": [
+    "a0721c259f4f.mp3",
+    5.02
+  ],
+  "¿Cuánto es 6 más 4?": [
+    "b80ce1599557.mp3",
+    3.05
+  ],
+  "¿Cuánto es 7 más 1?": [
+    "d60a00cd27ce.mp3",
+    3.72
+  ],
+  "¿Cuánto es 7 más 2?": [
+    "36212c06e50f.mp3",
+    4.2
+  ],
+  "¿Cuánto es 7 más 3?": [
+    "ea7f46501e6b.mp3",
+    4.37
+  ],
+  "¿Cuánto es 8 más 1?": [
+    "bf9976a8f1e5.mp3",
+    3.05
+  ],
+  "¿Cuánto es 8 más 2?": [
+    "d7761740f1bb.mp3",
+    4.42
+  ],
+  "¿Cuánto es 9 más 1?": [
+    "553d52b546f0.mp3",
+    3
+  ],
+  "¿Cuántos dedos hay?": [
+    "2f2bd2f06dca.mp3",
+    2.11
+  ],
+  "¿Dónde hay 1?": [
+    "948b1237fcb6.mp3",
+    1.75
+  ],
+  "¿Dónde hay 10?": [
+    "aaecf0cd81ab.mp3",
+    2.95
+  ],
+  "¿Dónde hay 2?": [
+    "73e9530720bc.mp3",
+    3.22
+  ],
+  "¿Dónde hay 3?": [
+    "6e7ecbb5b572.mp3",
+    1.97
+  ],
+  "¿Dónde hay 4?": [
+    "30685d4febc2.mp3",
+    3.31
+  ],
+  "¿Dónde hay 5?": [
+    "771d6027921e.mp3",
+    3.12
+  ],
+  "¿Dónde hay 6?": [
+    "3656eae32b82.mp3",
+    2.57
+  ],
+  "¿Dónde hay 7?": [
+    "e323e3c251e0.mp3",
+    1.97
+  ],
+  "¿Dónde hay 8?": [
+    "c459e06ab2b1.mp3",
+    3.31
+  ],
+  "¿Dónde hay 9?": [
+    "90dcd9a43452.mp3",
+    3.17
+  ],
+  "¿Dónde hay más?": [
+    "0d90cf560adb.mp3",
+    2.66
+  ],
+  "¿Dónde hay menos?": [
+    "450e63b0c3f4.mp3",
+    2.35
+  ],
+  "1 más 1 son 2": [
+    "9e52435cae11.mp3",
+    3.31
+  ],
+  "1 más 2 son 3": [
+    "046531ac689c.mp3",
+    4.1
+  ],
+  "1 más 3 son 4": [
+    "03375a624d9e.mp3",
+    3.36
+  ],
+  "1 más 4 son 5": [
+    "f33cb4311c1f.mp3",
+    4.85
+  ],
+  "1 más 5 son 6": [
+    "9110efcda30d.mp3",
+    3.31
+  ],
+  "1 más 6 son 7": [
+    "6b91c3ed738a.mp3",
+    2.81
+  ],
+  "1 más 7 son 8": [
+    "b419c5f72ce9.mp3",
+    4.2
+  ],
+  "1 más 8 son 9": [
+    "f6bb712be398.mp3",
+    3.05
+  ],
+  "1 más 9 son 10": [
+    "d3b8e456042a.mp3",
+    4.06
+  ],
+  "1, 2, 3, 4, 5. Hay 5 dedos": [
+    "1f736144059f.mp3",
+    5.81
+  ],
+  "1, 2, 3, 4, 5. Hay 5 estrellas": [
+    "0bfbbb8adf07.mp3",
+    5.21
+  ],
+  "1, 2, 3, 4, 5. Hay 5 flores": [
+    "d35da96d9f24.mp3",
+    6.82
+  ],
+  "1, 2, 3, 4, 5. Hay 5 fresas": [
+    "3b59296f890d.mp3",
+    6.46
+  ],
+  "1, 2, 3, 4, 5. Hay 5 manzanas": [
+    "986d0d8afd99.mp3",
+    5.45
+  ],
+  "1, 2, 3, 4, 5. Hay 5 mariposas": [
+    "9cb9297a5d59.mp3",
+    6.77
+  ],
+  "1, 2, 3, 4, 5. Hay 5 pelotas": [
+    "03d5713ea19b.mp3",
+    6.55
+  ],
+  "1, 2, 3, 4, 5. Hay 5 ranas": [
+    "a9cc09cae212.mp3",
+    6.6
+  ],
+  "1, 2, 3, 4. Hay 4 dedos": [
+    "6a4af3950006.mp3",
+    5.26
+  ],
+  "1, 2, 3, 4. Hay 4 estrellas": [
+    "629d2349ce80.mp3",
+    5.66
+  ],
+  "1, 2, 3, 4. Hay 4 flores": [
+    "9cef830a7a28.mp3",
+    5.06
+  ],
+  "1, 2, 3, 4. Hay 4 fresas": [
+    "782c6008c6d2.mp3",
+    6.17
+  ],
+  "1, 2, 3, 4. Hay 4 manzanas": [
+    "01b0cf539fef.mp3",
+    5.66
+  ],
+  "1, 2, 3, 4. Hay 4 mariposas": [
+    "ad0a8b031b1e.mp3",
+    6.05
+  ],
+  "1, 2, 3, 4. Hay 4 pelotas": [
+    "779e47d036ec.mp3",
+    4.85
+  ],
+  "1, 2, 3, 4. Hay 4 ranas": [
+    "574b31f28135.mp3",
+    6.05
+  ],
+  "1, 2, 3. Hay 3 dedos": [
+    "60f9e1d5de0d.mp3",
+    4.7
+  ],
+  "1, 2, 3. Hay 3 estrellas": [
+    "cb22e9462a6a.mp3",
+    6.26
+  ],
+  "1, 2, 3. Hay 3 flores": [
+    "878059b6d525.mp3",
+    5.16
+  ],
+  "1, 2, 3. Hay 3 fresas": [
+    "6a897aa7f0bb.mp3",
+    5.81
+  ],
+  "1, 2, 3. Hay 3 manzanas": [
+    "f3ca93bd0fbb.mp3",
+    5.62
+  ],
+  "1, 2, 3. Hay 3 mariposas": [
+    "b41ac86ff19a.mp3",
+    4.1
+  ],
+  "1, 2, 3. Hay 3 pelotas": [
+    "4bfe7aef523a.mp3",
+    3.55
+  ],
+  "1, 2, 3. Hay 3 ranas": [
+    "b38f9b46c8cd.mp3",
+    5.3
+  ],
+  "1, 2. Hay 2 dedos": [
+    "98d405264deb.mp3",
+    3.6
+  ],
+  "1, 2. Hay 2 estrellas": [
+    "6c70dcc2dc6c.mp3",
+    4.06
+  ],
+  "1, 2. Hay 2 flores": [
+    "6af8833f90cd.mp3",
+    3.72
+  ],
+  "1, 2. Hay 2 fresas": [
+    "d9c7aafb483e.mp3",
+    3.86
+  ],
+  "1, 2. Hay 2 manzanas": [
+    "ed4dcca62f13.mp3",
+    5.62
+  ],
+  "1, 2. Hay 2 mariposas": [
+    "cd53ac3a6327.mp3",
+    4.8
+  ],
+  "1, 2. Hay 2 pelotas": [
+    "679d7888b8b7.mp3",
+    4.06
+  ],
+  "1, 2. Hay 2 ranas": [
+    "a44f25500eae.mp3",
+    3.17
+  ],
+  "2 dedos. ¿Dónde hay 2?": [
+    "1ead62b02ad1.mp3",
+    4.06
+  ],
+  "2 estrellas. ¿Dónde hay 2?": [
+    "1300a198882b.mp3",
+    3.65
+  ],
+  "2 flores. ¿Dónde hay 2?": [
+    "67031bd96857.mp3",
+    3
+  ],
+  "2 fresas. ¿Dónde hay 2?": [
+    "fa23e60e7848.mp3",
+    3.55
+  ],
+  "2 manzanas. ¿Dónde hay 2?": [
+    "cfa2e3131adf.mp3",
+    4.2
+  ],
+  "2 mariposas. ¿Dónde hay 2?": [
+    "7f4f5a9bbcad.mp3",
+    3.41
+  ],
+  "2 más 1 son 3": [
+    "6f4ed930f001.mp3",
+    3
+  ],
+  "2 más 2 son 4": [
+    "8b223fc111bb.mp3",
+    3.5
+  ],
+  "2 más 3 son 5": [
+    "550e98c4e8bc.mp3",
+    3.86
+  ],
+  "2 más 4 son 6": [
+    "35bdace854b9.mp3",
+    3.77
+  ],
+  "2 más 5 son 7": [
+    "3f7334e4d26c.mp3",
+    3.5
+  ],
+  "2 más 6 son 8": [
+    "b6a47d020abf.mp3",
+    3.5
+  ],
+  "2 más 7 son 9": [
+    "0d6cfffb38e3.mp3",
+    3.17
+  ],
+  "2 más 8 son 10": [
+    "20b85622533e.mp3",
+    3.96
+  ],
+  "2 pelotas. ¿Dónde hay 2?": [
+    "8700f5a37fd0.mp3",
+    3.91
+  ],
+  "2 ranas. ¿Dónde hay 2?": [
+    "9f48de56ef38.mp3",
+    4.15
+  ],
+  "3 dedos. ¿Dónde hay 3?": [
+    "295f2fbfc941.mp3",
+    3.86
+  ],
+  "3 estrellas. ¿Dónde hay 3?": [
+    "55239e11f553.mp3",
+    5.95
+  ],
+  "3 flores. ¿Dónde hay 3?": [
+    "d3896b4eb6e5.mp3",
+    3.6
+  ],
+  "3 fresas. ¿Dónde hay 3?": [
+    "3897c482d4a3.mp3",
+    3.72
+  ],
+  "3 manzanas. ¿Dónde hay 3?": [
+    "e8415ee7aa9f.mp3",
+    4.7
+  ],
+  "3 mariposas. ¿Dónde hay 3?": [
+    "0e12a1368e3a.mp3",
+    3.41
+  ],
+  "3 más 1 son 4": [
+    "d297296ec343.mp3",
+    4.25
+  ],
+  "3 más 2 son 5": [
+    "a9cb3b2cab9e.mp3",
+    3.77
+  ],
+  "3 más 3 son 6": [
+    "827f2888b79c.mp3",
+    4.85
+  ],
+  "3 más 4 son 7": [
+    "5b7f9fdb0f9b.mp3",
+    3.91
+  ],
+  "3 más 5 son 8": [
+    "bdaed2f86da7.mp3",
+    3.46
+  ],
+  "3 más 6 son 9": [
+    "fb7c36eebe1e.mp3",
+    4.37
+  ],
+  "3 más 7 son 10": [
+    "ad9d058fbe75.mp3",
+    3.22
+  ],
+  "3 pelotas. ¿Dónde hay 3?": [
+    "2a31d93101e7.mp3",
+    3.5
+  ],
+  "3 ranas. ¿Dónde hay 3?": [
+    "1ba7093cb662.mp3",
+    4.37
+  ],
+  "4 dedos. ¿Dónde hay 4?": [
+    "77ccf5ee29ab.mp3",
+    4.2
+  ],
+  "4 estrellas. ¿Dónde hay 4?": [
+    "c1bc200f7279.mp3",
+    3.82
+  ],
+  "4 flores. ¿Dónde hay 4?": [
+    "2722d29dc221.mp3",
+    3.05
+  ],
+  "4 fresas. ¿Dónde hay 4?": [
+    "b09b653d94b2.mp3",
+    4.1
+  ],
+  "4 manzanas. ¿Dónde hay 4?": [
+    "fa353bfe4a6f.mp3",
+    3.5
+  ],
+  "4 mariposas. ¿Dónde hay 4?": [
+    "177c1848d0f4.mp3",
+    3.77
+  ],
+  "4 más 1 son 5": [
+    "2d7ab6872d94.mp3",
+    3
+  ],
+  "4 más 2 son 6": [
+    "d4cf105bc1a3.mp3",
+    4.61
+  ],
+  "4 más 3 son 7": [
+    "c2d53ed5a8e1.mp3",
+    3.12
+  ],
+  "4 más 4 son 8": [
+    "3e00c67a19ad.mp3",
+    4.32
+  ],
+  "4 más 5 son 9": [
+    "c3a7b30dc4db.mp3",
+    3.12
+  ],
+  "4 más 6 son 10": [
+    "da8e1fa934a5.mp3",
+    3.46
+  ],
+  "4 pelotas. ¿Dónde hay 4?": [
+    "f49e7bd9cd9a.mp3",
+    3.65
+  ],
+  "4 ranas. ¿Dónde hay 4?": [
+    "b8f2f50cf5cb.mp3",
+    4.51
+  ],
+  "5 dedos. ¿Dónde hay 5?": [
+    "942b60e61371.mp3",
+    4.32
+  ],
+  "5 estrellas. ¿Dónde hay 5?": [
+    "91dd82377725.mp3",
+    3.77
+  ],
+  "5 flores. ¿Dónde hay 5?": [
+    "bddee6b7437b.mp3",
+    4.01
+  ],
+  "5 fresas. ¿Dónde hay 5?": [
+    "7d2f04b1381c.mp3",
+    3.77
+  ],
+  "5 manzanas. ¿Dónde hay 5?": [
+    "cefab30c8b4b.mp3",
+    3.17
+  ],
+  "5 mariposas. ¿Dónde hay 5?": [
+    "ad14a17d3a52.mp3",
+    4.97
+  ],
+  "5 más 1 son 6": [
+    "9d948b901e84.mp3",
+    4.06
+  ],
+  "5 más 2 son 7": [
+    "cdefef901716.mp3",
+    3.41
+  ],
+  "5 más 3 son 8": [
+    "ab730e7f5eaa.mp3",
+    3.72
+  ],
+  "5 más 4 son 9": [
+    "632eb406e8b8.mp3",
+    3.65
+  ],
+  "5 más 5 son 10": [
+    "3b210e2dc606.mp3",
+    4.85
+  ],
+  "5 pelotas. ¿Dónde hay 5?": [
+    "03901f0d2b55.mp3",
+    4.06
+  ],
+  "5 ranas. ¿Dónde hay 5?": [
+    "ef59201bbe10.mp3",
+    3.86
+  ],
+  "6 más 1 son 7": [
+    "b5819aa5fabd.mp3",
+    3.55
+  ],
+  "6 más 2 son 8": [
+    "b3179a7adb8c.mp3",
+    3.17
+  ],
+  "6 más 3 son 9": [
+    "afaf040f8b1b.mp3",
+    3.46
+  ],
+  "6 más 4 son 10": [
+    "7a092a5cd49c.mp3",
+    3.46
+  ],
+  "7 más 1 son 8": [
+    "4f39d5ec1262.mp3",
+    3.36
+  ],
+  "7 más 2 son 9": [
+    "4ea11c2f3aba.mp3",
+    3.26
+  ],
+  "7 más 3 son 10": [
+    "5640ce8158c9.mp3",
+    4.61
+  ],
+  "8 más 1 son 9": [
+    "1b61107ddc27.mp3",
+    2.66
+  ],
+  "8 más 2 son 10": [
+    "f7aaa493599d.mp3",
+    4.37
+  ],
+  "9 más 1 son 10": [
+    "1a93e60d69c7.mp3",
+    4.01
+  ],
+  "Aquí está el anillo": [
+    "25c1870674b3.mp3",
+    2.26
+  ],
+  "Aquí está el castillo": [
+    "626abb601350.mp3",
+    2.76
+  ],
+  "Aquí está el círculo": [
+    "128114721ca4.mp3",
+    3.31
+  ],
+  "Aquí está el corazón": [
+    "dd5e77a1c480.mp3",
+    3.41
+  ],
+  "Aquí está el cuadrado": [
+    "ff0c7531eb72.mp3",
+    2.9
+  ],
+  "Aquí está el triángulo": [
+    "35fffc8db7d0.mp3",
+    2.57
+  ],
+  "Aquí está el unicornio": [
+    "f4d2559d387f.mp3",
+    2.66
+  ],
+  "Aquí está el vestido": [
+    "a5fdcd43a39e.mp3",
+    3.5
+  ],
+  "Aquí está el zapato": [
+    "815fcef34513.mp3",
+    2.45
+  ],
+  "Aquí está la corona": [
+    "4ca441678041.mp3",
+    2.35
+  ],
+  "Aquí está la estrella": [
+    "f90e25d8fc2d.mp3",
+    2.3
+  ],
+  "Aquí está la rana": [
+    "3c75c087ba49.mp3",
+    3.5
+  ],
+  "Aquí está la rosa": [
+    "e9e27ea7bbb7.mp3",
+    2.11
+  ],
+  "Aquí está la varita": [
+    "463a14bfbf55.mp3",
+    3.6
+  ],
+  "Aquí hay 1": [
+    "b25c5260784f.mp3",
+    2.11
+  ],
+  "Aquí hay 10": [
+    "e16fc17390a5.mp3",
+    2.3
+  ],
+  "Aquí hay 2": [
+    "de033454e499.mp3",
+    2.06
+  ],
+  "Aquí hay 3": [
+    "dc31347f0a85.mp3",
+    2.57
+  ],
+  "Aquí hay 4": [
+    "403dd1c2d800.mp3",
+    2.3
+  ],
+  "Aquí hay 5": [
+    "79451037eff6.mp3",
+    3
+  ],
+  "Aquí hay 6": [
+    "343a63890078.mp3",
+    2.45
+  ],
+  "Aquí hay 7": [
+    "29c798aba297.mp3",
+    2.35
+  ],
+  "Aquí hay 8": [
+    "6e3b9e001135.mp3",
+    1.46
+  ],
+  "Aquí hay 9": [
+    "01822ae7d53f.mp3",
+    2.4
+  ],
+  "Aquí hay más. Hay 1.": [
+    "b5cd3c3f97e0.mp3",
+    3.05
+  ],
+  "Aquí hay más. Hay 2.": [
+    "787c8a8fc096.mp3",
+    3.91
+  ],
+  "Aquí hay más. Hay 3.": [
+    "567ef32ff0a7.mp3",
+    2.66
+  ],
+  "Aquí hay más. Hay 4.": [
+    "409e65abb170.mp3",
+    3.26
+  ],
+  "Aquí hay más. Hay 5.": [
+    "87914974f01a.mp3",
+    3.36
+  ],
+  "Aquí hay más. Hay 6.": [
+    "196213609b73.mp3",
+    3.82
+  ],
+  "Aquí hay menos. Hay 1.": [
+    "bb25f080c65e.mp3",
+    3.77
+  ],
+  "Aquí hay menos. Hay 2.": [
+    "462050fae180.mp3",
+    3.96
+  ],
+  "Aquí hay menos. Hay 3.": [
+    "0f2aa65baf56.mp3",
+    3.46
+  ],
+  "Aquí hay menos. Hay 4.": [
+    "3e493106f5f1.mp3",
+    4.06
+  ],
+  "Aquí hay menos. Hay 5.": [
+    "b0bd891d189f.mp3",
+    4.01
+  ],
+  "Aquí hay menos. Hay 6.": [
+    "3712f2ee3741.mp3",
+    4.1
+  ],
+  "Busca el anillo": [
+    "0af07ece725e.mp3",
+    1.92
+  ],
+  "Busca el castillo": [
+    "87b9e6fb9f89.mp3",
+    3.26
+  ],
+  "Busca el círculo": [
+    "ab5da2d48bd1.mp3",
+    2.16
+  ],
+  "Busca el color amarillo": [
+    "05897b1e7c0a.mp3",
+    2.95
+  ],
+  "Busca el color azul": [
+    "a3d3edcd28f3.mp3",
+    2.95
+  ],
+  "Busca el color morado": [
+    "fa6a12a8964d.mp3",
+    2.52
+  ],
+  "Busca el color naranja": [
+    "5177493cb4c7.mp3",
+    2.52
+  ],
+  "Busca el color rojo": [
+    "44834a7b9111.mp3",
+    2.71
+  ],
+  "Busca el color rosa": [
+    "0aa8811e3992.mp3",
+    2.52
+  ],
+  "Busca el color verde": [
+    "64e81522882b.mp3",
+    2.66
+  ],
+  "Busca el corazón": [
+    "a5976cee2185.mp3",
+    2.57
+  ],
+  "Busca el cuadrado": [
+    "b6df78dd5f86.mp3",
+    2.9
+  ],
+  "Busca el triángulo": [
+    "dc99f80a2733.mp3",
+    2.52
+  ],
+  "Busca el unicornio": [
+    "91b3763110bf.mp3",
+    2.52
+  ],
+  "Busca el vestido": [
+    "6ba1ea830dca.mp3",
+    1.97
+  ],
+  "Busca el zapato": [
+    "4485280be2a6.mp3",
+    2.06
+  ],
+  "Busca la corona": [
+    "4ac76aa9a18a.mp3",
+    2.4
+  ],
+  "Busca la estrella": [
+    "4e3bec676b9c.mp3",
+    2.11
+  ],
+  "Busca la rana": [
+    "afc599a56b15.mp3",
+    1.66
+  ],
+  "Busca la rosa": [
+    "1d981b0a517c.mp3",
+    1.97
+  ],
+  "Busca la varita": [
+    "50e88c4218d1.mp3",
+    2.81
+  ],
+  "Este es el amarillo": [
+    "95236302c58f.mp3",
+    2.26
+  ],
+  "Este es el azul": [
+    "252af7921064.mp3",
+    2.16
+  ],
+  "Este es el morado": [
+    "6db3b0daf61a.mp3",
+    2.4
+  ],
+  "Este es el naranja": [
+    "873bce10772d.mp3",
+    2.86
+  ],
+  "Este es el rojo": [
+    "9748dadcbf12.mp3",
+    2.57
+  ],
+  "Este es el rosa": [
+    "98717915421d.mp3",
+    3.6
+  ],
+  "Este es el verde": [
+    "89d556d1b340.mp3",
+    2.16
+  ],
+  "Hay 10 dedos": [
+    "d29e41d8ffeb.mp3",
+    1.75
+  ],
+  "Hay 10 estrellas": [
+    "f310fe867cd6.mp3",
+    2.57
+  ],
+  "Hay 10 flores": [
+    "a5e4ccc89765.mp3",
+    1.85
+  ],
+  "Hay 10 fresas": [
+    "803a3c05ac86.mp3",
+    2.4
+  ],
+  "Hay 10 manzanas": [
+    "0a2a5ce3364f.mp3",
+    3.22
+  ],
+  "Hay 10 mariposas": [
+    "4c06f286698a.mp3",
+    2.35
+  ],
+  "Hay 10 pelotas": [
+    "74905809422c.mp3",
+    2.21
+  ],
+  "Hay 10 ranas": [
+    "0ab2daa6d3a6.mp3",
+    3.31
+  ],
+  "Hay 2 dedos": [
+    "41626908cbac.mp3",
+    2.4
+  ],
+  "Hay 2 estrellas": [
+    "9cd8199ac8c9.mp3",
+    3.41
+  ],
+  "Hay 2 flores": [
+    "815f67e1cfff.mp3",
+    2.62
+  ],
+  "Hay 2 fresas": [
+    "c8c974e0b68d.mp3",
+    2.26
+  ],
+  "Hay 2 manzanas": [
+    "ecbde8da0e04.mp3",
+    2.35
+  ],
+  "Hay 2 mariposas": [
+    "bf1ab53f6f78.mp3",
+    2.3
+  ],
+  "Hay 2 pelotas": [
+    "6a00b6ed3fcb.mp3",
+    3.22
+  ],
+  "Hay 2 ranas": [
+    "55ef9e4ad3bd.mp3",
+    2.3
+  ],
+  "Hay 3 dedos": [
+    "c373e15438a4.mp3",
+    2.21
+  ],
+  "Hay 3 estrellas": [
+    "0666a34823b6.mp3",
+    2.3
+  ],
+  "Hay 3 flores": [
+    "99ea9cb7e811.mp3",
+    2.57
+  ],
+  "Hay 3 fresas": [
+    "d646257a7b22.mp3",
+    2.35
+  ],
+  "Hay 3 manzanas": [
+    "29bea5d3e085.mp3",
+    2.76
+  ],
+  "Hay 3 mariposas": [
+    "260627813b57.mp3",
+    2.62
+  ],
+  "Hay 3 pelotas": [
+    "1eb33cafb271.mp3",
+    2.86
+  ],
+  "Hay 3 ranas": [
+    "e33364f0953b.mp3",
+    2.3
+  ],
+  "Hay 4 dedos": [
+    "3fd0cc416293.mp3",
+    2.95
+  ],
+  "Hay 4 estrellas": [
+    "85fc02a6f234.mp3",
+    2.71
+  ],
+  "Hay 4 flores": [
+    "f97d4d69567a.mp3",
+    2.26
+  ],
+  "Hay 4 fresas": [
+    "644de70d0076.mp3",
+    3.12
+  ],
+  "Hay 4 manzanas": [
+    "f340dffb602b.mp3",
+    2.45
+  ],
+  "Hay 4 mariposas": [
+    "a57d5f2c7c15.mp3",
+    2.26
+  ],
+  "Hay 4 pelotas": [
+    "2c211527ff75.mp3",
+    2.45
+  ],
+  "Hay 4 ranas": [
+    "9434af5a62cd.mp3",
+    2.21
+  ],
+  "Hay 5 dedos": [
+    "ea32be15d7d9.mp3",
+    2.21
+  ],
+  "Hay 5 estrellas": [
+    "0341c59dc904.mp3",
+    2.95
+  ],
+  "Hay 5 flores": [
+    "653cd390e521.mp3",
+    3.41
+  ],
+  "Hay 5 fresas": [
+    "d3aab52ba376.mp3",
+    3.12
+  ],
+  "Hay 5 manzanas": [
+    "a7c0f6d34ca8.mp3",
+    2.95
+  ],
+  "Hay 5 mariposas": [
+    "5ccc3241f587.mp3",
+    3.31
+  ],
+  "Hay 5 pelotas": [
+    "b8bd163c4a2d.mp3",
+    2.86
+  ],
+  "Hay 5 ranas": [
+    "ab8015bf3b40.mp3",
+    2.81
+  ],
+  "Hay 6 dedos": [
+    "86778cccd63d.mp3",
+    2.11
+  ],
+  "Hay 6 estrellas": [
+    "2071f72cc864.mp3",
+    2.45
+  ],
+  "Hay 6 flores": [
+    "1a3051ed2df1.mp3",
+    2.86
+  ],
+  "Hay 6 fresas": [
+    "ccdc071a8433.mp3",
+    2.52
+  ],
+  "Hay 6 manzanas": [
+    "25e3d731cb10.mp3",
+    3.72
+  ],
+  "Hay 6 mariposas": [
+    "bdaff66f718d.mp3",
+    2.21
+  ],
+  "Hay 6 pelotas": [
+    "8a5729d5b99e.mp3",
+    2.66
+  ],
+  "Hay 6 ranas": [
+    "539a86d509aa.mp3",
+    4.51
+  ],
+  "Hay 7 dedos": [
+    "590c3c764e1b.mp3",
+    3
+  ],
+  "Hay 7 estrellas": [
+    "bfdfdcd6d452.mp3",
+    2.76
+  ],
+  "Hay 7 flores": [
+    "664e8ad7247a.mp3",
+    2.26
+  ],
+  "Hay 7 fresas": [
+    "abd1501876e9.mp3",
+    1.92
+  ],
+  "Hay 7 manzanas": [
+    "40f37fe0778e.mp3",
+    2.3
+  ],
+  "Hay 7 mariposas": [
+    "aef0da957ca6.mp3",
+    3.22
+  ],
+  "Hay 7 pelotas": [
+    "38bf257f4738.mp3",
+    2.3
+  ],
+  "Hay 7 ranas": [
+    "017f17aac29e.mp3",
+    3.12
+  ],
+  "Hay 8 dedos": [
+    "b6692a4c6787.mp3",
+    2.16
+  ],
+  "Hay 8 estrellas": [
+    "41d233ef847f.mp3",
+    2.66
+  ],
+  "Hay 8 flores": [
+    "72e86361464d.mp3",
+    4.15
+  ],
+  "Hay 8 fresas": [
+    "fa15621dbda1.mp3",
+    2.81
+  ],
+  "Hay 8 manzanas": [
+    "4268752bb1c1.mp3",
+    2.81
+  ],
+  "Hay 8 mariposas": [
+    "e161e38c8269.mp3",
+    3.46
+  ],
+  "Hay 8 pelotas": [
+    "080187d44652.mp3",
+    2.45
+  ],
+  "Hay 8 ranas": [
+    "370f2fe4774d.mp3",
+    2.35
+  ],
+  "Hay 9 dedos": [
+    "1d13abd9e75d.mp3",
+    3.26
+  ],
+  "Hay 9 estrellas": [
+    "ec0028aef608.mp3",
+    2.45
+  ],
+  "Hay 9 flores": [
+    "860cff29213d.mp3",
+    1.97
+  ],
+  "Hay 9 fresas": [
+    "2f739df5dfb9.mp3",
+    2.11
+  ],
+  "Hay 9 manzanas": [
+    "9fa67a334736.mp3",
+    2.3
+  ],
+  "Hay 9 mariposas": [
+    "078b4e65d398.mp3",
+    2.62
+  ],
+  "Hay 9 pelotas": [
+    "208b4e0aa5e9.mp3",
+    3.91
+  ],
+  "Hay 9 ranas": [
+    "81f700a9d793.mp3",
+    2.45
+  ],
+  "Hay un dedo": [
+    "e90c857055da.mp3",
+    1.8
+  ],
+  "Hay una estrella": [
+    "db74c17c4ace.mp3",
+    3.5
+  ],
+  "Hay una flor": [
+    "a49d47886a55.mp3",
+    1.97
+  ],
+  "Hay una fresa": [
+    "5480c37fbbcb.mp3",
+    2.52
+  ],
+  "Hay una manzana": [
+    "094928346fd5.mp3",
+    2.35
+  ],
+  "Hay una mariposa": [
+    "60a7548d3ff8.mp3",
+    2.35
+  ],
+  "Hay una pelota": [
+    "3a2d2df6387f.mp3",
+    2.21
+  ],
+  "Hay una rana": [
+    "73031a6089c3.mp3",
+    2.21
+  ],
+  "Un dedo. ¿Dónde hay uno?": [
+    "12312e2da89f.mp3",
+    2.76
+  ],
+  "Una estrella. ¿Dónde hay una?": [
+    "fd9ce8245680.mp3",
+    3.82
+  ],
+  "Una flor. ¿Dónde hay una?": [
+    "9092ad59fb8b.mp3",
+    3.55
+  ],
+  "Una fresa. ¿Dónde hay una?": [
+    "e674574950b9.mp3",
+    3.41
+  ],
+  "Una manzana. ¿Dónde hay una?": [
+    "9c964ba6144e.mp3",
+    3.36
+  ],
+  "Una mariposa. ¿Dónde hay una?": [
+    "b6ebe0c73a42.mp3",
+    3.5
+  ],
+  "Una pelota. ¿Dónde hay una?": [
+    "6c283d110709.mp3",
+    3
+  ],
+  "Una rana. ¿Dónde hay una?": [
+    "bc41d1586063.mp3",
+    3.41
+  ]
 }

@@ -22,6 +22,7 @@ const DEFAULTS = {
   character: 'apple',
   muted: false,
   language: '', // empty means: use the starting language from config.js
+  pace: '', // belt speed: 'slow', 'normal' or 'fast'; empty means the starting speed from config.js
   game: '', // empty means: use the starting game from config.js
   skills: {}, // progress up each game's ladder: { numbers: 12, colors: 3 }
 };
@@ -89,6 +90,7 @@ export const store = {
         lastName: typeof saved.lastName === 'string' ? saved.lastName.slice(0, CONFIG.nameMaxLength) : '',
         character: typeof saved.character === 'string' ? saved.character : DEFAULTS.character,
         muted: saved.muted === true,
+        pace: typeof saved.pace === 'string' ? saved.pace : '',
         language: typeof saved.language === 'string' ? saved.language : '',
         game: typeof saved.game === 'string' ? saved.game : '',
         skills: cleanSkills(saved.skills),

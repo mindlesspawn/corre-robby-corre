@@ -236,7 +236,8 @@ if (flag('--list')) {
   process.exit(0);
 }
 
-key = readKey();
+const needsKey = flag('--check') || lines.some((text) => !fs.existsSync(path.join(clipFolder, clipName(text))));
+if (needsKey) key = readKey();
 fs.mkdirSync(clipFolder, { recursive: true });
 fs.mkdirSync(path.dirname(listFile), { recursive: true });
 
@@ -264,13 +265,14 @@ if (missing.length) {
   });
 }
 
-// The list the game reads: each line and the clip that says it.
+// The list the game reads: each line, the clip that says it, and how many seconds it lasts.
 const recorded = {};
 let bytes = 0;
 for (const text of lines) {
   const file = path.join(clipFolder, clipName(text));
   if (!fs.existsSync(file)) continue;
-  recorded[text] = clipName(text);
+  // The clips are 128 kbit/s MP3, so their size gives their length: 16,000 bytes a second.
+  recorded[text] = [clipName(text), Number((fs.statSync(file).size / 16000).toFixed(2))];
   bytes += fs.statSync(file).size;
 }
 fs.writeFileSync(listFile, `${JSON.stringify(recorded, null, 2)}\n`);
@@ -283,7 +285,7 @@ if (flag('--check')) {
   console.log(`Listening back to ${toCheck.length} clips...`);
   let doubtful = [];
   await inBatches(toCheck, 5, async (text) => {
-    const heard = await mishearing(text, path.join(clipFolder, recorded[text]));
+    const heard = await mishearing(text, path.join(clipFolder, recorded[text][0]));
     if (heard) doubtful.push({ text, heard });
   });
   console.log(`First pass: ${toCheck.length - doubtful.length} of ${toCheck.length} were heard word for word.`);
@@ -293,7 +295,7 @@ if (flag('--check')) {
     for (let round = 1; round <= 3 && doubtful.length; round++) {
       const still = [];
       await inBatches(doubtful, 5, async ({ text }) => {
-        const file = path.join(clipFolder, recorded[text]);
+        const file = path.join(clipFolder, recorded[text][0]);
         fs.writeFileSync(file, await recordOne(text, model, voice));
         const heard = await mishearing(text, file);
         if (heard) still.push({ text, heard });

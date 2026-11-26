@@ -6,10 +6,10 @@
 // into the phone, tablet, or computer. If the device has no voice for that language
 // either, the game stays quiet and says so on the start screen.
 
-import { playVoiceClip, preloadVoiceClip, stopVoiceClip } from './audio.js';
+import { playVoiceClip, preloadVoiceClip, stopVoiceClip, voiceBusy } from './audio.js';
 import spanishClips from './voice/es.json';
 
-// Which recorded clip says each line: { language: { 'the line': 'file.mp3' } }
+// Which recorded clip says each line, and how long it lasts: { language: { 'the line': ['file.mp3', seconds] } }
 const CLIPS = { es: spanishClips };
 
 const PREFERRED = {
@@ -26,8 +26,24 @@ const synth = () => (typeof window !== 'undefined' && 'speechSynthesis' in windo
 const tidy = (code) => String(code).replace('_', '-').toLowerCase();
 
 function clipFor(text) {
-  const file = CLIPS[language]?.[text];
-  return file ? `./voice/${language}/${file}` : null;
+  const clip = CLIPS[language]?.[text];
+  return clip ? `./voice/${language}/${clip[0]}` : null;
+}
+
+// Roughly how many seconds a line takes to say. 0 if the game cannot say it.
+export function speechSeconds(text) {
+  if (!text || muted) return 0;
+  const clip = CLIPS[language]?.[text];
+  if (clip) return clip[1];
+  const state = voiceState();
+  return state === 'ok' || state === 'loading' ? 0.5 + text.length * 0.085 : 0;
+}
+
+// True while the game is talking.
+export function isSpeaking() {
+  if (voiceBusy()) return true;
+  const engine = synth();
+  return Boolean(engine && (engine.speaking || engine.pending));
 }
 
 // True when this language has recorded clips.

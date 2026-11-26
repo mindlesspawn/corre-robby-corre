@@ -83,6 +83,7 @@ export class Game {
     this.skillCap = Infinity;
     this.shake = 0;
     this.topClear = 0.28;
+    this.pace = CONFIG.paces[CONFIG.pace];
 
     this.buildWorld();
     this.buildRow();
@@ -406,8 +407,10 @@ export class Game {
   }
 
   // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
-  startRun({ game = CONFIG.game, skill = 0 } = {}) {
+  // pace: 'slow', 'normal' or 'fast' (see config.js).
+  startRun({ game = CONFIG.game, skill = 0, pace = CONFIG.pace } = {}) {
     this.resetRun();
+    this.pace = CONFIG.paces[pace] ?? CONFIG.paces[CONFIG.pace];
     this.gameId = game;
     this.skill = Math.max(0, skill);
     // Playing alone stops climbing at the last step meant for small children.
@@ -481,7 +484,7 @@ export class Game {
   // --- Questions ------------------------------------------------------------
 
   travelTime() {
-    return Math.max(CONFIG.minTravelTime, CONFIG.startTravelTime - CONFIG.travelTimeStep * this.speedSteps);
+    return Math.max(CONFIG.minTravelTime, this.pace.travel - CONFIG.travelTimeStep * this.speedSteps);
   }
 
   nextQuestion() {
@@ -492,6 +495,11 @@ export class Game {
     const row = this.row;
     row.question = question;
     row.z = FRONT_Z - CONFIG.spawnDistance;
+    // A question that takes a while to say gets a slower belt, so there is still time to think.
+    const spoken = this.events.questionSeconds?.(question) ?? 0;
+    // (The extra half second covers the belt getting up to speed and the choice being
+    // fixed a moment before the doors arrive.)
+    row.travelTime = Math.max(this.travelTime(), spoken + this.pace.think + 0.5);
     row.age = 0;
     row.state = 'approach';
     row.locked = false;
@@ -602,7 +610,8 @@ export class Game {
 
   update(dt) {
     const playing = this.mode === 'running' || this.mode === 'finishing';
-    const targetSpeed = playing ? CONFIG.spawnDistance / this.travelTime() : IDLE_SPEED;
+    const travel = this.row.state === 'none' ? this.travelTime() : (this.row.travelTime ?? this.travelTime());
+    const targetSpeed = playing ? CONFIG.spawnDistance / travel : IDLE_SPEED;
     this.speed += (targetSpeed - this.speed) * Math.min(1, dt * 2.5);
 
     this.markOffset = (this.markOffset + this.speed * dt) % MARK_SPACING;
@@ -655,6 +664,8 @@ export class Game {
 
     if (row.state === 'none') {
       if (this.gapTimer > 0) return;
+      // Let the voice finish what it is saying before the next doors come, within reason.
+      if (this.gapTimer > -CONFIG.maxWaitForVoice && this.events.isSpeaking?.()) return;
       if (this.doorsDone >= CONFIG.doorsPerRun) this.startFinish();
       else this.nextQuestion();
       return;

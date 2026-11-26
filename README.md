@@ -23,7 +23,9 @@ In the numbers game, playing alone stops climbing at sums up to 10 shown with pi
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
-- The belt moves at one steady speed.
+- The belt has three speeds, picked on the start screen: slow, normal, and fast. It keeps that speed through a run.
+- The next doors wait until the voice has finished talking, and a long question slows the belt for that row, so there is always time to think after hearing it (about 3.5 seconds on slow, 2.5 on normal, 2 on fast).
+- Praise is spoken with every other right answer and with every trick, not every time.
 - Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The best runs go on the high score table.
 
 ## What the learning steps are based on
@@ -47,7 +49,7 @@ Limits worth knowing:
 - Nearly all of this research was done with English-speaking children.
 - The princess game (finding a picture from its name) fits the general goal of fast-growing vocabulary at this age (source 2), but the sources do not prescribe that particular activity. It is a design choice.
 - Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes after", and dots in varied layouts.
-- The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore moves at one steady speed and no longer speeds up. The doors still arrive on a timer, so a child cannot stop to think for as long as they like. The speed settings are in `src/config.js`.
+- The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore keeps one speed through a run, has a slow setting, and waits for the voice. The doors do still arrive on their own, so a child cannot stop them to think for as long as they like. The speed settings are in `src/config.js`.
 - The sources give no direct evidence on how long a round should be or on penalties.
 
 Sources:
@@ -115,7 +117,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | The games and their steps (add a game, a step, or a new kind of question) | `src/questions.js` |
 | Every word the player reads or hears, in Spanish and English | `src/text.js` |
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
-| Speed, doors per run, how fast steps go up, colors, the title | `src/config.js` |
+| The three belt speeds, doors per run, how fast steps go up, colors, the title | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
 | The voice, and which clip says which line | `src/speech.js`, `src/voice/es.json` |
 | Recording the Spanish clips | `scripts/record-voice.mjs` |
