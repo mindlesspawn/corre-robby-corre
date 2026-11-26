@@ -22,6 +22,8 @@ const IDLE_SPEED = 4;
 const LOCK_TIME = 0.16; // the lane choice is fixed this many seconds before the doors arrive
 const DOOR_OPEN_TIME = 0.13;
 const DOOR_HEIGHT = 2.8;
+const SIGN_HEIGHT = 1.5;
+const SIGN_TOP_Y = DOOR_HEIGHT + 0.3 + SIGN_HEIGHT + 0.05; // the very top of a door's sign
 const MARK_SPACING = 4;
 const SPARKS_PER_POP = 14;
 
@@ -79,6 +81,7 @@ export class Game {
     this.gameId = CONFIG.game;
     this.skill = 0;
     this.shake = 0;
+    this.topClear = 0.28;
 
     this.buildWorld();
     this.buildRow();
@@ -187,7 +190,7 @@ export class Game {
     const post = 0.16;
     const panelWidth = width - post * 2;
     const signWidth = CONFIG.laneWidth - 0.08;
-    const signHeight = 1.5;
+    const signHeight = SIGN_HEIGHT;
     const signY = DOOR_HEIGHT + 0.3 + signHeight / 2;
     const anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
@@ -695,6 +698,15 @@ export class Game {
 
   // --- Fitting the view to the screen ---------------------------------------
 
+  // How much of the top of the screen the question area covers (0 to 1).
+  // The view is framed so that the door signs never go under it.
+  setTopClear(fraction) {
+    const value = clamp(fraction || 0, 0, 0.46);
+    if (Math.abs(value - this.topClear) < 0.005) return;
+    this.topClear = value;
+    this.resize();
+  }
+
   resize() {
     const width = this.canvas.clientWidth || window.innerWidth;
     const height = this.canvas.clientHeight || window.innerHeight;
@@ -703,26 +715,60 @@ export class Game {
 
     const aspect = width / height;
     const camera = this.camera;
-    camera.aspect = aspect;
+    const rad = Math.PI / 180;
+    const sin = Math.sin(CAMERA_HEIGHT_ANGLE);
+    const cos = Math.cos(CAMERA_HEIGHT_ANGLE);
+
+    // Where things should sit on the screen, as a fraction of its height from the top:
+    const top = this.topClear + 0.02; // the tops of the far-away door signs, just under the question
+    const spot = aspect > 1 ? 0.9 : RUNNER_SCREEN_SPOT; // the bumped-back runner, when there is room
+    const lowest = 0.91; // the bumped-back runner, at the very lowest
+
     // A fairly narrow view from further back keeps far-away door signs big enough to read.
-    camera.fov = aspect < 0.62 ? 46 : aspect < 1.1 ? 44 : 40;
-    const tanUp = Math.tan((camera.fov / 2) * (Math.PI / 180));
+    let fov = aspect < 0.62 ? 46 : aspect < 1.1 ? 44 : 40;
+    let pitch = 0;
+    let distance = 10;
 
-    // Pull the camera back until all three lanes fit where the runner stands when bumped back.
-    const needHalfWidth = CONFIG.laneWidth + 0.8;
-    const distance = clamp(needHalfWidth / (tanUp * aspect), 10, 26);
-    this.cameraHome.set(
-      0,
-      0.6 + distance * Math.sin(CAMERA_HEIGHT_ANGLE),
-      BACK_Z + distance * Math.cos(CAMERA_HEIGHT_ANGLE),
-    );
+    for (let pass = 0; pass < 6; pass++) {
+      const tanUp = Math.tan((fov / 2) * rad);
+      // Pull the camera back until all three lanes fit where the runner stands when bumped back.
+      distance = clamp((CONFIG.laneWidth + 0.8) / (tanUp * aspect), 10, 26);
+      const camY = 0.6 + distance * sin;
+      const camZ = BACK_Z + distance * cos;
 
-    // Tilt so that bumped-back spot sits low on the screen, leaving the top for the question.
-    // On a wide screen the scene sits a little lower, so the doors stay clear of the question.
-    const spot = aspect > 1 ? Math.max(RUNNER_SCREEN_SPOT, 0.9) : RUNNER_SCREEN_SPOT;
-    const spotBelowCentre = Math.atan(tanUp * (spot * 2 - 1));
+      // How far below level the camera has to look to see each of the two things.
+      const toRunner = CAMERA_HEIGHT_ANGLE;
+      const toSigns = Math.atan2(camY - SIGN_TOP_Y, camZ - (FRONT_Z - CONFIG.spawnDistance));
+      const screenY = (angle, tilt) => 0.5 + Math.tan(angle - tilt) / (2 * tanUp);
+
+      // First choice: the runner at its usual spot.
+      pitch = toRunner - Math.atan((spot - 0.5) * 2 * tanUp);
+      if (screenY(toSigns, pitch) >= top) break;
+
+      // Otherwise tilt down so the signs clear the question.
+      pitch = toSigns - Math.atan((top - 0.5) * 2 * tanUp);
+      if (screenY(toRunner, pitch) <= lowest) break;
+
+      // If the runner would then drop off the bottom, widen the view until both fit.
+      let low = toSigns;
+      let high = toRunner;
+      for (let i = 0; i < 40; i++) {
+        const mid = (low + high) / 2;
+        const balance = Math.tan(toSigns - mid) * (lowest - 0.5) - Math.tan(toRunner - mid) * (top - 0.5);
+        if (balance > 0) low = mid;
+        else high = mid;
+      }
+      pitch = (low + high) / 2;
+      const wider = clamp((2 * Math.atan(Math.tan(toRunner - pitch) / (2 * (lowest - 0.5)))) / rad, fov, 82);
+      if (wider - fov < 0.05) break;
+      fov = wider;
+    }
+
+    camera.aspect = aspect;
+    camera.fov = fov;
+    this.cameraHome.set(0, 0.6 + distance * sin, BACK_Z + distance * cos);
     camera.position.copy(this.cameraHome);
-    camera.rotation.set(-(CAMERA_HEIGHT_ANGLE - spotBelowCentre), 0, 0);
+    camera.rotation.set(-pitch, 0, 0);
     camera.updateProjectionMatrix();
   }
 

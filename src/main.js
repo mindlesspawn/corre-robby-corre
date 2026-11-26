@@ -5,7 +5,7 @@ import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
-import { GAMES, GAME_IDS, ITEMS, levelFromSkill } from './questions.js';
+import { FINGERS, GAMES, GAME_IDS, ITEMS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { canSpeak, setSpeechLanguage, setSpeechMuted, speak, stopSpeaking } from './speech.js';
@@ -184,8 +184,25 @@ function renderStart() {
 
 // --- The question banner ---------------------------------------------------------
 
+// Pictures of hands holding up fingers: one hand up to five, then a full hand and the rest.
+const handPicture = (fingers) => `./art/hands/${fingers}.png`;
+
+function hands(count) {
+  const group = tag('span', 'hands');
+  const shown = count > 5 ? [5, count - 5] : [count];
+  for (const fingers of shown) {
+    const img = tag('img', 'hand');
+    img.src = handPicture(fingers);
+    img.alt = '';
+    img.draggable = false;
+    group.append(img);
+  }
+  return group;
+}
+
 // A row of little things to count, five to a line.
 function things(count, item = 'apple') {
+  if (item === FINGERS) return hands(count);
   const group = tag('span', count > 5 ? 'apples many' : 'apples');
   for (let i = 0; i < count; i++) {
     if (i > 0 && i % 5 === 0) group.append(tag('br'));
@@ -226,6 +243,40 @@ function showQuestion(question, solved = false) {
   el.question.replaceChildren(...parts);
   // Underneath, the same thing in words: the question, then the answer.
   el.ask.textContent = solved ? answerText(question) : askText(question);
+}
+
+// Tells the game how much of the top of the screen the question area can take up,
+// so the view is framed with the doors below it. Measured with the tallest question there is.
+function measureQuestionArea() {
+  if (!game) return;
+  const wasHidden = el.hud.hidden;
+  const keep = { nodes: [...el.question.childNodes], ask: el.ask.textContent, className: el.question.className };
+  el.hud.style.visibility = 'hidden';
+  el.hud.hidden = false;
+
+  // Only things over the middle of the screen can cover the doors.
+  const middle = window.innerWidth * 0.4;
+  let bottom = 0;
+  const tallest = [
+    { kind: 'add', a: 4, b: 1, answer: 5, pictures: true },
+    { kind: 'count', item: FINGERS, answer: 10 },
+  ];
+  for (const sample of tallest) {
+    showQuestion(sample);
+    el.question.className = 'question';
+    el.ask.textContent = t.say.isCount(10, t.items.butterfly);
+    for (const node of [el.question, el.ask, el.progress]) {
+      const box = node.getBoundingClientRect();
+      if (box.width > 0 && box.right > middle) bottom = Math.max(bottom, box.bottom);
+    }
+  }
+
+  el.question.replaceChildren(...keep.nodes);
+  el.question.className = keep.className;
+  el.ask.textContent = keep.ask;
+  el.hud.hidden = wasHidden;
+  el.hud.style.visibility = '';
+  game.setTopClear(bottom / window.innerHeight);
 }
 
 // One dot per door: gold for right, grey for missed, a ring around the one coming.
@@ -414,6 +465,7 @@ function buildLanguageButtons() {
         applyWords();
         applyMute();
         renderStart();
+        measureQuestionArea();
       });
       return button;
     }),
@@ -524,8 +576,12 @@ function wireTouch() {
     if (document.hidden) pauseRun();
   });
 
-  window.addEventListener('resize', () => game.resize());
-  window.addEventListener('orientationchange', () => setTimeout(() => game.resize(), 250));
+  const refit = () => {
+    game.resize();
+    measureQuestionArea();
+  };
+  window.addEventListener('resize', refit);
+  window.addEventListener('orientationchange', () => setTimeout(refit, 250));
 }
 
 async function init() {
@@ -534,6 +590,9 @@ async function init() {
   el.title.textContent = CONFIG.title;
   el.nameInput.maxLength = CONFIG.nameMaxLength;
   el.progress.replaceChildren(...Array.from({ length: CONFIG.doorsPerRun }, () => tag('i')));
+
+  // Fetch the hand pictures now, so they are ready when a question needs them.
+  for (let fingers = 1; fingers <= 5; fingers++) new Image().src = handPicture(fingers);
 
   await store.init();
   setLanguage(store.get().language || CONFIG.language);
@@ -557,6 +616,7 @@ async function init() {
   applyMute();
   renderStart();
   show('start');
+  measureQuestionArea();
 
   // A handle for the automatic test player. Only present while developing.
   if (import.meta.env.DEV) window.__game = game;

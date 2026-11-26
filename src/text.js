@@ -69,26 +69,30 @@ const es = {
     pink: 'rosa',
   },
 
-  // The things shown to count: [one, many]. All are "una ..." words, so the sentences below work.
+  // The things shown to count: [one, many, 'f' for "una ..." words or 'm' for "un ..." words].
   items: {
-    apple: ['manzana', 'manzanas'],
-    star: ['estrella', 'estrellas'],
-    ball: ['pelota', 'pelotas'],
-    flower: ['flor', 'flores'],
-    strawberry: ['fresa', 'fresas'],
-    butterfly: ['mariposa', 'mariposas'],
-    frog: ['rana', 'ranas'],
+    apple: ['manzana', 'manzanas', 'f'],
+    star: ['estrella', 'estrellas', 'f'],
+    ball: ['pelota', 'pelotas', 'f'],
+    flower: ['flor', 'flores', 'f'],
+    strawberry: ['fresa', 'fresas', 'f'],
+    butterfly: ['mariposa', 'mariposas', 'f'],
+    frog: ['rana', 'ranas', 'f'],
+    fingers: ['dedo', 'dedos', 'm'],
   },
 
   // What the voice says. Numbers are written as digits; the voice reads them as words.
   say: {
     go: '¡Vamos!',
-    same: (n, [one, many]) => (n === 1 ? `Una ${one}. ¿Dónde hay una?` : `${n} ${many}. ¿Dónde hay ${n}?`),
-    count: ([, many]) => `¿Cuántas ${many} hay?`,
+    same: (n, [one, many, g]) =>
+      n === 1
+        ? `${g === 'm' ? 'Un' : 'Una'} ${one}. ¿Dónde hay ${g === 'm' ? 'uno' : 'una'}?`
+        : `${n} ${many}. ¿Dónde hay ${n}?`,
+    count: ([, many, g]) => `¿${g === 'm' ? 'Cuántos' : 'Cuántas'} ${many} hay?`,
     find: (n) => `¿Dónde hay ${n}?`,
     add: (a, b) => `¿Cuánto es ${a} más ${b}?`,
     color: (name) => `Busca el color ${name}`,
-    isCount: (n, [one, many]) => (n === 1 ? `Hay una ${one}` : `Hay ${n} ${many}`),
+    isCount: (n, [one, many, g]) => (n === 1 ? `Hay ${g === 'm' ? 'un' : 'una'} ${one}` : `Hay ${n} ${many}`),
     isFind: (n) => `Aquí hay ${n}`,
     isAdd: (a, b, sum) => `${a} más ${b} son ${sum}`,
     isColor: (name) => `Este es el ${name}`,
@@ -168,6 +172,7 @@ const en = {
     strawberry: ['strawberry', 'strawberries'],
     butterfly: ['butterfly', 'butterflies'],
     frog: ['frog', 'frogs'],
+    fingers: ['finger', 'fingers'],
   },
 
   say: {

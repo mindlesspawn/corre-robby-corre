@@ -796,3 +796,25 @@ h2 {
     padding: 8px 24px;
   }
 }
+
+/* A phone held sideways: keep the question narrow and to the side, clear of the doors. */
+@media (max-height: 480px) {
+  .question {
+    max-width: 36vw;
+  }
+}
+
+/* Hands holding up fingers, in the question banner. The size is fixed so the banner
+   is the right height even before the picture has loaded. */
+.question .hands {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12em;
+}
+
+.question .hand {
+  width: 1.7em;
+  height: 1.7em;
+  object-fit: contain;
+  pointer-events: none;
+}

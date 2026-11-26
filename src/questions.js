@@ -92,7 +92,12 @@ export const ITEMS = {
   frog: '🐸',
 };
 const ITEM_IDS = Object.keys(ITEMS);
-const anyItem = () => ITEM_IDS[rand(0, ITEM_IDS.length - 1)];
+
+// Fingers are shown as pictures of hands (public/art/hands) instead of a row of little things.
+// FINGER_SHARE is how often a counting question uses them: 0 never, 1 always.
+export const FINGERS = 'fingers';
+const FINGER_SHARE = 0.35;
+const anyItem = () => (Math.random() < FINGER_SHARE ? FINGERS : ITEM_IDS[rand(0, ITEM_IDS.length - 1)]);
 
 // A small number, and two other small numbers to put on the wrong doors.
 function amount(max) {
