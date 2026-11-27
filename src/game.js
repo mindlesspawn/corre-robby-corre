@@ -392,7 +392,6 @@ export class Game {
     this.results = [];
     this.speedSteps = 0;
     this.pushedBack = false;
-    this.streak = 0;
     this.endless = false;
     this.lane = 1;
     this.runnerX = 0;
@@ -410,7 +409,7 @@ export class Game {
 
   // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
   // pace: 'slow', 'normal' or 'fast' (see config.js).
-  // endless: true for the mode that gets faster and faster until two misses end it.
+  // endless: true for the mode that gets faster and faster until the first miss ends it.
   startRun({ game = CONFIG.game, skill = 0, pace = CONFIG.pace, endless = false } = {}) {
     this.resetRun();
     this.pace = CONFIG.paces[pace] ?? CONFIG.paces[CONFIG.pace];
@@ -577,10 +576,8 @@ export class Game {
     const trick = this.score % CONFIG.trickEvery === 0;
     this.character.react(trick ? 'trick' : 'cheer');
     if (this.endless) {
-      // Every right answer makes the belt faster, and it takes a few in a row to catch up.
+      // Every right answer makes the belt faster.
       this.endlessTravel = Math.max(CONFIG.endless.minTravel, this.endlessTravel * CONFIG.endless.faster);
-      this.streak += 1;
-      if (this.streak >= CONFIG.endless.recoverStreak) this.pushedBack = false;
       this.gapTimer = Math.min(CONFIG.gapAfterCorrect, this.endlessTravel * 0.12);
     } else {
       this.pushedBack = false; // a right answer brings the runner back to the front
@@ -590,7 +587,7 @@ export class Game {
   }
 
   // A wrong door bumps the runner back and shows the right door. In an ordinary run that is
-  // all. In an endless run, a second miss while still bumped back ends it.
+  // all. An endless run ends right there, at the first miss.
   answeredWrong() {
     const row = this.row;
     const q = row.question;
@@ -605,31 +602,28 @@ export class Game {
     this.shake = 0.3;
     this.character.react('oops');
     if (this.endless) {
-      this.streak = 0;
-      this.endlessTravel = Math.min(this.pace.travel, this.endlessTravel * CONFIG.endless.slowerOnMiss);
-      if (this.pushedBack) {
-        this.report(false);
-        this.startFinish();
-        return;
-      }
+      // The doors stay where they are, with the right one marked, while the run winds up.
+      this.report(false);
+      this.startFinish();
+      return;
     }
     this.pushedBack = true;
     row.state = 'pushing';
-    this.gapTimer = this.endless ? Math.min(CONFIG.gapAfterWrong, 0.9) : CONFIG.gapAfterWrong;
+    this.gapTimer = CONFIG.gapAfterWrong;
     this.report(false);
   }
 
-  // The run is over (the last door, or the last miss of an endless run):
-  // confetti and a happy dance either way, then the end screen.
+  // The run is over. After the last door of an ordinary run: confetti and a happy dance.
+  // After the miss that ends an endless run: confetti for the score, but no dance.
   startFinish() {
     this.mode = 'finishing';
     this.finishTimer = 0;
     this.confettiTimer = 0;
-    this.pushedBack = false;
     this.inputLocked = false;
-    this.row.state = 'none';
-    this.row.group.visible = false;
-    this.character.react('party');
+    if (!this.endless) {
+      this.pushedBack = false;
+      this.character.react('party');
+    }
     this.events.onFinishing?.({ score: this.score, total: CONFIG.doorsPerRun, endless: this.endless });
   }
 

@@ -375,8 +375,10 @@ function startRun(endless = false) {
   el.hint.hidden = false;
   show('play');
   game.startRun({ game: runGame, skill: store.skill(runGame), pace: currentPace(), endless: runEndless });
+  // Nothing is spoken in an endless run: it has sounds only.
+  if (runEndless) stopSpeaking();
   // Said inside the tap, which is what lets the voice work on iPhones and iPads.
-  speak(t.say.go);
+  else speak(t.say.go);
 }
 
 // Adds a run's points and progress to the saved totals. Returns what changed.
@@ -420,12 +422,8 @@ const gameEvents = {
     el.question.className = 'question';
     replay(el.question, 'new');
     showProgress();
-    if (runEndless) {
-      // An endless run gets too fast for talking: a question is only said while there is time for it.
-      if (game.row.travelTime >= speechSeconds(askText(question)) + 1) speak(askText(question));
-      else stopSpeaking();
-      return;
-    }
+    // An endless run has sounds but no talking.
+    if (runEndless) return;
     speak(askText(question), { queue: true });
     // Fetch what might be said next, so it comes without a pause.
     preloadSpeech([spokenAnswer(question), answerText(question), ...t.say.praise]);
@@ -451,7 +449,7 @@ const gameEvents = {
       if (!info.endless && (info.trick || info.score % 2 === 1)) speak(pick(t.say.praise));
     } else {
       sfx.wrong();
-      if (!info.endless || info.travel >= CONFIG.endless.voiceUntil) speak(spokenAnswer(info.question));
+      if (!info.endless) speak(spokenAnswer(info.question));
     }
   },
 
@@ -466,11 +464,15 @@ const gameEvents = {
 
   onFinishing({ score, endless }) {
     currentQuestion = null;
+    if (endless) {
+      // The right answer stays on show, and the fanfare waits for the bump sound to finish.
+      setTimeout(() => sfx.fanfare(), 450);
+      return;
+    }
     el.question.replaceChildren();
     el.ask.textContent = '';
     sfx.fanfare();
-    if (score === 0) speak(t.say.finishZero);
-    else speak(endless ? pick(t.say.praise) : t.say.finish(score));
+    speak(score > 0 ? t.say.finish(score) : t.say.finishZero);
   },
 
   onRunEnd(result) {

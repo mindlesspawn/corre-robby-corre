@@ -9,7 +9,8 @@
 //   same   the banner shows a few things; find the door with the same number of dots
 //   count  the banner shows a few things; find the door with the number that says how many
 //   find   the banner shows a number; find the door with that many dots
-//   more   find the door with the most dots ("fewer": the door with the least)
+//   more   find the door with the most dots ("fewer": the door with the least).
+//          A "compare" step asks one or the other at random.
 //   add    the banner shows a sum; find the door with the answer
 //   color  the banner shows or says a color; find the door of that color
 //   thing  the banner shows or names a thing (a crown, a castle...); find its picture
@@ -78,11 +79,10 @@ export const GAMES = {
     levels: [
       { kind: 'same', max: 3 }, // three stars, said aloud -> the door with three dots
       { kind: 'find', max: 3 }, // "three", said and shown -> the door with three dots
-      { kind: 'more', max: 6, gap: 3 }, // which door has more? very different amounts
+      { kind: 'compare', max: 6, gap: 3 }, // which door has more, or fewer? very different amounts
       { kind: 'same', max: 5 },
       { kind: 'find', max: 5 },
-      { kind: 'more', max: 5, gap: 1 }, // close amounts
-      { kind: 'fewer', max: 5, gap: 1 },
+      { kind: 'compare', max: 5, gap: 1 }, // close amounts
       { kind: 'count', max: 3, doors: 'both' }, // written numbers arrive, each with its dots
       { kind: 'count', max: 5, doors: 'both' },
       { kind: 'count', max: 5 }, // the number on its own
@@ -191,7 +191,9 @@ function makeCount({ max, doors }) {
 
 // Three doors of dots: pick the one with the most (or the fewest).
 // "gap" is how far ahead the right door must be, so early steps are easy to see.
-function makeCompare({ kind, max, gap = 1 }) {
+function makeCompare({ kind: asked, max, gap = 1 }) {
+  // A "compare" step asks for more half the time and fewer the other half.
+  const kind = asked === 'compare' ? (Math.random() < 0.5 ? 'more' : 'fewer') : asked;
   let amounts = kind === 'more' ? [1, 2, max] : [1, max - 1, max];
   for (let tries = 0; tries < 200; tries++) {
     const three = shuffle(range(1, max)).slice(0, 3).sort((a, b) => a - b);
@@ -268,6 +270,7 @@ const MAKERS = {
   same: makeSame,
   count: makeCount,
   find: makeFind,
+  compare: makeCompare,
   more: makeCompare,
   fewer: makeCompare,
   add: makeAdd,

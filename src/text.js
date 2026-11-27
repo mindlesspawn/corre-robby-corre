@@ -54,6 +54,7 @@ const es = {
     if (step.kind === 'same') return `oír el número y buscarlo, hasta ${step.max}`;
     if (step.kind === 'count') return step.doors === 'both' ? `contar hasta ${step.max}, número con puntos` : `contar hasta ${step.max}`;
     if (step.kind === 'find') return `del número a los puntos, hasta ${step.max}`;
+    if (step.kind === 'compare') return step.gap > 1 ? 'dónde hay más o menos (fácil)' : `dónde hay más o menos, hasta ${step.max}`;
     if (step.kind === 'more') return step.gap > 1 ? 'dónde hay más (fácil)' : `dónde hay más, hasta ${step.max}`;
     if (step.kind === 'fewer') return `dónde hay menos, hasta ${step.max}`;
     if (step.kind === 'color') {
@@ -183,6 +184,7 @@ const en = {
     if (step.kind === 'same') return `hear the number and find it, up to ${step.max}`;
     if (step.kind === 'count') return step.doors === 'both' ? `count up to ${step.max}, number with dots` : `count up to ${step.max}`;
     if (step.kind === 'find') return `number to dots, up to ${step.max}`;
+    if (step.kind === 'compare') return step.gap > 1 ? 'which has more or fewer (easy)' : `which has more or fewer, up to ${step.max}`;
     if (step.kind === 'more') return step.gap > 1 ? 'which has more (easy)' : `which has more, up to ${step.max}`;
     if (step.kind === 'fewer') return `which has fewer, up to ${step.max}`;
     if (step.kind === 'color') {

@@ -45,14 +45,11 @@ export const CONFIG = {
 
   // --- Endless mode ----------------------------------------------------------
   // "Sin fin": questions come at random and every right answer makes the belt faster.
-  // The first miss bumps the runner back; a second miss while bumped back ends the run.
+  // It goes on until the first miss, which ends the run. Sounds play, but nothing is spoken.
   endless: {
     faster: 0.93, // each right answer multiplies the travel time by this
     minTravel: 0.85, // the absurd top speed: under a second from doors appearing to arriving
-    slowerOnMiss: 1.2, // a miss eases the belt off a little
-    recoverStreak: 3, // right answers in a row that bring the runner back to the front
     minSteps: 3, // questions come from at least this many of a game's first steps
-    voiceUntil: 3.5, // the right answer is only said aloud while doors take at least this long
   },
 
   // --- Difficulty ----------------------------------------------------------

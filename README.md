@@ -23,8 +23,8 @@ The purple "Sin fin" button starts an endless run, and endless runs are what the
 
 - Questions come at random from every step the child has reached in the chosen game.
 - Every right answer makes the belt faster, down to under a second per row of doors.
-- The first miss bumps the runner back. Three right answers in a row bring it forward again. A second miss while bumped back ends the run.
-- The voice says each question only while there is time for it. Once the belt is fast, it is chimes only.
+- It goes on for as long as the answers are right. The first miss ends the run.
+- It has sounds but no talking. The question is shown in the banner and written underneath.
 - An endless run does not move a child up or down the learning steps.
 
 ## How a run works
