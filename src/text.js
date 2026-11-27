@@ -68,6 +68,16 @@ const es = {
   levelAgain: (n, need) => `Nivel ${n}: con ${need} ⭐ pasas al siguiente`,
   allCleared: '🏆 ¡Pasaste los 10 niveles!',
   advancedTitle: 'Para adultos o niños avanzados',
+
+  // The support page, for grown-ups.
+  supportButton: '❤️ Apoyar el juego',
+  supportTitle: '❤️ Apoya el juego',
+  supportText:
+    'Este juego es gratis y no tiene anuncios, y así se va a quedar. Si a tu familia le gusta y quieres ayudar a que siga creciendo, puedes dejar una propina. Es totalmente opcional.',
+  supportThanks: '¡Gracias!',
+  gateTitle: 'Solo para adultos',
+  gateAsk: (a, b) => `¿Cuánto es ${a} × ${b}?`,
+  back: 'Volver',
   wordMore: 'más',
   wordFewer: 'menos',
 
@@ -212,6 +222,15 @@ const en = {
   levelAgain: (n, need) => `Level ${n}: get ${need} ⭐ to move on`,
   allCleared: '🏆 You cleared all 10 levels!',
   advancedTitle: 'For grown-ups or advanced kids',
+
+  supportButton: '❤️ Support the game',
+  supportTitle: '❤️ Support the game',
+  supportText:
+    'This game is free and has no ads, and it will stay that way. If your family enjoys it and you would like to help it grow, you can leave a tip. It is completely optional.',
+  supportThanks: 'Thank you!',
+  gateTitle: 'Grown-ups only',
+  gateAsk: (a, b) => `What is ${a} × ${b}?`,
+  back: 'Back',
   wordMore: 'more',
   wordFewer: 'fewer',
 

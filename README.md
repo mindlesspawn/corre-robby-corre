@@ -188,6 +188,17 @@ Scores, progress, and unlocked characters are saved on each device, so they do n
 
 To update the online game after a change, save the change to GitHub (commit and push to `main`). The new version is live about a minute later.
 
+## Support
+
+The game is free and has no ads. A grown-up who wants to can leave a tip.
+
+- The way in is a small "Apoyar el juego" line at the bottom of the settings screen. It never appears while a child is playing or on the end screen.
+- It first asks a times-table question, so a small child cannot get through. A wrong answer goes back to the settings screen.
+- The page then says the game is free and stays free, and shows a button for each place a tip can be left. Each one opens in a new tab.
+- The button only exists when at least one place is listed under `support` in `src/config.js`. With nothing listed there is no button.
+
+For the iOS app this will need another look: Apple's rules for children's apps allow links out and anything to do with money only behind a grown-up check, and tips inside an app normally go through Apple's own in-app purchase.
+
 ## Play it from this computer
 
 Start the game from this folder:
@@ -213,7 +224,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | Every word the player reads or hears, in Spanish and English | `src/text.js` |
 | The faces on shapes, dots and numbers | `src/faces.js` |
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
-| The three belt speeds, doors per run, how fast steps go up, colors, the title | `src/config.js` |
+| The three belt speeds, doors per run, colors, the title, the support links | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
 | The voice, and which clip says which line | `src/speech.js`, `src/voice/es.json`, `src/voice/en.json` |
 | Recording the voice clips | `scripts/record-voice.mjs` |

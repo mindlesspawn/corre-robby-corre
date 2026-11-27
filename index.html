@@ -105,6 +105,29 @@
           </div>
         </div>
         <button id="btn-settings-done" class="big-btn" type="button" data-t="done"></button>
+        <!-- Only shown when a support link is listed in src/config.js. -->
+        <button id="btn-support" class="quiet-btn" type="button" data-t="supportButton" hidden></button>
+      </div>
+    </section>
+
+    <!-- Support, for grown-ups. First a question a small child cannot answer, then the page. -->
+    <section id="screen-support" class="screen" hidden>
+      <div id="support-gate" class="panel">
+        <h2 data-t="gateTitle"></h2>
+        <p id="gate-ask" class="gate-ask"></p>
+        <div id="gate-answers" class="gate-answers"></div>
+        <div class="button-row">
+          <button id="btn-gate-back" class="small-btn" type="button" data-t="back"></button>
+        </div>
+      </div>
+      <div id="support-page" class="panel" hidden>
+        <h2 data-t="supportTitle"></h2>
+        <p class="support-text" data-t="supportText"></p>
+        <div id="support-links" class="support-links"></div>
+        <p class="support-thanks" data-t="supportThanks"></p>
+        <div class="button-row">
+          <button id="btn-support-back" class="small-btn" type="button" data-t="back"></button>
+        </div>
       </div>
     </section>
 

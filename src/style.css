@@ -1724,3 +1724,61 @@ h2 {
     padding-bottom: 9px;
   }
 }
+
+/* --- The support page, for grown-ups --------------------------------------------------- */
+
+/* The way in: a quiet line of text under the settings, not a big button. */
+.quiet-btn {
+  align-self: center;
+  background: transparent;
+  padding: 6px 14px;
+  min-height: 40px;
+  font-size: 16px;
+  font-weight: 800;
+  opacity: 0.75;
+}
+
+.quiet-btn[hidden] {
+  display: none;
+}
+
+.gate-ask {
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.gate-answers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gate-answers .small-btn {
+  font-size: 26px;
+  min-height: 64px;
+}
+
+.support-text {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.support-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.support-link {
+  display: block;
+  text-decoration: none;
+  font-size: 26px;
+}
+
+.support-thanks {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--green-dark);
+}

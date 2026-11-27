@@ -69,7 +69,7 @@ const el = {
   scoreEmpty: $('score-empty'),
 };
 
-const SCREENS = ['start', 'settings', 'over', 'scores', 'pause'];
+const SCREENS = ['start', 'settings', 'support', 'over', 'scores', 'pause'];
 
 let game = null;
 let thumbs = {};
@@ -696,6 +696,59 @@ function finishRun({ score, total, endless }) {
   if (newest || passed) sfx.unlock();
 }
 
+// --- Support ------------------------------------------------------------------------
+
+// The places a grown-up can leave a tip, from src/config.js. Only https addresses count.
+const supportLinks = () =>
+  (CONFIG.support ?? []).filter((link) => typeof link?.url === 'string' && link.url.startsWith('https://'));
+
+// The support button is only on the settings screen when there is somewhere for it to go.
+function renderSupportButton() {
+  $('btn-support').hidden = supportLinks().length === 0;
+}
+
+// The support page takes money matters out of a child's reach twice over: it is on the
+// settings screen, and it opens with a times-table question a small child cannot answer.
+// A wrong answer goes back to the settings screen.
+function openSupport() {
+  const [a, b] = [6 + Math.floor(Math.random() * 4), 6 + Math.floor(Math.random() * 4)];
+  const right = a * b;
+  const answers = new Set([right]);
+  for (const other of [right + a, right - b, right + 10, right - 7, right + 3]) {
+    if (answers.size < 4 && other > 0) answers.add(other);
+  }
+  $('gate-ask').textContent = t.gateAsk(a, b);
+  $('gate-answers').replaceChildren(
+    ...[...answers]
+      .sort(() => Math.random() - 0.5)
+      .map((value) => {
+        const button = tag('button', 'small-btn', String(value));
+        button.type = 'button';
+        button.addEventListener('click', () => {
+          if (value !== right) {
+            show('settings');
+            return;
+          }
+          $('support-gate').hidden = true;
+          $('support-page').hidden = false;
+        });
+        return button;
+      }),
+  );
+  $('support-links').replaceChildren(
+    ...supportLinks().map((link) => {
+      const anchor = tag('a', 'big-btn support-link', `${link.icon ? `${link.icon} ` : ''}${link.name ?? ''}`);
+      anchor.href = link.url;
+      anchor.target = '_blank';
+      anchor.rel = 'noopener noreferrer';
+      return anchor;
+    }),
+  );
+  $('support-gate').hidden = false;
+  $('support-page').hidden = true;
+  show('support');
+}
+
 // --- High scores ------------------------------------------------------------------
 
 function showScores(highlight = -1) {
@@ -812,7 +865,13 @@ function wireButtons() {
   $('btn-again').addEventListener('click', () => startRun(runEndless));
   $('btn-scores-play').addEventListener('click', () => startRun(true));
   $('btn-scores').addEventListener('click', () => showScores());
-  $('btn-settings').addEventListener('click', () => show('settings'));
+  $('btn-settings').addEventListener('click', () => {
+    renderSupportButton();
+    show('settings');
+  });
+  $('btn-support').addEventListener('click', openSupport);
+  $('btn-gate-back').addEventListener('click', () => show('settings'));
+  $('btn-support-back').addEventListener('click', () => show('settings'));
   $('btn-settings-done').addEventListener('click', () => {
     renderStart();
     show('start');

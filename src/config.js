@@ -59,6 +59,14 @@ export const CONFIG = {
   // gives (about three), and still forgiving.
   clearAt: 7,
 
+  // --- Support ---------------------------------------------------------------
+  // The game is free and has no ads. This is where a grown-up can leave a tip if they
+  // want to. List one or more places here and a "support" button appears at the bottom
+  // of the settings screen; with nothing listed there is no button at all. For example:
+  //   support: [{ name: 'Ko-fi', icon: '☕', url: 'https://ko-fi.com/your-page' }],
+  // Only addresses that start with https:// are used.
+  support: [],
+
   // --- High scores ---------------------------------------------------------
   highScoreSlots: 10,
   nameMaxLength: 10,
