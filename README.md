@@ -21,7 +21,7 @@ The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the
 - Picking an age is the only difficulty setting. Every game has its own ten levels for each age.
 - A level is one run of 10 doors. Getting 7 or more right clears it and opens the next one. Fewer than 7 changes nothing: the same level is there to try again.
 - Each level adds a little: one more color or shape, a bigger number, a harder pattern. Some levels mix what came before, as a review.
-- Cleared levels turn gold and can be tapped to play them again. Levels that are not open yet are grey.
+- Clearing a level earns a sticker, a different one for each level of each game. It is shown on the end screen, and from then on it takes the place of that level's number on the start screen. A cleared level can be tapped to play it again. Levels that are not open yet are grey.
 - Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
 
 | Age | Numbers | Colors | Princess things | Shapes | Patterns |
@@ -49,6 +49,7 @@ Endless mode is on the settings screen (the ⚙️ button), under "Para adultos 
 
 - A run is 10 doors. It never ends early.
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
+- The shapes and dots on the doors have little faces, and the numbers have a pair of eyes on top. The eyes never cover a number and a face never changes a shape's outline.
 - When praise is spoken, the word also bounces onto the screen in rainbow letters with a burst of stars, for about a second. Clearing a level gets a bigger one.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
@@ -102,6 +103,8 @@ How shapes are drawn, and how the game celebrates (checked on 27 November 2026):
 | Brings in the rectangle later than the star, circle, square and triangle | In a study of two year olds the star was the easiest shape to pick out and the rectangle the hardest. | 17 |
 | Keeps celebrations short, only after a right answer, and biggest for a cleared level | An analysis of 124 children's apps marked apps down for praise and rewards after every action, and up for feedback tied to the answer. Getting to a new level is named as a better reward than stickers or badges. | 19, 20 |
 | Asks, then waits; keeps a steady pace; repeats | Children's programmes that pause for an answer, go slowly and repeat are the ones researchers single out as holding attention and teaching. In one study of 100 videos, the pace of most was too fast for most children to take in. | 21, 22 |
+
+The faces and the stickers are there to make the game friendlier, not because research says they teach. The sources above do not test faces, and they rate stickers below reaching a new level as a reward. So both are kept small: the faces do not move, and there is one sticker for a whole level, never one for each answer.
 
 Not built, though this research points to it: telling a child why a shape is that shape ("it has three sides") when the answer is shown. In one study, children taught that way sorted shapes they had never seen about 30% better (source 23).
 
@@ -205,6 +208,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | --- | --- |
 | The games and their steps (add a game, a step, or a new kind of question) | `src/questions.js` |
 | Every word the player reads or hears, in Spanish and English | `src/text.js` |
+| The faces on shapes, dots and numbers | `src/faces.js` |
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
 | The three belt speeds, doors per run, how fast steps go up, colors, the title | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |

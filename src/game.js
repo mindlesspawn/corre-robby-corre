@@ -4,6 +4,7 @@
 import * as THREE from 'three';
 import { COLORS, CONFIG, DOOR_COLORS, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
+import { drawEyes, drawFace, faceSpot } from './faces.js';
 import { LEVELS, SHAPES, THINGS, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
@@ -279,9 +280,12 @@ export class Game {
     if (this.row.question?.doors === 'dots') {
       g.fillStyle = ink;
       for (const [x, y, r] of dotLayout(value, w, h)) {
+        g.fillStyle = ink;
         g.beginPath();
         g.arc(x, y, r, 0, Math.PI * 2);
         g.fill();
+        // Every dot is a little somebody to count.
+        drawFace(g, x, y, r * 0.86, back, ink);
       }
       door.texture.needsUpdate = true;
       return;
@@ -309,8 +313,21 @@ export class Game {
       g.scale(scale, scale);
       g.translate(-50, -50);
       g.fillStyle = ink;
-      g.fill(new Path2D(form?.path ?? SHAPES[value] ?? ''));
+      const outline = form?.path ?? SHAPES[value] ?? '';
+      g.fill(new Path2D(outline));
       g.restore();
+      // The shape's face stays the right way up however the shape is turned.
+      const spot = faceSpot(outline);
+      const turn = ((form?.turn ?? 0) * Math.PI) / 180;
+      const [dx, dy] = [spot.x - 50, spot.y - 50];
+      drawFace(
+        g,
+        w / 2 + scale * (dx * Math.cos(turn) - dy * Math.sin(turn)),
+        h / 2 + scale * (dx * Math.sin(turn) + dy * Math.cos(turn)),
+        spot.r * scale * 0.8,
+        back,
+        ink,
+      );
       door.texture.needsUpdate = true;
       return;
     }
@@ -327,7 +344,14 @@ export class Game {
     g.fillStyle = ink;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    g.fillText(text, w / 2, (paired ? h * 0.4 : h / 2) + size * 0.05);
+    // The number sits a little low, with a pair of eyes on top of it. The eyes never
+    // cover the number, so its shape stays easy to read.
+    const middle = (paired ? h * 0.43 : h / 2) + size * 0.11;
+    g.fillText(text, w / 2, middle);
+    const top = middle - g.measureText(text).actualBoundingBoxAscent;
+    const eye = size * 0.1;
+    drawEyes(g, w / 2, top - eye * 0.45, eye, ink, back);
+    g.fillStyle = ink;
     if (paired) {
       const count = clamp(Math.round(value), 1, 10);
       const radius = Math.min(28, (w * 0.8) / (count * 2.6));

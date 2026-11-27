@@ -20,6 +20,9 @@
 //   pattern  the banner shows a repeating row (red, blue, red, blue...); find what comes next
 //   mix      one of several kinds above, picked afresh for each question (a review level)
 //
+// Each game also has ten stickers, one for each level cleared. They show on the start
+// screen in place of the level's number.
+//
 // To change a level, edit its line in the game's plan for that age.
 // To add a game, add an entry to GAMES and its name to src/text.js.
 // To add a new kind of question, add a maker below, then teach src/main.js how to show it
@@ -171,6 +174,7 @@ export const GAMES = {
   // arriving together with their dots. Sums stay small and are shown with pictures.
   numbers: {
     icon: '🔢',
+    stickers: ['🐣', '🐥', '🐰', '🐶', '🐱', '🦊', '🐼', '🐯', '🦁', '🐲'],
     plans: {
       // Amounts up to 3 seen at a glance, and more and fewer with very different amounts.
       3: [
@@ -229,6 +233,7 @@ export const GAMES = {
 
   colors: {
     icon: '🎨',
+    stickers: ['🌈', '🎈', '🍭', '🦋', '🌻', '🍉', '🧁', '🎨', '🎆', '🦜'],
     plans: {
       3: [
         seeColors(3),
@@ -284,6 +289,7 @@ export const GAMES = {
   // Finding princess things by sight, then by name. Aimed at a three year old.
   princess: {
     icon: '👑',
+    stickers: ['👑', '💍', '👗', '👠', '🌹', '💎', '🧚', '🏰', '🦄', '👸'],
     plans: {
       3: [
         seeThings(3),
@@ -342,6 +348,7 @@ export const GAMES = {
   // name shapes whatever their size and whichever way up they are.
   shapes: {
     icon: '🔷',
+    stickers: ['⭐', '💖', '🔶', '🔷', '⚽', '🎲', '🎁', '🚀', '🧩', '🏆'],
     plans: {
       3: [
         seeShapes(3),
@@ -399,6 +406,7 @@ export const GAMES = {
   // just starting pre-school found patterns very hard, so there is no plan for age 3.
   patterns: {
     icon: '🧩',
+    stickers: ['🐝', '🦓', '🐞', '🐠', '🍬', '🧦', '🚂', '🎏', '🦒', '🐅'],
     plans: {
       4: [
         colorRow('AB', 3),
@@ -441,6 +449,9 @@ export const GAMES = {
 };
 
 export const GAME_IDS = Object.keys(GAMES);
+
+// The sticker a child earns for clearing a level (0 is the first): one for each level of each game.
+export const stickerFor = (gameId, level) => GAMES[gameId]?.stickers?.[level] ?? '⭐';
 
 export const ageOrDefault = (age) => (AGES.includes(age) ? age : AGES.includes(CONFIG.age) ? CONFIG.age : AGES[0]);
 

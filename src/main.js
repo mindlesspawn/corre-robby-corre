@@ -7,7 +7,8 @@ import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
-import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor } from './questions.js';
+import { faceParts, faceSpot } from './faces.js';
+import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor, stickerFor } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
@@ -53,6 +54,7 @@ const el = {
   ages: $('ages'),
   levels: $('levels'),
   overLevel: $('over-level'),
+  overSticker: $('over-sticker'),
   wow: $('wow'),
   overTitle: $('over-title'),
   overStars: $('over-stars'),
@@ -214,14 +216,16 @@ function currentLevel() {
   return pickedLevel === null ? next : Math.min(pickedLevel, next);
 }
 
-// The ten levels of the chosen game: gold once cleared, the one about to be played lit,
-// and grey until they open. A cleared level can be tapped to play it again.
+// The ten levels of the chosen game: a sticker once cleared, the one about to be played
+// lit, and grey until they open. A cleared level can be tapped to play it again.
 function renderLevels() {
   const cleared = store.cleared();
   const current = currentLevel();
+  const gameId = store.game();
   el.levels.replaceChildren(
     ...Array.from({ length: LEVELS }, (_, i) => {
-      const button = tag('button', 'level-btn', String(i + 1));
+      // A cleared level shows the sticker it earned, in place of its number.
+      const button = tag('button', 'level-btn', i < cleared ? stickerFor(gameId, i) : String(i + 1));
       button.type = 'button';
       button.classList.toggle('done', i < cleared);
       button.classList.toggle('selected', i === current);
@@ -309,14 +313,30 @@ function things(count, item = 'apple') {
 }
 
 // A shape for the banner, drawn from the same outline the doors use.
-function shapePicture(id) {
+// "face" gives it the same little face the doors have (left off the small ones in a row).
+function shapePicture(id, face = false) {
   const space = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(space, 'svg');
-  svg.setAttribute('viewBox', '0 0 100 100');
-  svg.setAttribute('class', 'shape');
-  const outline = document.createElementNS(space, 'path');
-  outline.setAttribute('d', SHAPES[id] ?? '');
-  svg.append(outline);
+  const make = (name, attributes) => {
+    const node = document.createElementNS(space, name);
+    for (const [key, value] of Object.entries(attributes)) node.setAttribute(key, String(value));
+    return node;
+  };
+  const svg = make('svg', { viewBox: '0 0 100 100', class: 'shape' });
+  svg.append(make('path', { d: SHAPES[id] ?? '' }));
+  if (face && SHAPES[id]) {
+    const spot = faceSpot(SHAPES[id]);
+    const { eyes, pupils, smile } = faceParts(spot.x, spot.y, spot.r * 0.8);
+    for (const eye of eyes) svg.append(make('circle', { class: 'eye', cx: eye.x, cy: eye.y, r: eye.r }));
+    for (const pupil of pupils) svg.append(make('circle', { class: 'pupil', cx: pupil.x, cy: pupil.y, r: pupil.r }));
+    const at = (angle) => `${smile.x + smile.r * Math.cos(angle)} ${smile.y + smile.r * Math.sin(angle)}`;
+    svg.append(
+      make('path', {
+        class: 'smile',
+        d: `M${at(smile.from)}A${smile.r} ${smile.r} 0 0 1 ${at(smile.to)}`,
+        'stroke-width': smile.width,
+      }),
+    );
+  }
   return svg;
 }
 
@@ -365,7 +385,7 @@ function showQuestion(question, solved = false) {
   } else if (question.kind === 'thing' || question.kind === 'shape') {
     // Listening steps hide the picture until it is answered, unless the voice is off.
     if (solved || question.show || !canSpeak()) {
-      parts.push(question.kind === 'thing' ? tag('span', 'picture', THINGS[question.answer]) : shapePicture(question.answer));
+      parts.push(question.kind === 'thing' ? tag('span', 'picture', THINGS[question.answer]) : shapePicture(question.answer, true));
     } else {
       parts.push(tag('span', 'listen', '🔊'));
     }
@@ -630,6 +650,9 @@ function finishRun({ score, total, endless }) {
   el.overLevel.classList.toggle('passed', passed);
   if (passed) el.overLevel.textContent = store.cleared(runGame) >= LEVELS ? t.allCleared : t.levelCleared(runLevel + 1);
   else el.overLevel.textContent = t.levelAgain(runLevel + 1, CONFIG.clearAt);
+  // A cleared level earns its sticker.
+  el.overSticker.hidden = !passed;
+  el.overSticker.textContent = passed ? stickerFor(runGame, runLevel) : '';
 
   el.overTitle.textContent = friendlyTitle(score, total, endless);
   el.overScore.textContent = String(score);

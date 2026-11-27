@@ -985,9 +985,11 @@ h2 {
   line-height: 1;
 }
 
+/* A cleared level shows its sticker. */
 .level-btn.done {
-  background: #ffe082;
+  background: #fff8e1;
   border-color: var(--sun);
+  font-size: clamp(13px, 4.6vw, 22px);
 }
 
 .level-btn.selected {
@@ -997,13 +999,72 @@ h2 {
 }
 
 .level-btn.done.selected {
-  background: #ffe082;
+  background: #fff8e1;
 }
 
 .level-btn:disabled {
   background: #eef2f6;
   border-color: #e3e9ef;
   color: #b0bec5;
+}
+
+/* On the end screen: the sticker earned for clearing the level, stuck on at a tilt. */
+.over-sticker {
+  align-self: center;
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  font-size: 62px;
+  line-height: 1;
+  background: #fff;
+  border: 5px solid var(--sun);
+  border-radius: 50%;
+  box-shadow: 0 6px 0 rgba(26, 35, 126, 0.16);
+  transform: rotate(-7deg);
+  animation: sticker-on 0.7s cubic-bezier(0.3, 1.6, 0.5, 1) 1.3s backwards;
+}
+
+.over-sticker[hidden] {
+  display: none;
+}
+
+@keyframes sticker-on {
+  0% {
+    transform: rotate(20deg) scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(-7deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/* The face on the shape in the question banner (the doors draw the same one). */
+.question .shape .eye {
+  fill: #fff;
+}
+
+.question .shape .pupil {
+  fill: var(--ink);
+}
+
+.question .shape .smile {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+}
+
+.question.right .shape .eye {
+  fill: var(--green);
+}
+
+.question.right .shape .pupil {
+  fill: #fff;
+}
+
+.question.right .shape .smile {
+  stroke: var(--green);
 }
 
 /* On the end screen: the level that was cleared, or how many stars clear it. */
