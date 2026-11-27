@@ -9,9 +9,10 @@ import { t } from './text.js';
 
 const KEY = 'number-run-save-v1';
 
-// Raised when the rules of a run change so much that old scores no longer compare.
+// Raised when the rules of a run change so much that old scores no longer compare,
+// or simply to wipe the high score table everywhere (each device clears it on its next visit).
 // Older saves keep their points and characters but start a fresh high score table.
-const RULES = 3;
+const RULES = 4;
 
 const DEFAULTS = {
   rules: RULES,
