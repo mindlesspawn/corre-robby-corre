@@ -1510,11 +1510,23 @@ h2 {
    the height of the screen, so a tall phone gets bigger buttons and more air, and a
    short one still fits. */
 .start {
-  margin: auto;
+  margin: 0 auto;
+  align-self: flex-start;
   width: min(100%, 440px);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 2.6vh, 30px);
+  min-height: 100%;
+  /* The spare height is shared out above the title, between the title and the card, and
+     below the card, with a little less above. A title is lighter to the eye than a card,
+     so centring the two as one block leaves the title looking low and cramped. */
+  display: grid;
+  grid-template-rows: minmax(4px, 3fr) auto minmax(10px, 4fr) auto minmax(4px, 4fr);
+}
+
+.start h1 {
+  grid-row: 2;
+}
+
+.start .panel {
+  grid-row: 4;
 }
 
 .start h1 {
@@ -1652,7 +1664,7 @@ h2 {
 /* A phone held sideways: a small title and tight rows, so Play stays on the screen. */
 @media (max-height: 480px) {
   .start {
-    gap: 6px;
+    grid-template-rows: 0 auto 6px auto 0;
   }
   .start h1 {
     font-size: 26px;
