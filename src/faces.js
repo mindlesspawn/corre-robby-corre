@@ -1,6 +1,6 @@
-// Little faces for the shapes, and eyes for the numbers, on the doors and in the banner.
-// They are only there to make the game friendlier: the face never changes the outline of
-// a shape or covers a number, so what the child has to look at stays the same.
+// Little faces for the shapes on the doors and in the banner. They are only there to make
+// the game friendlier: a face never changes the outline of a shape, so what the child has
+// to look at stays the same. Numbers and dots are left plain.
 
 const spots = new Map();
 let probe = null;
@@ -64,18 +64,4 @@ export function drawFace(g, x, y, r, light, dark) {
   g.beginPath();
   g.arc(smile.x, smile.y, smile.r, smile.from, smile.to);
   g.stroke();
-}
-
-// Two googly eyes side by side, for sitting on top of a number. "ring" is the color of
-// the number, so the eyes look like part of it.
-export function drawEyes(g, x, y, r, ring, white) {
-  for (const side of [-1, 1]) {
-    const eye = { x: x + side * r * 1.08, y, r };
-    g.fillStyle = ring;
-    disc(g, eye);
-    g.fillStyle = white;
-    disc(g, { ...eye, r: r * 0.72 });
-    g.fillStyle = ring;
-    disc(g, { x: eye.x + r * 0.12, y: eye.y + r * 0.1, r: r * 0.36 });
-  }
 }

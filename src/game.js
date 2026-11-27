@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { COLORS, CONFIG, DOOR_COLORS, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { drawEyes, drawFace, faceSpot } from './faces.js';
+import { drawFace, faceSpot } from './faces.js';
 import { LEVELS, SHAPES, THINGS, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
@@ -337,14 +337,7 @@ export class Game {
     g.fillStyle = ink;
     g.textAlign = 'center';
     g.textBaseline = 'middle';
-    // The number sits a little low, with a pair of eyes on top of it. The eyes never
-    // cover the number, so its shape stays easy to read.
-    const middle = (paired ? h * 0.43 : h / 2) + size * 0.11;
-    g.fillText(text, w / 2, middle);
-    const top = middle - g.measureText(text).actualBoundingBoxAscent;
-    const eye = size * 0.1;
-    drawEyes(g, w / 2, top - eye * 0.45, eye, ink, back);
-    g.fillStyle = ink;
+    g.fillText(text, w / 2, (paired ? h * 0.4 : h / 2) + size * 0.05);
     if (paired) {
       const count = clamp(Math.round(value), 1, 10);
       const radius = Math.min(28, (w * 0.8) / (count * 2.6));

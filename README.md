@@ -50,7 +50,7 @@ Endless mode is on the settings screen (the ⚙️ button), under "Para adultos 
 
 - A run is 10 doors. It never ends early.
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
-- The shapes on the doors have little faces, and the numbers have a pair of eyes on top. The eyes never cover a number and a face never changes a shape's outline.
+- The shapes on the doors have little faces, which never change a shape's outline. Numbers and dots are plain.
 - When praise is spoken, the word also bounces onto the screen in rainbow letters with a burst of stars, for about a second. Clearing a level gets a bigger one.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
@@ -226,7 +226,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | --- | --- |
 | The games and their steps (add a game, a step, or a new kind of question) | `src/questions.js` |
 | Every word the player reads or hears, in Spanish and English | `src/text.js` |
-| The faces on shapes and the eyes on numbers | `src/faces.js` |
+| The faces on shapes | `src/faces.js` |
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
 | The three belt speeds, doors per run, colors, the title, the support links | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
