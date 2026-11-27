@@ -293,6 +293,41 @@ export function buildCharacter(def) {
 
 // Takes a small snapshot of each character for the picker on the start screen.
 // Returns { characterId: imageUrl }. If snapshots cannot be made, returns {}.
+// Cuts a snapshot down to the character and scales it to fill the picture, so every
+// character looks the same size in its tile. Without this a long tail or a pair of swords
+// pushes the camera back and makes that character look small.
+function fillFrame(source, pixels) {
+  const size = source.width;
+  const scratch = document.createElement('canvas');
+  scratch.width = size;
+  scratch.height = size;
+  const g = scratch.getContext('2d', { willReadFrequently: true });
+  g.drawImage(source, 0, 0);
+  const { data } = g.getImageData(0, 0, size, size);
+
+  let [left, right, top, bottom] = [size, -1, size, -1];
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (data[(y * size + x) * 4 + 3] <= 16) continue;
+      if (x < left) left = x;
+      if (x > right) right = x;
+      if (y < top) top = y;
+      if (y > bottom) bottom = y;
+    }
+  }
+  if (right < left) return source.toDataURL('image/png'); // nothing was drawn
+
+  const [wide, tall] = [right - left + 1, bottom - top + 1];
+  const fit = (pixels * 0.86) / Math.max(wide, tall); // a little air around it
+  const out = document.createElement('canvas');
+  out.width = pixels;
+  out.height = pixels;
+  out
+    .getContext('2d')
+    .drawImage(scratch, left, top, wide, tall, (pixels - wide * fit) / 2, (pixels - tall * fit) / 2, wide * fit, tall * fit);
+  return out.toDataURL('image/png');
+}
+
 export function renderThumbnails(defs, pixels = 220) {
   const shots = {};
   let renderer;
@@ -301,7 +336,7 @@ export function renderThumbnails(defs, pixels = 220) {
   } catch {
     return shots;
   }
-  renderer.setSize(pixels, pixels, false);
+  renderer.setSize(pixels * 2, pixels * 2, false);
   renderer.setClearColor(0x000000, 0);
 
   for (const def of defs) {
@@ -327,7 +362,7 @@ export function renderThumbnails(defs, pixels = 220) {
       camera.lookAt(centre);
 
       renderer.render(scene, camera);
-      shots[def.id] = renderer.domElement.toDataURL('image/png');
+      shots[def.id] = fillFrame(renderer.domElement, pixels);
       disposeObject(character.root);
     } catch (error) {
       console.warn(`Could not draw a snapshot of "${def.id}"`, error);

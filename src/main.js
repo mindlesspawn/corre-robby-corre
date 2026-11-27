@@ -901,6 +901,26 @@ function wireTouch() {
   document.addEventListener('gesturestart', (event) => event.preventDefault());
   document.addEventListener('contextmenu', (event) => event.preventDefault());
 
+  // A phone is played upright. Held sideways, the game pauses and shows a phone turning
+  // back up. A tablet (anything at least 540 points on its short side) may be held either
+  // way. The screen's own size is used, not the window's, so a keyboard opening does not
+  // look like the phone being turned.
+  // (A browser that does not report its screen falls back to the size of the window.)
+  const shortSide = Math.min(window.screen.width, window.screen.height) || Math.min(window.innerWidth, window.innerHeight);
+  const isPhone = shortSide < 540;
+  const sideways = window.matchMedia('(orientation: landscape)');
+  const checkTurn = () => {
+    const type = window.screen.orientation?.type;
+    const turned = isPhone && (type ? type.startsWith('landscape') : sideways.matches);
+    $('rotate').hidden = !turned;
+    if (turned) pauseRun();
+  };
+  sideways.addEventListener?.('change', checkTurn);
+  window.screen.orientation?.addEventListener?.('change', checkTurn);
+  checkTurn();
+  // Where the device lets a page hold its direction (an installed app on Android), hold it.
+  if (isPhone) window.screen.orientation?.lock?.('portrait')?.catch?.(() => {});
+
   // Pause when the game is put in the background.
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) pauseRun();

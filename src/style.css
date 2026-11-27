@@ -1504,6 +1504,47 @@ h2 {
   font-size: 26px;
 }
 
+/* --- A phone held sideways ------------------------------------------------------------ */
+
+/* The game is made to be played upright on a phone. Held sideways, it shows a phone
+   turning back upright and waits. main.js decides when (a tablet may be held either way). */
+.rotate {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #9ad8ff, #c9ecff);
+}
+
+.rotate[hidden] {
+  display: none;
+}
+
+.rotate-phone {
+  width: 86px;
+  height: 150px;
+  border: 8px solid var(--ink);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 0 rgba(26, 35, 126, 0.16);
+  display: grid;
+  place-items: center;
+  font-size: 44px;
+  animation: stand-up 2.2s ease-in-out infinite;
+}
+
+@keyframes stand-up {
+  0%,
+  20% {
+    transform: rotate(-90deg);
+  }
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
 /* --- The start screen, laid out to use the height it has ------------------------------- */
 
 /* The title sits above the card, on the sky, and the card holds the choices. Sizes follow
@@ -1518,7 +1559,7 @@ h2 {
      below the card, with a little less above. A title is lighter to the eye than a card,
      so centring the two as one block leaves the title looking low and cramped. */
   display: grid;
-  grid-template-rows: minmax(4px, 3fr) auto minmax(10px, 4fr) auto minmax(4px, 4fr);
+  grid-template-rows: minmax(4px, 3fr) auto minmax(10px, 2fr) auto minmax(4px, 4fr);
 }
 
 .start h1 {

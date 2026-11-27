@@ -182,6 +182,8 @@ The game is at <https://mindlesspawn.github.io/corre-robby-corre/>. It works on 
 
 To make it feel like an app on an iPhone or iPad: open the link in Safari, tap Share, then "Add to Home Screen".
 
+A phone is played upright. Held sideways, the game pauses and shows a phone turning back up. A tablet can be held either way. (A web page cannot stop a phone from turning, so the game waits instead. The iOS app will be able to lock it properly.)
+
 Scores, progress, and unlocked characters are saved on each device, so they do not carry over from one device to another.
 
 To update the online game after a change, save the change to GitHub (commit and push to `main`). The new version is live about a minute later.
