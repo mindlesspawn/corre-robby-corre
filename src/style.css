@@ -1386,15 +1386,18 @@ h2 {
 }
 
 /* The Play button on the start screen has a play triangle and breathes, to say "press me". */
-#btn-play {
+#btn-play,
+.go-btn {
   animation: breathe 1.9s ease-in-out infinite;
 }
 
-#btn-play:active {
+#btn-play:active,
+.go-btn:active {
   animation: none;
 }
 
-#btn-play::before {
+#btn-play::before,
+.go-btn::before {
   content: '';
   display: inline-block;
   margin-right: 0.3em;
@@ -1461,5 +1464,210 @@ h2 {
 @media (min-width: 600px) and (min-height: 700px) {
   .setting-name {
     font-size: 19px;
+  }
+}
+
+/* --- The "go" button on the end screen ----------------------------------------------- */
+
+/* It shows what it starts: a play triangle, the game's picture, and the level's number. */
+.go-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28em;
+}
+
+.go-btn::before {
+  margin-right: 0;
+}
+
+#btn-again {
+  font-size: clamp(34px, 6vh, 46px);
+  padding-top: clamp(12px, 2.4vh, 22px);
+  padding-bottom: clamp(14px, 2.6vh, 24px);
+}
+
+.go-btn .next-icon {
+  line-height: 1;
+  text-shadow: none;
+}
+
+.go-btn .next-level {
+  min-width: 1.5em;
+  padding: 0.04em 0.36em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.28);
+  line-height: 1.2;
+}
+
+.home-btn {
+  font-size: 26px;
+}
+
+/* --- The start screen, laid out to use the height it has ------------------------------- */
+
+/* The title sits above the card, on the sky, and the card holds the choices. Sizes follow
+   the height of the screen, so a tall phone gets bigger buttons and more air, and a
+   short one still fits. */
+.start {
+  margin: auto;
+  width: min(100%, 440px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2.6vh, 30px);
+}
+
+.start h1 {
+  font-size: clamp(38px, min(12.5vw, 8vh), 64px);
+  -webkit-text-stroke: 0.12em #fff;
+  paint-order: stroke fill;
+  filter: drop-shadow(0 0.06em 0 rgba(26, 35, 126, 0.22));
+}
+
+.start h1 span {
+  text-shadow: none;
+}
+
+.start .panel {
+  width: 100%;
+  margin: 0;
+  gap: clamp(10px, 2.3vh, 24px);
+  padding: clamp(14px, 2.6vh, 26px) 18px;
+}
+
+/* Four characters always share one row, even on a narrow phone. */
+#screen-start .characters {
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+}
+
+#screen-start .character {
+  padding-top: clamp(5px, 1.1vh, 12px);
+  padding-bottom: clamp(5px, 1.1vh, 12px);
+}
+
+#screen-start .game-btn {
+  padding-top: clamp(5px, 1.3vh, 13px);
+  padding-bottom: clamp(5px, 1.3vh, 13px);
+}
+
+#screen-start .game-btn .game-icon {
+  font-size: clamp(24px, 4.2vh, 38px);
+}
+
+#screen-start .age-btn {
+  min-height: clamp(40px, 6.6vh, 62px);
+}
+
+/* The ten levels in two rows of five, big enough to see each sticker and to tap. */
+#screen-start .levels {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(5px, 1.1vh, 10px) 8px;
+}
+
+#screen-start .level-btn {
+  aspect-ratio: auto;
+  height: clamp(36px, 6.2vh, 58px);
+  border-radius: 999px;
+  border-width: 3px;
+  font-size: clamp(15px, 2.7vh, 22px);
+}
+
+#screen-start .level-btn.done {
+  font-size: clamp(20px, 3.8vh, 32px);
+}
+
+#screen-start .level-btn.selected {
+  transform: scale(1.07);
+}
+
+#screen-start .big-btn {
+  font-size: clamp(28px, 5vh, 42px);
+  padding-top: clamp(10px, 2.1vh, 20px);
+  padding-bottom: clamp(12px, 2.3vh, 22px);
+}
+
+#screen-start .play-row .toggle-btn {
+  flex-basis: clamp(58px, 9vh, 76px);
+}
+
+/* A tablet has room for a wider card and bigger everything. */
+@media (min-width: 600px) and (min-height: 700px) {
+  .start {
+    width: min(100%, 620px);
+  }
+  .start h1 {
+    font-size: clamp(56px, 8vh, 84px);
+  }
+  .start .panel {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  #screen-start .characters .character img {
+    max-width: 120px;
+  }
+  #screen-start .games.five .game-btn {
+    font-size: 17px;
+  }
+  #screen-start .game-btn .game-icon {
+    font-size: clamp(34px, 4.6vh, 50px);
+  }
+  #screen-start .age-btn {
+    min-height: clamp(58px, 6.6vh, 74px);
+  }
+  #screen-start .levels {
+    column-gap: 12px;
+  }
+  #screen-start .level-btn {
+    height: clamp(56px, 6.6vh, 72px);
+    font-size: 26px;
+  }
+  #screen-start .level-btn.done {
+    font-size: clamp(32px, 4.2vh, 42px);
+  }
+  #screen-start .big-btn {
+    font-size: clamp(40px, 5vh, 52px);
+  }
+  #screen-start .play-row .toggle-btn {
+    flex-basis: 90px;
+    font-size: 34px;
+  }
+}
+
+/* A short phone: the levels go back to one row, so everything fits without scrolling. */
+@media (max-height: 620px) {
+  #screen-start .levels {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: 4px;
+  }
+  #screen-start .level-btn {
+    height: 32px;
+    font-size: 13px;
+    border-width: 2px;
+  }
+  #screen-start .level-btn.done {
+    font-size: 17px;
+  }
+}
+
+/* A phone held sideways: a small title and tight rows, so Play stays on the screen. */
+@media (max-height: 480px) {
+  .start {
+    gap: 6px;
+  }
+  .start h1 {
+    font-size: 26px;
+  }
+  .start .panel {
+    gap: 7px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  #screen-start .characters .character img {
+    max-width: 46px;
+  }
+  #screen-start .big-btn {
+    font-size: 24px;
+    padding-top: 7px;
+    padding-bottom: 9px;
   }
 }

@@ -47,8 +47,10 @@
 
     <!-- Start -->
     <section id="screen-start" class="screen">
-      <div class="panel">
+      <!-- The title sits above the card, on the sky. -->
+      <div class="start">
         <h1 id="title">corre, robby, corre</h1>
+        <div class="panel">
         <p id="stats" class="stats"></p>
         <div id="characters" class="characters"></div>
         <p id="unlock-note" class="note"></p>
@@ -64,6 +66,7 @@
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
         <p id="voice-note" class="voice-note" hidden></p>
+        </div>
       </div>
     </section>
 
@@ -135,11 +138,13 @@
           />
           <button class="big-btn" type="submit" data-t="save"></button>
         </form>
+        <!-- No reading needed: one big "go" button that shows what comes next (the game's
+             picture and the level's number), and a little house to go back to the start. -->
         <div id="over-buttons">
-          <button id="btn-again" class="big-btn" type="button" data-t="playAgain"></button>
+          <button id="btn-again" class="big-btn go-btn" type="button" data-t-label="playAgain"></button>
           <div class="button-row">
             <button id="btn-over-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-            <button id="btn-home" class="small-btn" type="button" data-t="home"></button>
+            <button id="btn-home" class="small-btn home-btn" type="button" data-t-label="home">🏠</button>
           </div>
         </div>
       </div>
@@ -162,7 +167,7 @@
     <section id="screen-pause" class="screen" hidden>
       <div class="panel">
         <h2 data-t="paused"></h2>
-        <button id="btn-resume" class="big-btn" type="button" data-t="resume"></button>
+        <button id="btn-resume" class="big-btn go-btn" type="button" data-t="resume"></button>
         <div class="button-row">
           <button id="btn-pause-home" class="small-btn" type="button" data-t="home"></button>
         </div>

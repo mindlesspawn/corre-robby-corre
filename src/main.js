@@ -650,6 +650,20 @@ function finishRun({ score, total, endless }) {
   el.overLevel.classList.toggle('passed', passed);
   if (passed) el.overLevel.textContent = store.cleared(runGame) >= LEVELS ? t.allCleared : t.levelCleared(runLevel + 1);
   else el.overLevel.textContent = t.levelAgain(runLevel + 1, CONFIG.clearAt);
+  // A child who has cleared all ten levels of a game is moved on to the next game that
+  // still has levels to clear, so the big button always leads somewhere new.
+  if (!endless && store.cleared(runGame) >= LEVELS) {
+    const list = gamesFor(store.age());
+    const from = list.indexOf(runGame);
+    const next = [...list.slice(from + 1), ...list.slice(0, from)].find((id) => store.cleared(id) < LEVELS);
+    if (next) store.update({ game: next });
+  }
+  // The big button shows what it will start: the game's picture and the level's number.
+  $('btn-again').replaceChildren(
+    ...(endless
+      ? [tag('span', 'next-icon', '♾️')]
+      : [tag('span', 'next-icon', GAMES[store.game()].icon), tag('span', 'next-level', String(currentLevel() + 1))]),
+  );
   // A cleared level earns its sticker.
   el.overSticker.hidden = !passed;
   el.overSticker.textContent = passed ? stickerFor(runGame, runLevel) : '';

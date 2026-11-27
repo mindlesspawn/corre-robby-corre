@@ -16,13 +16,14 @@ Pick a game on the start screen.
 
 ## Ages and levels
 
-The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the ten levels of the chosen game.
+The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the ten levels of the chosen game in two rows of five.
 
 - Picking an age is the only difficulty setting. Every game has its own ten levels for each age.
 - A level is one run of 10 doors. Getting 7 or more right clears it and opens the next one. Fewer than 7 changes nothing: the same level is there to try again.
 - Each level adds a little: one more color or shape, a bigger number, a harder pattern. Some levels mix what came before, as a review.
 - Clearing a level earns a sticker, a different one for each level of each game. It is shown on the end screen, and from then on it takes the place of that level's number on the start screen. A cleared level can be tapped to play it again. Levels that are not open yet are grey.
 - Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
+- A child who cannot read can keep going alone. The end screen has one big green button with a play triangle, the picture of the game, and the number of the level it starts: the next level if this one was cleared, the same one if not. After the tenth level of a game it moves on to the next game that still has levels to clear. The little house goes back to the start screen.
 
 | Age | Numbers | Colors | Princess things | Shapes | Patterns |
 | --- | --- | --- | --- | --- | --- |
