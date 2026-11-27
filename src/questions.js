@@ -8,7 +8,7 @@
 //
 // Kinds of question:
 //   same     the banner shows a few things and says how many; find the door with that
-//            number (shown with its dots underneath)
+//            many dots, or with that number (shown with its dots underneath)
 //   count    the banner shows a few things; find the door with the number that says how many
 //   find     the banner shows a number; find the door with that many dots
 //   more     find the door with the most dots ("fewer": the door with the least).
@@ -136,7 +136,7 @@ function formFor(id, strength) {
 
 // --- Short ways to write a level --------------------------------------------------------
 
-const same = (max) => ({ kind: 'same', max }); // things or fingers -> the door with that number
+const same = (max) => ({ kind: 'same', max }); // things or fingers -> the door with that many
 const find = (max) => ({ kind: 'find', max });
 const more = (max, gap) => ({ kind: 'more', max, gap });
 const fewer = (max, gap) => ({ kind: 'fewer', max, gap });
@@ -502,12 +502,14 @@ function amount(max) {
   return { answer, wrong };
 }
 
-// Things or fingers in the banner, and the amount said aloud. Each door shows a number
-// with that many dots underneath, so a child who cannot read numbers yet can match the
-// dots and sees the number every time.
+// Things or fingers in the banner, and the amount said aloud. Half the time the doors
+// show dots alone, like a dice; the other half they show a number with that many dots
+// underneath. So the child matches an amount to an amount, and also keeps meeting the
+// number that stands for it. All three doors of one question are the same kind.
 function makeSame({ max }) {
   const { answer, wrong } = amount(max);
-  return { kind: 'same', text: `same ${answer}`, item: anyItem(), doors: 'both', answer, wrong };
+  const doors = Math.random() < 0.5 ? 'dots' : 'both';
+  return { kind: 'same', text: `same ${answer}`, item: anyItem(), doors, answer, wrong };
 }
 
 // Things in the banner, numbers on the doors (doors: 'both' adds the dots under each number).
