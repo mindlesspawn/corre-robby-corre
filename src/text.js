@@ -29,8 +29,6 @@ const es = {
   labelMusic: 'Poner o quitar la música',
   labelMusicVolume: 'Volumen de la música',
   labelPause: 'Pausa',
-  labelEasier: 'Más fácil',
-  labelHarder: 'Más difícil',
   labelRepeat: 'Repetir la pregunta',
   paces: { slow: '🐢 Lento', normal: 'Normal', fast: '🐇 Rápido' },
   points: (n) => (n === 1 ? '1 punto' : `${n} puntos`),
@@ -48,8 +46,19 @@ const es = {
   // The games on the start screen.
   games: { numbers: 'Números', colors: 'Colores', princess: 'Princesa', shapes: 'Figuras' },
 
-  // The step picker on the start screen, for grown-ups.
-  level: (n) => `Nivel ${n}`,
+  // The categories on the start screen: a few big steps for each game.
+  groups: {
+    upTo3: '1 – 3',
+    upTo5: '1 – 5',
+    counting: '1 – 10',
+    sums: '2 + 1',
+    bigSums: '23 + 4',
+    see: '👀 Ver',
+    hear: '👂 Escuchar',
+    shapes3: '3 figuras',
+    shapes5: '5 figuras',
+  },
+  // What the child is doing right now, written under the categories for grown-ups.
   levelName: (step) => {
     if (step.kind === 'same') return `oír el número y buscarlo, hasta ${step.max}`;
     if (step.kind === 'count') return step.doors === 'both' ? `contar hasta ${step.max}, número con puntos` : `contar hasta ${step.max}`;
@@ -161,8 +170,6 @@ const en = {
   labelMusic: 'Music on or off',
   labelMusicVolume: 'Music volume',
   labelPause: 'Pause',
-  labelEasier: 'Easier',
-  labelHarder: 'Harder',
   labelRepeat: 'Say the question again',
   paces: { slow: '🐢 Slow', normal: 'Normal', fast: '🐇 Fast' },
   points: (n) => (n === 1 ? '1 point' : `${n} points`),
@@ -179,7 +186,17 @@ const en = {
 
   games: { numbers: 'Numbers', colors: 'Colors', princess: 'Princess', shapes: 'Shapes' },
 
-  level: (n) => `Level ${n}`,
+  groups: {
+    upTo3: '1 – 3',
+    upTo5: '1 – 5',
+    counting: '1 – 10',
+    sums: '2 + 1',
+    bigSums: '23 + 4',
+    see: '👀 See',
+    hear: '👂 Listen',
+    shapes3: '3 shapes',
+    shapes5: '5 shapes',
+  },
   levelName: (step) => {
     if (step.kind === 'same') return `hear the number and find it, up to ${step.max}`;
     if (step.kind === 'count') return step.doors === 'both' ? `count up to ${step.max}, number with dots` : `count up to ${step.max}`;

@@ -13,9 +13,11 @@ Pick a game on the start screen.
 - **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Made for a three year old.
 - **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star and a heart.
 
-Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough. Progress is saved for each game. The − and + buttons on the start screen let a grown-up move a child to an easier or harder step.
+Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough. Progress is saved for each game.
 
-In the numbers game, playing alone stops climbing at sums up to 10 shown with pictures. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks them with the + button.
+The steps are grouped into a few categories, shown as buttons under the game picker. Numbers has five: amounts up to 3, amounts up to 5, counting to 10 with written numbers, small sums with pictures, and bigger sums. The other games have two each. The lit button is where the child is now. Tapping another one starts them at its first step, which is how to set the game for a different child. The line under the buttons says what the child is doing at the moment.
+
+In the numbers game, playing alone stops climbing at sums up to 10 shown with pictures. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks the last category ("23 + 4").
 
 ## Endless mode
 

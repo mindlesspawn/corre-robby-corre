@@ -51,8 +51,7 @@ const el = {
   unlockNote: $('unlock-note'),
   games: $('games'),
   levelNote: $('level-note'),
-  easier: $('btn-easier'),
-  harder: $('btn-harder'),
+  stages: $('stages'),
   overTitle: $('over-title'),
   overStars: $('over-stars'),
   overScore: $('over-score'),
@@ -180,24 +179,30 @@ function renderGames() {
   );
 }
 
-// The step picker, for grown-ups: shows where the child is and lets you move them.
+// The category picker: a few big steps for the chosen game. The lit one is where the child
+// is now. Tapping another starts them at its first step; playing still moves them up and
+// down from there, a little at a time.
 function renderLevel() {
   const id = store.game();
-  const levels = GAMES[id].levels;
+  const { levels, groups } = GAMES[id];
   const level = levelFromSkill(store.skill(id), id);
   const step = levels[level];
+  el.stages.replaceChildren(
+    ...groups.map((group) => {
+      const chosen = level >= group.from && level <= group.to;
+      const button = tag('button', 'stage-btn', t.groups[group.id] ?? group.id);
+      button.type = 'button';
+      button.classList.toggle('selected', chosen);
+      button.setAttribute('aria-pressed', String(chosen));
+      button.addEventListener('click', () => {
+        if (!chosen) store.setSkill(id, group.from * CONFIG.answersPerLevel);
+        renderLevel();
+      });
+      return button;
+    }),
+  );
   // Steps for older children are marked, so a grown-up knows playing alone will not reach them.
-  el.levelNote.textContent = `${t.level(level + 1)} · ${t.levelName(step)}${step.grownUp ? ` · ${t.advanced}` : ''}`;
-  el.easier.disabled = level === 0;
-  el.harder.disabled = level === levels.length - 1;
-}
-
-function stepLevel(change) {
-  const id = store.game();
-  const top = GAMES[id].levels.length - 1;
-  const level = Math.min(top, Math.max(0, levelFromSkill(store.skill(id), id) + change));
-  store.setSkill(id, level * CONFIG.answersPerLevel);
-  renderLevel();
+  el.levelNote.textContent = `${t.levelName(step)}${step.grownUp ? ` · ${t.advanced}` : ''}`;
 }
 
 function renderStart() {
@@ -670,8 +675,6 @@ function wireButtons() {
     // Let go of the slider afterwards, so the arrow keys go back to moving the runner.
     slider.addEventListener('change', () => slider.blur());
   }
-  el.easier.addEventListener('click', () => stepLevel(-1));
-  el.harder.addEventListener('click', () => stepLevel(1));
 
   // Tapping the question says it again.
   el.question.addEventListener('click', () => {
