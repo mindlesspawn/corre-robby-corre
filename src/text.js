@@ -1,6 +1,6 @@
 // Every word the player sees or hears, in each language.
-// The game starts in the language set in src/config.js (CONFIG.language).
-// The player can switch on the start screen, and the choice is remembered on that device.
+// The first time, the game asks which language to use. The choice is remembered on that
+// device and can be changed on the settings screen.
 // To add a language, copy one block, translate it, and add it to TEXT and LANGUAGES at the bottom.
 
 import { CONFIG } from './config.js';
@@ -311,13 +311,14 @@ const en = {
 
 const TEXT = { es, en };
 
-// The choices shown on the start screen, each named in its own language.
+// The languages to choose from, each named in its own language, with the flag of the
+// country its voice comes from (the pictures a child can pick by).
 export const LANGUAGES = [
-  { code: 'es', label: 'Español' },
-  { code: 'en', label: 'English' },
+  { code: 'en', label: 'English', flag: '🇺🇸' },
+  { code: 'es', label: 'Español', flag: '🇲🇽' },
 ];
 
-let current = TEXT[CONFIG.language] ? CONFIG.language : 'es';
+let current = TEXT[CONFIG.language] ? CONFIG.language : 'en';
 
 // The words in use right now. setLanguage() swaps them in place,
 // so every file that imported "t" sees the new language at once.

@@ -1782,3 +1782,45 @@ h2 {
   font-weight: 900;
   color: var(--green-dark);
 }
+
+/* --- The first-time language screen ---------------------------------------------------- */
+
+/* The game's picture on top, then one big button for each language. */
+.start .language-logo {
+  grid-row: 2;
+  justify-self: center;
+  width: min(60vw, 32vh, 300px);
+  aspect-ratio: 1;
+  border-radius: 22%;
+  box-shadow: 0 8px 0 rgba(26, 35, 126, 0.18);
+}
+
+.language-pick {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 2vh, 18px);
+}
+
+.language-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  background: #fff;
+  border: 5px solid var(--tile-edge);
+  box-shadow: 0 6px 0 var(--tile-edge);
+  border-radius: 26px;
+  padding: clamp(12px, 2.4vh, 24px) 16px;
+  font-size: clamp(28px, 5vh, 42px);
+  font-weight: 900;
+}
+
+.language-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--tile-edge);
+}
+
+.language-btn .flag {
+  font-size: 1.5em;
+  line-height: 1;
+}

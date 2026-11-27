@@ -8,11 +8,11 @@ Two things are still to be decided, and both are marked **DECIDE** below.
 
 | Field | Value |
 | --- | --- |
-| App name (30 letters at most) | corre, robby, corre |
+| App name (30 letters at most) | corre, robby, corre (the same in English and in Spanish) |
 | Bundle ID | `com.mindlesspawn.correrobbycorre` **DECIDE**: this can be changed until the first upload, never after. It is set in `capacitor.config.json` and in Xcode. |
 | Seller name | **DECIDE**: an individual account shows your legal name on the App Store. A company name needs an organization account. |
-| Primary language | Spanish (Mexico) |
-| Other language | English (U.S.) |
+| Primary language | English (U.S.) |
+| Other language | Spanish (Mexico) |
 | Primary category | Education |
 | Secondary category | Games, then Family |
 | Made for Kids | Yes: ages 5 and under |

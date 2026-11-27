@@ -4,9 +4,11 @@ export const CONFIG = {
   // Written all in lower case on purpose.
   title: 'corre, robby, corre',
 
-  // The language the game starts in: 'es' (Spanish) or 'en' (English).
-  // The player can switch on the start screen. The words themselves are in src/text.js.
-  language: 'es',
+  // The language the game uses until one is picked: 'en' (English) or 'es' (Spanish).
+  // The very first time, the game opens on a screen for picking it, and it can be changed
+  // later on the settings screen. The words themselves are in src/text.js. The title is
+  // "corre, robby, corre" in every language.
+  language: 'en',
 
   // The game picked the first time someone plays. The games are listed in src/questions.js.
   game: 'numbers',

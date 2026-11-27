@@ -2,7 +2,7 @@
 
 A learning runner for small children. Three doors come down the treadmill and the runner goes through the right one.
 
-The game starts in Spanish. The settings screen (the ⚙️ button on the start screen) has an Español / English switch, and each device remembers its choice. The title is the same in both, and is written all in lower case on purpose.
+The first time it is opened, the game asks which language to use: two big buttons, each with a flag, so a child can pick too. Each device remembers the choice, and the settings screen (the ⚙️ button on the start screen) has an Español / English switch to change it. Until one is picked the game is in English. The title is the same in both, and is written all in lower case on purpose.
 
 ## The games
 

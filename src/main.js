@@ -69,7 +69,7 @@ const el = {
   scoreEmpty: $('score-empty'),
 };
 
-const SCREENS = ['start', 'settings', 'support', 'over', 'scores', 'pause'];
+const SCREENS = ['language', 'start', 'settings', 'support', 'over', 'scores', 'pause'];
 
 let game = null;
 let thumbs = {};
@@ -790,14 +790,62 @@ function buildLanguageButtons() {
       button.type = 'button';
       button.dataset.lang = code;
       button.lang = code;
+      button.addEventListener('click', () => chooseLanguage(code));
+      return button;
+    }),
+  );
+}
+
+// Switches the whole game, words and voice, to a language and remembers it.
+function chooseLanguage(code) {
+  setLanguage(code);
+  setSpeechLanguage(code);
+  store.update({ language: code });
+  applyWords();
+  applyMute();
+  renderStart();
+  measureQuestionArea();
+}
+
+// The first-time screen: one big button for each language, with its flag. The language
+// of the phone or tablet goes first. Picking one says "let us go" in that language and
+// opens the start screen.
+// Windows shows two letters where a flag should be. This tells whether flags can be drawn,
+// by drawing one and looking for color in it.
+function canDrawFlags() {
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const g = canvas.getContext('2d', { willReadFrequently: true });
+    g.font = '24px sans-serif';
+    g.textBaseline = 'top';
+    g.fillText('🇲🇽', 0, 2);
+    const { data } = g.getImageData(0, 0, 32, 32);
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] > 0 && Math.max(data[i], data[i + 1], data[i + 2]) - Math.min(data[i], data[i + 1], data[i + 2]) > 40) return true;
+    }
+  } catch {
+    // Not being able to look counts as not being able to draw.
+  }
+  return false;
+}
+
+function buildLanguagePick() {
+  const flags = canDrawFlags();
+  const device = (navigator.language ?? '').toLowerCase().slice(0, 2);
+  const order = [...LANGUAGES].sort((a, b) => Number(b.code === device) - Number(a.code === device));
+  $('language-pick').replaceChildren(
+    ...order.map(({ code, label, flag }) => {
+      const button = tag('button', 'language-btn');
+      if (flags) button.append(tag('span', 'flag', flag));
+      button.append(tag('span', '', label));
+      button.type = 'button';
+      button.lang = code;
       button.addEventListener('click', () => {
-        setLanguage(code);
-        setSpeechLanguage(code);
-        store.update({ language: code });
-        applyWords();
-        applyMute();
-        renderStart();
-        measureQuestionArea();
+        chooseLanguage(code);
+        show('start');
+        speak(t.say.go);
       });
       return button;
     }),
@@ -1006,9 +1054,12 @@ async function init() {
   for (let fingers = 1; fingers <= 5; fingers++) new Image().src = handPicture(fingers);
 
   await store.init();
-  setLanguage(store.get().language || CONFIG.language);
+  // With no language picked yet, the game opens on the screen for picking one.
+  const pickedLanguage = store.get().language;
+  setLanguage(pickedLanguage || CONFIG.language);
   setSpeechLanguage(getLanguage());
   buildLanguageButtons();
+  buildLanguagePick();
   applyWords();
   thumbs = renderThumbnails(CHARACTERS);
 
@@ -1026,7 +1077,7 @@ async function init() {
   wireTouch();
   applyMute();
   renderStart();
-  show('start');
+  show(pickedLanguage ? 'start' : 'language');
   measureQuestionArea();
   // The list of voices can arrive late; when it does, check again whether the game can talk.
   onVoicesChanged(renderVoiceNote);

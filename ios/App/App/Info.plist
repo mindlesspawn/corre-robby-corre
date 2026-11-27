@@ -5,11 +5,11 @@
   <key>CAPACITOR_DEBUG</key>
 	<string>$(CAPACITOR_DEBUG)</string>
 	<key>CFBundleDevelopmentRegion</key>
-	<string>es</string>
+	<string>en</string>
 	<key>CFBundleLocalizations</key>
 	<array>
-		<string>es</string>
 		<string>en</string>
+		<string>es</string>
 	</array>
 	<!-- The app uses no encryption of its own, which answers Apple's export question for every upload. -->
 	<key>ITSAppUsesNonExemptEncryption</key>
