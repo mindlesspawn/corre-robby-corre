@@ -333,6 +333,34 @@ h2 {
   box-shadow: 0 1px 0 #90caf9;
 }
 
+/* The sound and music switches on the start screen: a picture each, greyed when off. */
+.toggle-btn {
+  flex: 0 0 62px;
+  position: relative;
+  font-size: 22px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.toggle-btn.off {
+  background: #eceff1;
+  box-shadow: 0 4px 0 #cfd8dc;
+}
+
+/* Music has no "off" picture of its own, so it gets a line through it. */
+#btn-music-start.off::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: #e53935;
+  box-shadow: 0 0 0 2px #eceff1;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 /* Español | English switch on the start screen */
 .lang-row {
   display: flex;

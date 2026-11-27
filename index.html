@@ -65,7 +65,9 @@
         </div>
         <div class="button-row">
           <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-          <button id="btn-mute-start" class="small-btn" type="button"></button>
+          <!-- Sound (voice and effects) and music each have their own switch. -->
+          <button id="btn-mute-start" class="small-btn toggle-btn" type="button" data-t-label="labelSound"></button>
+          <button id="btn-music-start" class="small-btn toggle-btn" type="button" data-t-label="labelMusic">🎵</button>
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
         <p id="voice-note" class="voice-note" hidden></p>

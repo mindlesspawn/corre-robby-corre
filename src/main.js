@@ -10,6 +10,7 @@ import { renderThumbnails } from './looks.js';
 import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
+import { setMusic, setMusicSpeed, wakeMusic } from './music.js';
 import {
   canSpeak,
   isSpeaking,
@@ -37,6 +38,7 @@ const el = {
   hint: $('hint'),
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
+  musicStart: $('btn-music-start'),
   languages: $('languages'),
   paces: $('paces'),
   voiceNote: $('voice-note'),
@@ -369,6 +371,7 @@ function startRun(endless = false) {
   runResults = [];
   currentQuestion = null;
   game.setCharacter(currentCharacter());
+  setMusicSpeed(1);
   el.score.textContent = '0';
   el.question.replaceChildren();
   el.question.className = 'question';
@@ -402,6 +405,7 @@ function bankRun(score, skill) {
 
 function goHome() {
   stopSpeaking();
+  setMusicSpeed(1);
   // Leaving a run early still keeps the points and progress earned so far.
   if (screen === 'pause') bankRun(game.score, game.skill);
   game.toIdle();
@@ -424,8 +428,11 @@ const gameEvents = {
     el.question.className = 'question';
     replay(el.question, 'new');
     showProgress();
-    // An endless run has sounds but no talking.
-    if (runEndless) return;
+    // An endless run has sounds but no talking, and its music speeds up with the belt.
+    if (runEndless) {
+      setMusicSpeed(Math.sqrt(CONFIG.paces[currentPace()].travel / game.row.travelTime));
+      return;
+    }
     speak(askText(question), { queue: true });
     // Fetch what might be said next, so it comes without a pause.
     preloadSpeech([spokenAnswer(question), answerText(question), ...t.say.praise]);
@@ -466,6 +473,7 @@ const gameEvents = {
 
   onFinishing({ score, endless }) {
     currentQuestion = null;
+    setMusicSpeed(1);
     if (endless) {
       // The right answer stays on show, and the fanfare waits for the bump sound to finish.
       setTimeout(() => sfx.fanfare(), 450);
@@ -583,17 +591,31 @@ function buildLanguageButtons() {
 
 // --- Sound ---------------------------------------------------------------------------
 
-// The sound button turns off both the sound effects and the voice.
+// The sound button turns off everything: sound effects, voice, and music.
+// The music button turns off only the music.
 function applyMute() {
-  const { muted } = store.get();
+  const { muted, music } = store.get();
   setMuted(muted);
   setSpeechMuted(muted);
+  setMusic(music && !muted);
   el.mute.textContent = muted ? '🔇' : '🔊';
-  el.muteStart.textContent = muted ? t.soundOff : t.soundOn;
+  el.muteStart.textContent = muted ? '🔇' : '🔊';
+  el.muteStart.classList.toggle('off', muted);
+  el.muteStart.setAttribute('aria-pressed', String(!muted));
+  el.musicStart.classList.toggle('off', !music || muted);
+  el.musicStart.setAttribute('aria-pressed', String(music && !muted));
 }
 
 function toggleMute() {
   store.update({ muted: !store.get().muted });
+  applyMute();
+  renderVoiceNote();
+}
+
+function toggleMusic() {
+  // Asking for music while all sound is off turns the sound back on too.
+  if (store.get().muted) store.update({ muted: false, music: true });
+  else store.update({ music: !store.get().music });
   applyMute();
   renderVoiceNote();
 }
@@ -618,6 +640,7 @@ function wireButtons() {
   });
   el.mute.addEventListener('click', toggleMute);
   el.muteStart.addEventListener('click', toggleMute);
+  el.musicStart.addEventListener('click', toggleMusic);
   el.easier.addEventListener('click', () => stepLevel(-1));
   el.harder.addEventListener('click', () => stepLevel(1));
 
@@ -643,9 +666,13 @@ function wireButtons() {
 }
 
 function wireTouch() {
-  // iOS only plays sound after a touch, so wake the sound on every one.
+  // iOS only plays sound after a touch, so wake the sound, and the music, on every one.
+  const wake = () => {
+    unlockAudio();
+    wakeMusic();
+  };
   for (const type of ['pointerdown', 'pointerup', 'touchend', 'click']) {
-    document.addEventListener(type, unlockAudio, { capture: true, passive: true });
+    document.addEventListener(type, wake, { capture: true, passive: true });
   }
 
   // Tap a lane to go there, or swipe left or right to move one lane.

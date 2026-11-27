@@ -72,6 +72,11 @@ export function unlockAudio() {
   if (ctx.state !== 'running') ctx.resume().catch(() => {});
 }
 
+// The music (src/music.js) plays through the same sound system.
+export function audioContext() {
+  return ctx;
+}
+
 export function setMuted(value) {
   muted = value;
   if (value) stopVoiceClip();

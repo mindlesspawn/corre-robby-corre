@@ -93,6 +93,14 @@ node scripts/record-voice.mjs --key-file "C:\path\to\.env" --check --fix
 
 The file must contain a line `OPENAI_API_KEY=...`. Only lines without a clip are recorded, so a small change costs very little. The key is sent only to OpenAI and is never printed or saved by the script. Do not put the key in this folder: this repository is public.
 
+## The music
+
+A quiet tune loops in the background: a marimba melody, a classical guitar picking the chords, and light percussion. The game makes it from simple sounds as it plays, so there is no music file, and the loop (16 bars, 40 seconds) joins without a gap.
+
+- It is much quieter than the voice, and dips further while the voice is talking.
+- In an endless run it speeds up with the belt.
+- The 🎵 button on the start screen turns only the music off. The 🔊 button turns everything off.
+
 ## Play it online
 
 The game is at <https://mindlesspawn.github.io/corre-robby-corre/>. It works on any phone, tablet, or computer with internet.
@@ -133,5 +141,6 @@ The game only works this way while `npm run dev` is running on this computer.
 | Recording the Spanish clips | `scripts/record-voice.mjs` |
 | Where scores and progress are saved (swap for iOS storage later) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
+| The background tune (its notes, speed, and loudness) | `src/music.js` |
 | The look of the menus and buttons | `src/style.css` |
 | The letters (Fredoka, a free rounded font bundled with the game) | the first line of `src/main.js` |
