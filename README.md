@@ -199,6 +199,10 @@ The game is free and has no ads. A grown-up who wants to can leave a tip.
 
 For the iOS app this will need another look: Apple's rules for children's apps allow links out and anything to do with money only behind a grown-up check, and tips inside an app normally go through Apple's own in-app purchase.
 
+## The iOS app
+
+The game is also set up to be an iPhone and iPad app, made from the same files as the website. `npm run ios` puts the newest game into the app. The steps for the Mac, and what is and is not done yet, are in [IOS.md](IOS.md). The draft App Store listing is in [store/app-store-listing.md](store/app-store-listing.md), and the privacy page is at <https://mindlesspawn.github.io/corre-robby-corre/privacy.html>.
+
 ## Play it from this computer
 
 Start the game from this folder:
@@ -228,7 +232,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
 | The voice, and which clip says which line | `src/speech.js`, `src/voice/es.json`, `src/voice/en.json` |
 | Recording the voice clips | `scripts/record-voice.mjs` |
-| Where scores and progress are saved (swap for iOS storage later) | `src/storage.js` |
+| Where scores and progress are saved (the browser on the website, the phone inside the app) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
 | The background tune (its notes, speed, and loudness) | `src/music.js` |
 | The look of the menus and buttons | `src/style.css` |

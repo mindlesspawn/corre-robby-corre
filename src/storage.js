@@ -1,7 +1,7 @@
 // Everything the game remembers between sessions goes through this file.
 //
-// readRaw() and writeRaw() are the only two functions that touch the device.
-// For the iOS app, swap their insides for native storage and nothing else changes.
+// readRaw() and writeRaw() are the only two functions that touch the device. On the
+// website they use the browser's storage; inside the iOS app they use the phone's own.
 
 import { CONFIG } from './config.js';
 import { AGES, GAME_IDS, LEVELS, ageOrDefault, gameOrDefault } from './questions.js';
@@ -31,8 +31,19 @@ const DEFAULTS = {
   cleared: {}, // how many levels are cleared in each game, kept apart for each age: { 3: { numbers: 4 } }
 };
 
+// Inside the iOS app the save goes into the phone's own settings store, which iOS keeps
+// for as long as the app is installed. (It can clear a web page's storage when space is
+// short.) On the website nothing changes: the save stays in the browser.
+const inApp = () => typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.() === true;
+let phoneStore = null;
+async function nativeStore() {
+  phoneStore ??= (await import('@capacitor/preferences')).Preferences;
+  return phoneStore;
+}
+
 async function readRaw() {
   try {
+    if (inApp()) return (await (await nativeStore()).get({ key: KEY })).value;
     return window.localStorage.getItem(KEY);
   } catch {
     return null;
@@ -41,6 +52,10 @@ async function readRaw() {
 
 async function writeRaw(text) {
   try {
+    if (inApp()) {
+      await (await nativeStore()).set({ key: KEY, value: text });
+      return;
+    }
     window.localStorage.setItem(KEY, text);
   } catch {
     // Saving can fail in private browsing. The game still works, it just forgets.

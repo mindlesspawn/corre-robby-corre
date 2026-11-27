@@ -1,0 +1,10 @@
+{
+  "appId": "com.mindlesspawn.correrobbycorre",
+  "appName": "corre, robby, corre",
+  "webDir": "dist",
+  "backgroundColor": "#9ad8ff",
+  "ios": {
+    "contentInset": "never",
+    "scrollEnabled": false
+  }
+}
