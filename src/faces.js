@@ -1,4 +1,4 @@
-// Little faces for the shapes, dots and numbers on the doors and in the banner.
+// Little faces for the shapes, and eyes for the numbers, on the doors and in the banner.
 // They are only there to make the game friendlier: the face never changes the outline of
 // a shape or covers a number, so what the child has to look at stays the same.
 

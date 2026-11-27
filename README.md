@@ -50,7 +50,8 @@ Endless mode is on the settings screen (the ⚙️ button), under "Para adultos 
 
 - A run is 10 doors. It never ends early.
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
-- The shapes and dots on the doors have little faces, and the numbers have a pair of eyes on top. The eyes never cover a number and a face never changes a shape's outline.
+- The shapes on the doors have little faces, and the numbers have a pair of eyes on top. The eyes never cover a number and a face never changes a shape's outline.
+- Dots are shown in different arrangements from one door to the next: like a dice, in a row, or scattered.
 - When praise is spoken, the word also bounces onto the screen in rainbow letters with a burst of stars, for about a second. Clearing a level gets a bigger one.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
@@ -68,7 +69,7 @@ The steps were checked on 26 November 2026 against published early-childhood tea
 | Starts with amounts of 1 to 3, shown as pictures and dots and said aloud | Recognising very small amounts at a glance comes first; start with one to three items | 1, 3 |
 | Asks "more" and "fewer" before any written numbers | Comparing comes straight after counting, and before numerals | 1, 2 |
 | Brings in written numbers late, each with its dots, then on their own | Numerals are taught once children can recognise, count, and compare amounts; linking a numeral to an amount up to 5 is expected by about age 5 | 1, 2, 4 |
-| Uses fingers and dice-style dots | Fingers are a recommended informal tool; dice patterns are standard examples | 1, 3 |
+| Shows amounts as fingers, and as dots in different arrangements (like a dice, in a row, scattered) | Fingers are a recommended informal tool. Dice patterns are standard examples, but the guidance is to vary the arrangement, so a child learns the amount and not one picture of it. | 1, 3 |
 | Keeps sums for ages 3 to 5 at 10 or less, shown with pictures | Adding up to 5 is expected by about age 5; some four year olds can find sums up to 10 with objects or fingers; sums written only as numbers, and sums to 20, come later | 2, 5, 6 |
 | Starts shapes with a circle, a square, and a triangle | Recognising and naming a typical circle, square, and sometimes a triangle is expected at 3 to 4; matching identical shapes comes earlier | 2, 3 |
 | Shows and says the right answer after a mistake, and adjusts difficulty in small steps | Feedback that explains, plus levelling, is what separated maths apps that helped from those that did not | 7, 8 |
@@ -119,7 +120,7 @@ Limits worth knowing:
 - The order of steps is expert judgment. The main guide (source 1) says its panel found no direct evidence for any one particular order.
 - Nearly all of this research was done with English-speaking children.
 - The princess game (finding a picture from its name) fits the general goal of fast-growing vocabulary at this age (source 2), but the sources do not prescribe that particular activity. It is a design choice.
-- Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes before", and dots in varied layouts.
+- Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, and "what comes before".
 - The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore keeps one speed through a run, has a slow setting, and waits for the voice. The doors do still arrive on their own, so a child cannot stop them to think for as long as they like. The speed settings are in `src/config.js`.
 - The sources give no direct evidence on how long a round should be or on penalties.
 
@@ -226,7 +227,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | --- | --- |
 | The games and their steps (add a game, a step, or a new kind of question) | `src/questions.js` |
 | Every word the player reads or hears, in Spanish and English | `src/text.js` |
-| The faces on shapes, dots and numbers | `src/faces.js` |
+| The faces on shapes and the eyes on numbers | `src/faces.js` |
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
 | The three belt speeds, doors per run, colors, the title, the support links | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |

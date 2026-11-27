@@ -32,10 +32,37 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 // Where the dots go on a door sign, like the faces of a dice up to 6,
 // then rows of five. Returns [x, y, radius] for each dot.
+// Where the dots go on a door's sign. The same amount is shown in different arrangements
+// from one door to the next: like a dice, in a row, or scattered. Teaching guidance says
+// children should come to know an amount however it is arranged, not learn one picture of
+// it by heart (sources are in the README).
 function dotLayout(count, w, h) {
   const n = clamp(Math.round(count), 1, 10);
-  const spots = [];
+  const styles = n <= 5 ? ['dice', 'row', 'scatter'] : n === 6 ? ['dice', 'scatter'] : ['frame', 'scatter'];
+  const style = styles[Math.floor(Math.random() * styles.length)];
+
+  if (style === 'row') {
+    // Side by side on one line.
+    const gap = (w * 0.86) / n;
+    const r = Math.min(Math.min(w, h) * 0.13, gap * 0.4);
+    return Array.from({ length: n }, (_, i) => [w / 2 + (i - (n - 1) / 2) * gap, h / 2, r]);
+  }
+
+  if (style === 'scatter') {
+    // Anywhere on the sign, never touching each other or the edge.
+    const r = Math.min(w, h) * (n <= 5 ? 0.115 : n <= 7 ? 0.095 : 0.08);
+    const spots = [];
+    for (let tries = 0; spots.length < n && tries < 4000; tries++) {
+      const x = r * 1.4 + Math.random() * (w - r * 2.8);
+      const y = r * 1.4 + Math.random() * (h - r * 2.8);
+      if (spots.every(([px, py]) => Math.hypot(px - x, py - y) > r * 2.5)) spots.push([x, y, r]);
+    }
+    if (spots.length === n) return spots;
+    // No room was found (very unlikely): fall through to the tidy arrangement.
+  }
+
   if (n <= 6) {
+    // The faces of a dice.
     const r = Math.min(w, h) * 0.13;
     const [left, mid, right] = [w * 0.24, w * 0.5, w * 0.76];
     const [top, centre, bottom] = [h * 0.24, h * 0.5, h * 0.76];
@@ -47,16 +74,12 @@ function dotLayout(count, w, h) {
       5: [[left, top], [right, top], [mid, centre], [left, bottom], [right, bottom]],
       6: [[left, top], [mid, top], [right, top], [left, bottom], [mid, bottom], [right, bottom]],
     };
-    for (const [x, y] of faces[n]) spots.push([x, y, r]);
-    return spots;
+    return faces[n].map(([x, y]) => [x, y, r]);
   }
+
+  // Seven to ten: two rows of five, filled from the left.
   const r = w * 0.075;
-  for (let i = 0; i < n; i++) {
-    const column = i % 5;
-    const row = Math.floor(i / 5);
-    spots.push([w * (0.14 + column * 0.18), h * (row === 0 ? 0.32 : 0.68), r]);
-  }
-  return spots;
+  return Array.from({ length: n }, (_, i) => [w * (0.14 + (i % 5) * 0.18), h * (i < 5 ? 0.32 : 0.68), r]);
 }
 const lambert = (color) => new THREE.MeshLambertMaterial({ color });
 
@@ -279,13 +302,14 @@ export class Game {
 
     if (this.row.question?.doors === 'dots') {
       g.fillStyle = ink;
-      for (const [x, y, r] of dotLayout(value, w, h)) {
-        g.fillStyle = ink;
+      // Worked out once for each row of doors, so the dots stay where they are when the
+      // sign changes color to show the answer.
+      door.spots ??= dotLayout(value, w, h);
+      g.fillStyle = ink;
+      for (const [x, y, r] of door.spots) {
         g.beginPath();
         g.arc(x, y, r, 0, Math.PI * 2);
         g.fill();
-        // Every dot is a little somebody to count.
-        drawFace(g, x, y, r * 0.86, back, ink);
       }
       door.texture.needsUpdate = true;
       return;
@@ -558,6 +582,7 @@ export class Game {
       door.pulse = 0;
       door.group.scale.set(1, 1, 1);
       door.signGroup.visible = !isColor;
+      door.spots = null; // a new row of doors gets new arrangements of dots
       this.drawSign(door, question.choices[i]);
     });
 
