@@ -99,7 +99,7 @@ function pluck(ctx, key) {
   // The pluck itself: noise with the harsh edge taken off, as a fingertip does.
   let soft = 0;
   for (let i = 0; i < loop; i++) {
-    soft += 0.45 * (Math.random() * 2 - 1 - soft);
+    soft += 0.2 * (Math.random() * 2 - 1 - soft);
     data[i] = soft;
   }
   let peak = 0;
@@ -119,7 +119,9 @@ function guitar(ctx, out, key, when, loud) {
   const source = ctx.createBufferSource();
   const gain = ctx.createGain();
   source.buffer = pluck(ctx, key);
-  gain.gain.value = loud;
+  // Each note eases in over a moment, so the guitar strums along gently and does not jab.
+  gain.gain.setValueAtTime(0.0001, when);
+  gain.gain.linearRampToValueAtTime(loud, when + 0.012);
   source.connect(gain).connect(out);
   source.start(when);
 }
@@ -172,7 +174,7 @@ export function playStep(ctx, out, step, when) {
 
   const string = bar.picking[at];
   const low = string === 0 || string === 4;
-  guitar(ctx, out, bar.chord[string], when, low ? 0.5 : 0.3);
+  guitar(ctx, out, bar.chord[string], when, low ? 0.16 : 0.12);
 
   shaker(ctx, out, when, onBeat ? 0.04 : 0.07);
   if (bar.drum) {
