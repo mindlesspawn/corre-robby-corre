@@ -9,10 +9,10 @@ import { audioContext } from './audio.js';
 import { isSpeaking } from './speech.js';
 
 const TEMPO = 96; // beats a minute
-// How loud the music is. It is kept far in the background: at 0.025 it measures less than
-// a tenth as loud as the recorded voice. Raise it a little at a time.
-const LEVEL = 0.025;
-const WHILE_TALKING = 0.25; // the music drops to this share of LEVEL while the voice talks
+// How loud the music is with its slider all the way up. It is kept far in the background:
+// even here it measures well under the recorded voice. Raise it a little at a time.
+const LOUDEST = 0.06;
+const WHILE_TALKING = 0.25; // the music drops to this share of its level while the voice talks
 const FASTEST = 1.9; // the most the tune can speed up (in an endless run)
 
 // Guitar chords: the low string, three higher strings, and a second low string.
@@ -193,6 +193,14 @@ let outFor = null;
 let step = 0;
 let nextTime = 0;
 let speed = 1;
+let volume = 0.65; // where the music slider sits, from 0 to 1
+
+// Moves the music to the loudness it should have right now.
+// The slider is squared, which is how ears judge loudness: half way sounds about half as loud.
+function setLevel(ctx) {
+  const level = LOUDEST * volume * volume * (isSpeaking() ? WHILE_TALKING : 1);
+  out.gain.setTargetAtTime(Math.max(0.0001, level), ctx.currentTime, 0.15);
+}
 
 function tick() {
   const ctx = audioContext();
@@ -207,7 +215,7 @@ function tick() {
     out.connect(mellow).connect(ctx.destination);
     outFor = ctx;
   }
-  out.gain.setTargetAtTime(LEVEL * (isSpeaking() ? WHILE_TALKING : 1), ctx.currentTime, 0.15);
+  setLevel(ctx);
   // After a pause (the game was in the background, say), carry on from now.
   if (nextTime < ctx.currentTime) nextTime = ctx.currentTime + 0.06;
   while (nextTime < ctx.currentTime + AHEAD) {
@@ -236,6 +244,13 @@ export function setMusic(on) {
   wanted = on === true;
   if (wanted) start();
   else stop();
+}
+
+// The music slider: 0 is silent, 1 is as loud as the music goes.
+export function setMusicVolume(value) {
+  volume = Math.min(1, Math.max(0, Number(value) || 0));
+  const ctx = audioContext();
+  if (timer && out && ctx && outFor === ctx) setLevel(ctx);
 }
 
 // Sound only starts after a touch, so this is called on every one.

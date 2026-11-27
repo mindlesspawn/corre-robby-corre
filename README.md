@@ -99,7 +99,8 @@ A quiet tune loops in the background: a marimba melody, a classical guitar picki
 
 - It is much quieter than the voice, and dips further while the voice is talking.
 - In an endless run it speeds up with the belt.
-- The 🎵 button on the start screen turns only the music off. The 🔊 button turns everything off.
+- The music has its own volume slider, next to the 🎵 button on the start screen and on the pause screen. Sliding it to zero, or tapping 🎵, turns only the music off. Each device remembers where the slider was left.
+- The 🔊 button turns everything off.
 
 ## Play it online
 

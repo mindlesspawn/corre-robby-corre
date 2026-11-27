@@ -10,7 +10,7 @@ import { renderThumbnails } from './looks.js';
 import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
-import { setMusic, setMusicSpeed, wakeMusic } from './music.js';
+import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
 import {
   canSpeak,
   isSpeaking,
@@ -38,7 +38,10 @@ const el = {
   hint: $('hint'),
   mute: $('btn-mute'),
   muteStart: $('btn-mute-start'),
-  musicStart: $('btn-music-start'),
+  // The music switch and slider are on the start screen and on the pause screen.
+  musicRows: [...document.querySelectorAll('.music-row')],
+  musicButtons: [...document.querySelectorAll('.music-btn')],
+  musicSliders: [...document.querySelectorAll('.music-slider')],
   languages: $('languages'),
   paces: $('paces'),
   voiceNote: $('voice-note'),
@@ -592,18 +595,27 @@ function buildLanguageButtons() {
 // --- Sound ---------------------------------------------------------------------------
 
 // The sound button turns off everything: sound effects, voice, and music.
-// The music button turns off only the music.
+// The music button and the music slider change only the music.
 function applyMute() {
-  const { muted, music } = store.get();
+  const { muted, music, musicVolume } = store.get();
+  const playing = music && !muted && musicVolume > 0;
   setMuted(muted);
   setSpeechMuted(muted);
-  setMusic(music && !muted);
+  setMusicVolume(musicVolume);
+  setMusic(playing);
   el.mute.textContent = muted ? '🔇' : '🔊';
   el.muteStart.textContent = muted ? '🔇' : '🔊';
   el.muteStart.classList.toggle('off', muted);
   el.muteStart.setAttribute('aria-pressed', String(!muted));
-  el.musicStart.classList.toggle('off', !music || muted);
-  el.musicStart.setAttribute('aria-pressed', String(music && !muted));
+  for (const row of el.musicRows) row.classList.toggle('off', !playing);
+  for (const button of el.musicButtons) {
+    button.classList.toggle('off', !playing);
+    button.setAttribute('aria-pressed', String(playing));
+  }
+  for (const slider of el.musicSliders) {
+    slider.value = String(Math.round(musicVolume * 100));
+    slider.style.setProperty('--v', String(musicVolume));
+  }
 }
 
 function toggleMute() {
@@ -613,9 +625,21 @@ function toggleMute() {
 }
 
 function toggleMusic() {
-  // Asking for music while all sound is off turns the sound back on too.
-  if (store.get().muted) store.update({ muted: false, music: true });
-  else store.update({ music: !store.get().music });
+  const { muted, music, musicVolume } = store.get();
+  const playing = music && !muted && musicVolume > 0;
+  // Asking for music while all sound is off turns the sound back on too,
+  // and a slider left at zero goes back to where it started.
+  if (playing) store.update({ music: false });
+  else store.update({ muted: false, music: true, musicVolume: musicVolume > 0 ? musicVolume : 0.65 });
+  applyMute();
+  renderVoiceNote();
+}
+
+// Sliding to zero turns the music off. Sliding up from anywhere turns it on.
+function slideMusic(slider) {
+  const musicVolume = Math.min(1, Math.max(0, Number(slider.value) / 100 || 0));
+  if (musicVolume > 0) store.update({ muted: false, music: true, musicVolume });
+  else store.update({ music: false, musicVolume: 0 });
   applyMute();
   renderVoiceNote();
 }
@@ -640,7 +664,12 @@ function wireButtons() {
   });
   el.mute.addEventListener('click', toggleMute);
   el.muteStart.addEventListener('click', toggleMute);
-  el.musicStart.addEventListener('click', toggleMusic);
+  for (const button of el.musicButtons) button.addEventListener('click', toggleMusic);
+  for (const slider of el.musicSliders) {
+    slider.addEventListener('input', () => slideMusic(slider));
+    // Let go of the slider afterwards, so the arrow keys go back to moving the runner.
+    slider.addEventListener('change', () => slider.blur());
+  }
   el.easier.addEventListener('click', () => stepLevel(-1));
   el.harder.addEventListener('click', () => stepLevel(1));
 

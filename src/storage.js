@@ -23,6 +23,7 @@ const DEFAULTS = {
   character: 'apple',
   muted: false,
   music: true, // the quiet tune in the background
+  musicVolume: 0.65, // where the music slider sits, from 0 to 1
   language: '', // empty means: use the starting language from config.js
   pace: '', // belt speed: 'slow', 'normal' or 'fast'; empty means the starting speed from config.js
   game: '', // empty means: use the starting game from config.js
@@ -93,6 +94,10 @@ export const store = {
         character: typeof saved.character === 'string' ? saved.character : DEFAULTS.character,
         muted: saved.muted === true,
         music: saved.music !== false,
+        musicVolume:
+          Number.isFinite(saved.musicVolume) && saved.musicVolume >= 0 && saved.musicVolume <= 1
+            ? saved.musicVolume
+            : DEFAULTS.musicVolume,
         pace: typeof saved.pace === 'string' ? saved.pace : '',
         language: typeof saved.language === 'string' ? saved.language : '',
         game: typeof saved.game === 'string' ? saved.game : '',

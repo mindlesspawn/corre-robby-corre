@@ -65,9 +65,13 @@
         </div>
         <div class="button-row">
           <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-          <!-- Sound (voice and effects) and music each have their own switch. -->
+          <!-- Turns every sound off: voice, effects, and music. -->
           <button id="btn-mute-start" class="small-btn toggle-btn" type="button" data-t-label="labelSound"></button>
-          <button id="btn-music-start" class="small-btn toggle-btn" type="button" data-t-label="labelMusic">🎵</button>
+        </div>
+        <!-- Music has its own volume. Sliding to zero, or tapping the note, turns only the music off. -->
+        <div class="music-row">
+          <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
+          <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
         <p id="voice-note" class="voice-note" hidden></p>
@@ -131,6 +135,11 @@
         <button id="btn-resume" class="big-btn" type="button" data-t="resume"></button>
         <div class="button-row">
           <button id="btn-pause-home" class="small-btn" type="button" data-t="home"></button>
+        </div>
+        <!-- Music has its own volume. Sliding to zero, or tapping the note, turns only the music off. -->
+        <div class="music-row">
+          <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
+          <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
         </div>
       </div>
     </section>
