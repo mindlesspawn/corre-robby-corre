@@ -300,12 +300,16 @@ export class Game {
 
     // A shape, drawn in one color so only the shape tells the doors apart.
     if (this.row.question?.doors === 'shapes') {
-      const scale = (h * 0.82) / 100;
+      // Some levels draw a shape smaller, tilted, or in other proportions (see questions.js).
+      const form = this.row.question.forms?.[value];
+      const scale = ((h * 0.82) / 100) * (form?.size ?? 1);
       g.save();
-      g.translate(w / 2 - 50 * scale, h / 2 - 50 * scale);
+      g.translate(w / 2, h / 2);
+      g.rotate(((form?.turn ?? 0) * Math.PI) / 180);
       g.scale(scale, scale);
+      g.translate(-50, -50);
       g.fillStyle = ink;
-      g.fill(new Path2D(SHAPES[value] ?? ''));
+      g.fill(new Path2D(form?.path ?? SHAPES[value] ?? ''));
       g.restore();
       door.texture.needsUpdate = true;
       return;

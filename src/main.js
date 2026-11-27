@@ -53,6 +53,7 @@ const el = {
   ages: $('ages'),
   levels: $('levels'),
   overLevel: $('over-level'),
+  wow: $('wow'),
   overTitle: $('over-title'),
   overStars: $('over-stars'),
   overScore: $('over-score'),
@@ -319,6 +320,38 @@ function shapePicture(id) {
   return svg;
 }
 
+// A big, bouncy word in rainbow letters with a burst of stars. It comes with spoken
+// praise, with a special trick, and when a level is cleared, and it is over in a second.
+// It only ever follows a right answer, so it marks the learning without competing with it:
+// research on children's apps finds that effects tied to the task help, and extras that
+// keep going or have nothing to do with it get in the way (see the README).
+const WOW_COLORS = ['#e53935', '#fb8c00', '#fbc02d', '#43a047', '#1e88e5', '#8e24aa'];
+let wowTimer = 0;
+
+function wow(text, big = false) {
+  const word = tag('span', 'wow-word');
+  let colored = 0;
+  for (const letter of text) {
+    const span = tag('span', '', letter);
+    if (letter.trim()) span.style.color = WOW_COLORS[colored++ % WOW_COLORS.length];
+    word.append(span);
+  }
+  const count = big ? 14 : 8;
+  const stars = Array.from({ length: count }, (_, i) => {
+    const star = tag('span', 'wow-star', '⭐');
+    star.style.setProperty('--turn', `${(360 / count) * i}deg`);
+    return star;
+  });
+  el.wow.replaceChildren(...stars, word);
+  el.wow.classList.toggle('big', big);
+  el.wow.hidden = false;
+  replay(el.wow, 'go');
+  clearTimeout(wowTimer);
+  wowTimer = setTimeout(() => {
+    el.wow.hidden = true;
+  }, big ? 1900 : 1300);
+}
+
 // Shows a question in the banner. "solved" adds the answer.
 function showQuestion(question, solved = false) {
   const answer = () => tag('span', 'answer', String(question.answer));
@@ -477,6 +510,7 @@ function bankRun(score) {
 
 function goHome() {
   stopSpeaking();
+  el.wow.hidden = true;
   setMusicSpeed(1);
   // Leaving a run early still keeps the points and progress earned so far.
   if (screen === 'pause') bankRun(game.score);
@@ -527,7 +561,11 @@ const gameEvents = {
       replay(el.scorePill, 'pop');
       // Spoken praise comes with every other right answer and with every trick,
       // so the voice is not talking all the time.
-      if (!info.endless && (info.trick || info.score % 2 === 1)) speak(pick(t.say.praise));
+      if (!info.endless && (info.trick || info.score % 2 === 1)) {
+        const praise = pick(t.say.praise);
+        speak(praise);
+        wow(praise, info.trick);
+      }
     } else {
       sfx.wrong();
       if (!info.endless) speak(spokenAnswer(info.question));
@@ -554,6 +592,8 @@ const gameEvents = {
     el.question.replaceChildren();
     el.ask.textContent = '';
     sfx.fanfare();
+    // Clearing a level is the big moment.
+    if (score >= CONFIG.clearAt) wow(t.levelDone(runLevel + 1), true);
     speak(score > 0 ? t.say.finish(score) : t.say.finishZero);
   },
 
@@ -584,6 +624,7 @@ function finishRun({ score, total, endless }) {
   const passed = !endless && score >= CONFIG.clearAt;
   if (passed && runLevel === cleared) store.setCleared(runGame, cleared + 1);
   pickedLevel = null;
+  el.wow.hidden = true;
   el.overLevel.hidden = endless;
   $('btn-over-scores').hidden = !endless; // the high score table is for endless runs
   el.overLevel.classList.toggle('passed', passed);
@@ -615,7 +656,7 @@ function finishRun({ score, total, endless }) {
   if (madeTheTable) el.nameInput.value = lastName;
 
   show('over');
-  if (newest) sfx.unlock();
+  if (newest || passed) sfx.unlock();
 }
 
 // --- High scores ------------------------------------------------------------------

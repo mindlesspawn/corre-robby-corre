@@ -95,6 +95,41 @@ const SHAPE_IDS = Object.keys(SHAPES);
 const ROUND = ['circle', 'oval', 'hexagon'];
 const BOXY = ['square', 'rectangle', 'diamond'];
 
+// Other ways to draw a shape that are still that shape. Toys and apps mostly show one
+// "usual" triangle and rectangle, and children who only see those can come to think the
+// others do not count (the research is in the README). So the later levels draw shapes
+// in different sizes and tilts, and then in different proportions too.
+const OTHER_FORMS = {
+  triangle: ['M50 5L71 95H29z', 'M50 30L97 76H3z', 'M14 10V90H86z', 'M24 14L94 86H6z'], // tall, flat, right-angled, lopsided
+  rectangle: ['M3 32h94v36h-94z', 'M30 4h40v92h-40z'], // long and thin, tall
+  oval: ['M21 50a29 46 0 1 0 58 0a29 46 0 1 0 -58 0z', 'M3 50a47 21 0 1 0 94 0a47 21 0 1 0 -94 0z'], // tall, long and thin
+  diamond: ['M50 20L95 50L50 80L5 50z'], // wide
+};
+// How far each shape may be turned, in degrees. A square is never turned onto its corner,
+// where it would look like the diamond; a circle looks the same however it is turned.
+const TURNS = {
+  triangle: [0, 30, 60, 90, 135, 180, 225, 270, 315],
+  rectangle: [0, 90, 20, -20],
+  square: [0, 12, -12, 20, -20],
+  oval: [0, 90, 30, -30],
+  hexagon: [0, 30, 15],
+  star: [0, 18, -18, 36],
+  heart: [0, 10, -10],
+};
+const SIZES = [0.7, 0.85, 1];
+
+// How one shape is drawn on a door. strength 1 changes size and tilt; 2 also changes proportions.
+function formFor(id, strength) {
+  const others = strength >= 2 ? OTHER_FORMS[id] : undefined;
+  const path = others && Math.random() < 0.6 ? others[rand(0, others.length - 1)] : undefined;
+  const turns = TURNS[id] ?? [0];
+  const turn = turns[rand(0, turns.length - 1)];
+  // A shape turned part of the way needs a little more room, so it is never drawn full size.
+  // An unusual drawing is kept big enough to see what it is.
+  const size = SIZES[rand(path ? 1 : 0, turn % 90 === 0 ? SIZES.length - 1 : 1)];
+  return { path, turn, size };
+}
+
 // --- Short ways to write a level --------------------------------------------------------
 
 const same = (max) => ({ kind: 'same', max });
@@ -123,6 +158,10 @@ const colorRow = (unit, n) => ({ kind: 'pattern', unit, of: 'colors', pool: colo
 const shapeRow = (unit, n) => ({ kind: 'pattern', unit, of: 'shapes', pool: SHAPE_IDS.slice(0, n) });
 
 const mix = (...of) => ({ kind: 'mix', of });
+
+// Draws a shape level's doors in different sizes and tilts (1), and proportions too (2).
+const varied = (strength, level) =>
+  level.kind === 'mix' ? mix(...level.of.map((part) => varied(strength, part))) : { ...level, vary: strength };
 
 // --- The games --------------------------------------------------------------------------
 
@@ -298,6 +337,9 @@ export const GAMES = {
   },
 
   // Circle, square and triangle come first: those are the shapes expected at three to four.
+  // "varied" levels draw the doors in other sizes and tilts: a little at 3 (with a grown-up),
+  // regularly at 4, and with other proportions at 5 and 6, when children are expected to
+  // name shapes whatever their size and whichever way up they are.
   shapes: {
     icon: '🔷',
     plans: {
@@ -309,9 +351,9 @@ export const GAMES = {
         mix(seeShapes(5), hearShapes(3)),
         hearShapes(4),
         seeShapes(6),
-        mix(seeShapes(6), hearShapes(4)),
+        varied(1, mix(seeShapes(6), hearShapes(4))),
         hearShapes(5),
-        mix(seeShapes(6), hearShapes(5)),
+        varied(1, mix(seeShapes(6), hearShapes(5))),
       ],
       4: [
         seeShapes(5),
@@ -319,35 +361,35 @@ export const GAMES = {
         hearShapes(5),
         seeShapes(7),
         hearShapes(6),
-        mix(seeShapes(7), hearShapes(6)),
-        hearShapes(7),
-        seeShapes(9),
-        hearShapes(8),
-        mix(seeShapes(9), hearShapes(8)),
+        varied(1, mix(seeShapes(7), hearShapes(6))),
+        varied(1, hearShapes(7)),
+        varied(1, seeShapes(9)),
+        varied(1, hearShapes(8)),
+        varied(1, mix(seeShapes(9), hearShapes(8))),
       ],
       5: [
         seeShapes(9),
-        hearShapes(5),
-        hearShapes(6),
-        hearShapes(7),
-        hearShapes(8),
-        hearShapes(9),
-        hearShapes(ROUND),
-        hearShapes(BOXY),
-        mix(hearShapes(ROUND), hearShapes(BOXY)),
-        mix(hearShapes(9), hearShapes(ROUND), hearShapes(BOXY)),
+        varied(1, hearShapes(5)),
+        varied(1, hearShapes(6)),
+        varied(1, hearShapes(7)),
+        varied(1, hearShapes(8)),
+        varied(1, hearShapes(9)),
+        varied(2, hearShapes(ROUND)),
+        varied(2, hearShapes(BOXY)),
+        varied(2, mix(hearShapes(ROUND), hearShapes(BOXY))),
+        varied(2, mix(hearShapes(9), hearShapes(ROUND), hearShapes(BOXY))),
       ],
       6: [
-        seeShapes(9),
-        hearShapes(6),
-        hearShapes(7),
-        hearShapes(8),
-        hearShapes(9),
-        hearShapes(ROUND),
-        hearShapes(BOXY),
-        mix(hearShapes(ROUND), hearShapes(BOXY)),
-        hearShapes(9),
-        mix(hearShapes(9), hearShapes(ROUND), hearShapes(BOXY)),
+        varied(1, seeShapes(9)),
+        varied(1, hearShapes(6)),
+        varied(2, hearShapes(7)),
+        varied(2, hearShapes(8)),
+        varied(2, hearShapes(9)),
+        varied(2, hearShapes(ROUND)),
+        varied(2, hearShapes(BOXY)),
+        varied(2, mix(hearShapes(ROUND), hearShapes(BOXY))),
+        varied(2, hearShapes(9)),
+        varied(2, mix(hearShapes(9), hearShapes(ROUND), hearShapes(BOXY))),
       ],
     },
   },
@@ -533,15 +575,19 @@ function makeColor({ colors: pool, show }) {
 }
 
 // One thing or shape to find among three. "show" shows it; without it, only its name is said.
-function makePick({ kind, pool, show }) {
+function makePick({ kind, pool, show, vary }) {
   const [answer, ...others] = shuffle(pool);
+  const wrong = others.slice(0, 2);
   return {
     kind,
     text: `${kind} ${answer}`,
     doors: kind === 'thing' ? 'things' : 'shapes',
     answer,
     show: show !== false,
-    wrong: others.slice(0, 2),
+    wrong,
+    // On a varied level the banner still shows the usual drawing, so finding the door
+    // means knowing the shape, not matching a picture.
+    ...(vary ? { forms: Object.fromEntries([answer, ...wrong].map((id) => [id, formFor(id, vary)])) } : {}),
   };
 }
 

@@ -49,6 +49,7 @@ Endless mode is on the settings screen (the ⚙️ button), under "Para adultos 
 
 - A run is 10 doors. It never ends early.
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
+- When praise is spoken, the word also bounces onto the screen in rainbow letters with a burst of stars, for about a second. Clearing a level gets a bigger one.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
 - The belt has three speeds, picked on the settings screen (the ⚙️ button on the start screen): slow, normal, and fast. It keeps that speed through a run.
@@ -91,6 +92,19 @@ What research from Vanderbilt University added (checked on 27 November 2026):
 | Asks "what number comes next" at ages 5 and 6 | A Vanderbilt teacher-training deck names moving up and down the number sequence as something to practise. | 13 |
 | Keeps sounds and movement tied to the answer, with no extras to tap | In a study of children aged 2 to 4 using a touchscreen app, and in a later review, sounds, animations and tappable extras that had nothing to do with the task got in the way of learning. | 14, 15 |
 
+How shapes are drawn, and how the game celebrates (checked on 27 November 2026):
+
+| What the game does | Why | Source |
+| --- | --- | --- |
+| Draws shapes in other sizes and tilts in the later levels, and triangles, rectangles and ovals in other proportions at 5 and 6 | Shape toys and apps mostly show one "usual" version of each shape, and the researchers warn that children who only see those may not accept the others. Children are expected to name shapes whatever their size or which way up they are by about 5. | 2, 17, 18 |
+| Never turns a square onto its corner | It would look like the diamond, which is a separate door in the game. | a design choice |
+| Draws every shape on a door in the same ink color | So the shape is the only thing that tells the doors apart. | a design choice |
+| Brings in the rectangle later than the star, circle, square and triangle | In a study of two year olds the star was the easiest shape to pick out and the rectangle the hardest. | 17 |
+| Keeps celebrations short, only after a right answer, and biggest for a cleared level | An analysis of 124 children's apps marked apps down for praise and rewards after every action, and up for feedback tied to the answer. Getting to a new level is named as a better reward than stickers or badges. | 19, 20 |
+| Asks, then waits; keeps a steady pace; repeats | Children's programmes that pause for an answer, go slowly and repeat are the ones researchers single out as holding attention and teaching. In one study of 100 videos, the pace of most was too fast for most children to take in. | 21, 22 |
+
+Not built, though this research points to it: telling a child why a shape is that shape ("it has three sides") when the answer is shown. In one study, children taught that way sorted shapes they had never seen about 30% better (source 23).
+
 Two things from that research are advice for grown-ups, not features. Children under about 3 learn little from a screen on their own, and children of 3 to 5 learn more when a grown-up plays alongside, talks about what is on the screen, and connects it to real things ("you have three grapes too") (sources 15, 16).
 
 Limits worth knowing:
@@ -123,6 +137,13 @@ Sources:
 14. Russo-Johnson, Troseth, Duncan and Mesghina (2017), on touchscreens and word learning: <https://pmc.ncbi.nlm.nih.gov/articles/PMC5388766>
 15. A review of research on how young children learn from screens: <https://pmc.ncbi.nlm.nih.gov/articles/PMC10783145>
 16. Troseth, *Understanding Children's Learning in Digital Contexts* (slides), Vanderbilt University: <https://www.nichd.nih.gov/sites/default/files/2018-03/TrosethChildrensDigitalLearning.pdf>
+17. A study of which shape names two year olds know, and what shape toys and books show: <https://pmc.ncbi.nlm.nih.gov/articles/PMC4808058>
+18. A study of shape toys with usual and unusual shapes, and how parents talk about them: <https://pmc.ncbi.nlm.nih.gov/articles/PMC6289199/>
+19. *How educational are educational apps for young children?* (2021), an analysis of 124 apps: <https://pmc.ncbi.nlm.nih.gov/articles/PMC8916741>
+20. University of California, Irvine, on a study of 171 pre-school maths and reading apps (2018): <https://news.uci.edu/2018/09/19/most-preschool-math-literacy-apps-not-designed-to-help-children-learn-uci-study-finds>
+21. Association for Psychological Science, *Watch and Learn* (2005), on research behind children's television: <https://www.psychologicalscience.org/observer/watch-and-learn>
+22. The Hechinger Report on a study of 100 educational videos (2018): <https://hechingerreport.org/educational-videos-leaving-low-income-behind/>
+23. University of Washington I-LABS, *Supporting Shape Knowledge*: <https://modules.ilabs.uw.edu/module/how-play-helps-math-learning/supporting-shape-knowledge>
 
 ## The voice
 

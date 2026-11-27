@@ -62,6 +62,7 @@ const es = {
   // The ten levels of the chosen game.
   labelLevels: 'Niveles',
   levelLabel: (n) => `Nivel ${n}`,
+  levelDone: (n) => `¡Nivel ${n}!`,
   levelCleared: (n) => `⭐ ¡Pasaste el nivel ${n}!`,
   levelAgain: (n, need) => `Nivel ${n}: con ${need} ⭐ pasas al siguiente`,
   allCleared: '🏆 ¡Pasaste los 10 niveles!',
@@ -204,6 +205,7 @@ const en = {
 
   labelLevels: 'Levels',
   levelLabel: (n) => `Level ${n}`,
+  levelDone: (n) => `Level ${n}!`,
   levelCleared: (n) => `⭐ You cleared level ${n}!`,
   levelAgain: (n, need) => `Level ${n}: get ${need} ⭐ to move on`,
   allCleared: '🏆 You cleared all 10 levels!',
