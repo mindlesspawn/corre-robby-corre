@@ -53,10 +53,11 @@ export const CONFIG = {
     minSteps: 3, // questions come from at least this many of a game's first steps
   },
 
-  // --- Difficulty ----------------------------------------------------------
-  // The learning steps are listed in src/questions.js. Each right answer is +1 and each
-  // wrong answer is -1; this many are needed to move up one step. Bigger is slower.
-  answersPerLevel: 8,
+  // --- Levels --------------------------------------------------------------
+  // The levels are listed in src/questions.js. A level is one run of doors, and this many
+  // right answers clear it and open the next one. Seven of ten is far more than guessing
+  // gives (about three), and still forgiving.
+  clearAt: 7,
 
   // --- High scores ---------------------------------------------------------
   highScoreSlots: 10,
@@ -78,7 +79,13 @@ export const COLORS = {
   orange: '#f57c00',
   purple: '#8e24aa',
   pink: '#f48fb1',
+  brown: '#8d5a3b',
+  black: '#263238',
+  white: '#ffffff',
 };
+
+// The bright colors doors are painted when their color is only decoration.
+export const DOOR_COLORS = ['red', 'blue', 'yellow', 'green', 'orange', 'purple', 'pink'].map((id) => COLORS[id]);
 
 // The look of the world. Plain colors for now; art can replace these later.
 export const THEME = {

@@ -331,6 +331,46 @@
     "450e63b0c3f4.mp3",
     2.35
   ],
+  "¿Qué número sigue después del 1?": [
+    "964437d93bae.mp3",
+    3.77
+  ],
+  "¿Qué número sigue después del 2?": [
+    "4ef1c799a2d7.mp3",
+    3.96
+  ],
+  "¿Qué número sigue después del 3?": [
+    "ceddc9510a1e.mp3",
+    4.06
+  ],
+  "¿Qué número sigue después del 4?": [
+    "1a723786bc86.mp3",
+    3.77
+  ],
+  "¿Qué número sigue después del 5?": [
+    "562d8f30a9df.mp3",
+    3.77
+  ],
+  "¿Qué número sigue después del 6?": [
+    "424188e590fe.mp3",
+    3.36
+  ],
+  "¿Qué número sigue después del 7?": [
+    "8b0644b5c5c8.mp3",
+    4.01
+  ],
+  "¿Qué número sigue después del 8?": [
+    "54999877e426.mp3",
+    4.66
+  ],
+  "¿Qué número sigue después del 9?": [
+    "77b7ce87441b.mp3",
+    3.96
+  ],
+  "¿Qué sigue?": [
+    "066f4dac80e5.mp3",
+    1.7
+  ],
   "1 más 1 son 2": [
     "9e52435cae11.mp3",
     3.31
@@ -787,6 +827,30 @@
     "ff0c7531eb72.mp3",
     2.9
   ],
+  "Aquí está el dragón": [
+    "d752fbb878e6.mp3",
+    2.9
+  ],
+  "Aquí está el hada": [
+    "cfe6bf02612e.mp3",
+    2.66
+  ],
+  "Aquí está el hexágono": [
+    "776b24fa7227.mp3",
+    3.12
+  ],
+  "Aquí está el óvalo": [
+    "9b68f358714c.mp3",
+    3.17
+  ],
+  "Aquí está el rectángulo": [
+    "017b3f229dc6.mp3",
+    2.4
+  ],
+  "Aquí está el rombo": [
+    "6e677a446078.mp3",
+    2.3
+  ],
   "Aquí está el triángulo": [
     "35fffc8db7d0.mp3",
     2.57
@@ -810,6 +874,14 @@
   "Aquí está la estrella": [
     "f90e25d8fc2d.mp3",
     2.3
+  ],
+  "Aquí está la joya": [
+    "12ad1d4ef531.mp3",
+    2.02
+  ],
+  "Aquí está la llave": [
+    "5e000f776259.mp3",
+    2.66
   ],
   "Aquí está la rana": [
     "3c75c087ba49.mp3",
@@ -867,6 +939,10 @@
     "b5cd3c3f97e0.mp3",
     3.05
   ],
+  "Aquí hay más. Hay 10.": [
+    "1312d3ffec34.mp3",
+    3.12
+  ],
   "Aquí hay más. Hay 2.": [
     "787c8a8fc096.mp3",
     3.91
@@ -887,9 +963,25 @@
     "196213609b73.mp3",
     3.82
   ],
+  "Aquí hay más. Hay 7.": [
+    "7549ca4cc0ee.mp3",
+    3.46
+  ],
+  "Aquí hay más. Hay 8.": [
+    "edd524bccca4.mp3",
+    3.36
+  ],
+  "Aquí hay más. Hay 9.": [
+    "fb1fd16c4ed0.mp3",
+    3.41
+  ],
   "Aquí hay menos. Hay 1.": [
     "bb25f080c65e.mp3",
     3.77
+  ],
+  "Aquí hay menos. Hay 10.": [
+    "13e0559df47f.mp3",
+    3.55
   ],
   "Aquí hay menos. Hay 2.": [
     "462050fae180.mp3",
@@ -911,6 +1003,18 @@
     "3712f2ee3741.mp3",
     4.1
   ],
+  "Aquí hay menos. Hay 7.": [
+    "9d78cf7ad91c.mp3",
+    4.46
+  ],
+  "Aquí hay menos. Hay 8.": [
+    "e3d31af4bec1.mp3",
+    3.17
+  ],
+  "Aquí hay menos. Hay 9.": [
+    "3849f39c827a.mp3",
+    3.17
+  ],
   "Busca el anillo": [
     "0af07ece725e.mp3",
     1.92
@@ -931,6 +1035,14 @@
     "a3d3edcd28f3.mp3",
     2.95
   ],
+  "Busca el color blanco": [
+    "f0d195a5a7f5.mp3",
+    2.66
+  ],
+  "Busca el color café": [
+    "75c546381e3b.mp3",
+    2.16
+  ],
   "Busca el color morado": [
     "fa6a12a8964d.mp3",
     2.52
@@ -938,6 +1050,10 @@
   "Busca el color naranja": [
     "5177493cb4c7.mp3",
     2.52
+  ],
+  "Busca el color negro": [
+    "ae1094b1c3c0.mp3",
+    2.86
   ],
   "Busca el color rojo": [
     "44834a7b9111.mp3",
@@ -958,6 +1074,30 @@
   "Busca el cuadrado": [
     "b6df78dd5f86.mp3",
     2.9
+  ],
+  "Busca el dragón": [
+    "5e08af69b3b1.mp3",
+    2.35
+  ],
+  "Busca el hada": [
+    "97bfee8cc072.mp3",
+    2.02
+  ],
+  "Busca el hexágono": [
+    "d511cb190bb0.mp3",
+    2.3
+  ],
+  "Busca el óvalo": [
+    "294aca0b39cd.mp3",
+    2.3
+  ],
+  "Busca el rectángulo": [
+    "c02f358fdd4f.mp3",
+    2.16
+  ],
+  "Busca el rombo": [
+    "b1ed29444535.mp3",
+    1.85
   ],
   "Busca el triángulo": [
     "dc99f80a2733.mp3",
@@ -983,6 +1123,14 @@
     "4e3bec676b9c.mp3",
     2.11
   ],
+  "Busca la joya": [
+    "ec873182be9a.mp3",
+    1.92
+  ],
+  "Busca la llave": [
+    "ccadb3d96a02.mp3",
+    2.06
+  ],
   "Busca la rana": [
     "afc599a56b15.mp3",
     1.66
@@ -995,6 +1143,42 @@
     "50e88c4218d1.mp3",
     2.81
   ],
+  "Después del 1 sigue el 2": [
+    "bb536abdbd23.mp3",
+    4.32
+  ],
+  "Después del 2 sigue el 3": [
+    "59977566f8bd.mp3",
+    2.66
+  ],
+  "Después del 3 sigue el 4": [
+    "96318d84a8b5.mp3",
+    3.26
+  ],
+  "Después del 4 sigue el 5": [
+    "98eccc13ff30.mp3",
+    3.77
+  ],
+  "Después del 5 sigue el 6": [
+    "702f3082e7e7.mp3",
+    3.72
+  ],
+  "Después del 6 sigue el 7": [
+    "09782f12d46f.mp3",
+    3.86
+  ],
+  "Después del 7 sigue el 8": [
+    "1ab4e5d0699d.mp3",
+    4.85
+  ],
+  "Después del 8 sigue el 9": [
+    "56ce76d89685.mp3",
+    3.22
+  ],
+  "Después del 9 sigue el 10": [
+    "96e883f9b0fc.mp3",
+    4.75
+  ],
   "Este es el amarillo": [
     "95236302c58f.mp3",
     2.26
@@ -1003,6 +1187,14 @@
     "252af7921064.mp3",
     2.16
   ],
+  "Este es el blanco": [
+    "8597433582ae.mp3",
+    2.06
+  ],
+  "Este es el café": [
+    "030edadb0020.mp3",
+    2.95
+  ],
   "Este es el morado": [
     "6db3b0daf61a.mp3",
     2.4
@@ -1010,6 +1202,10 @@
   "Este es el naranja": [
     "873bce10772d.mp3",
     2.86
+  ],
+  "Este es el negro": [
+    "f4496b6a2be8.mp3",
+    3.41
   ],
   "Este es el rojo": [
     "9748dadcbf12.mp3",

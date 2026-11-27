@@ -850,6 +850,110 @@ h2 {
   transform: translateY(-3px);
 }
 
+/* The ten levels of the chosen game, in one row. */
+.levels {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.level-btn {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--tile-edge);
+  font-size: clamp(11px, 3.4vw, 15px);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.level-btn.done {
+  background: #ffe082;
+  border-color: var(--sun);
+}
+
+.level-btn.selected {
+  border: 3px solid var(--blue);
+  background: #e3f2fd;
+  transform: scale(1.14);
+}
+
+.level-btn.done.selected {
+  background: #ffe082;
+}
+
+.level-btn:disabled {
+  background: #eef2f6;
+  border-color: #e3e9ef;
+  color: #b0bec5;
+}
+
+/* On the end screen: the level that was cleared, or how many stars clear it. */
+.over-level {
+  font-size: 18px;
+  font-weight: 800;
+  opacity: 0.75;
+  text-wrap: balance;
+}
+
+.over-level.passed {
+  align-self: center;
+  background: #fff8e1;
+  border-radius: 18px;
+  padding: 6px 16px;
+  font-size: 22px;
+  opacity: 1;
+}
+
+/* A repeating row, and a counting row, in the question banner. */
+.question .pattern {
+  font-size: 0.86em; /* the longest row has seven pieces, and has to fit a phone */
+}
+
+.question .pattern,
+.question .counting {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.14em;
+}
+
+.question .pattern .swatch {
+  width: 0.72em;
+  height: 0.72em;
+  border-radius: 50%;
+  border-width: 0.05em;
+  margin: 0.2em 0;
+}
+
+.question .pattern .shape {
+  width: 0.8em;
+  height: 0.8em;
+  margin: 0.16em 0;
+}
+
+.question .pattern .next {
+  outline: 0.07em solid var(--green);
+  outline-offset: 0.05em;
+  border-radius: 50%;
+}
+
+.question .pattern .shape.next {
+  border-radius: 0.1em;
+  fill: var(--green-dark);
+}
+
+.question .counting {
+  gap: 0.34em;
+  padding: 0 0.3em;
+}
+
+.question .missing {
+  color: var(--blue);
+  padding: 0 0.1em;
+}
+
 /* How hard: one button per age. */
 .ages {
   display: flex;
@@ -1017,6 +1121,17 @@ h2 {
   line-height: 1.15;
 }
 
+.games.five {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.games.five .game-btn {
+  font-size: clamp(10px, 2.9vw, 13px);
+  letter-spacing: -0.01em;
+  padding: 6px 0;
+}
+
 /* Four characters fit in one row. */
 .characters {
   grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
@@ -1066,17 +1181,18 @@ h2 {
   flex: 2;
 }
 
-.play-row .endless-btn {
-  flex: 1.3;
-  padding-left: 6px;
-  padding-right: 6px;
-  font-size: clamp(15px, 4.6vw, 22px);
-  white-space: nowrap;
+/* The settings button next to Play is as tall as Play. */
+.play-row .toggle-btn {
+  font-size: 26px;
+}
+
+/* Endless mode is purple wherever its button appears. */
+.big-btn.endless-btn {
   background: linear-gradient(180deg, #b24fc4, #8e24aa);
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 6px 0 #6a1b9a;
 }
 
-.play-row .endless-btn:active {
+.big-btn.endless-btn:active {
   box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 2px 0 #6a1b9a;
 }
 
@@ -1106,12 +1222,6 @@ h2 {
   }
   50% {
     transform: scale(1.035);
-  }
-}
-
-@media (min-width: 600px) and (min-height: 700px) {
-  .play-row .endless-btn {
-    font-size: 28px;
   }
 }
 
@@ -1146,6 +1256,12 @@ h2 {
   text-align: left;
   opacity: 0.7;
   padding-left: 4px;
+}
+
+.small-btn.endless-btn {
+  background: linear-gradient(180deg, #b55fd6, #8e24aa);
+  color: #fff;
+  box-shadow: 0 4px 0 #6a1b9a;
 }
 
 .sound-btn.off {

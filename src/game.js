@@ -2,9 +2,9 @@
 // It knows nothing about menus, saving, or speech. It reports what happens through "events".
 
 import * as THREE from 'three';
-import { COLORS, CONFIG, THEME } from './config.js';
+import { COLORS, CONFIG, DOOR_COLORS, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { SHAPES, THINGS, levelFromSkill, makeQuestion, shuffle, skillRange } from './questions.js';
+import { LEVELS, SHAPES, THINGS, makeQuestion, shuffle } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
@@ -79,9 +79,9 @@ export class Game {
     this.speed = IDLE_SPEED;
     this.character = null;
     this.gameId = CONFIG.game;
-    this.skill = 0;
-    this.skillFloor = 0;
-    this.skillCap = Infinity;
+    this.age = CONFIG.age;
+    this.level = 0;
+    this.reached = 0;
     this.shake = 0;
     this.topClear = 0.28;
     this.pace = CONFIG.paces[CONFIG.pace];
@@ -408,20 +408,20 @@ export class Game {
     this.character?.calm();
   }
 
-  // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
-  // age: the age picked on the start screen, which sets the steps the run stays inside.
+  // game: which game to play (see src/questions.js). age: the age picked on the start screen.
+  // level: which of that age's levels to play (0 is the first).
+  // reached: the highest level open to the child, which an endless run draws from.
   // pace: 'slow', 'normal' or 'fast' (see config.js).
   // endless: true for the mode that gets faster and faster until the first miss ends it.
-  startRun({ game = CONFIG.game, skill = 0, age = CONFIG.age, pace = CONFIG.pace, endless = false } = {}) {
+  startRun({ game = CONFIG.game, age = CONFIG.age, level = 0, reached = level, pace = CONFIG.pace, endless = false } = {}) {
     this.resetRun();
     this.pace = CONFIG.paces[pace] ?? CONFIG.paces[CONFIG.pace];
     this.endless = endless;
     this.endlessTravel = this.pace.travel;
     this.gameId = game;
-    // A run never leaves the steps for the child's age: it stops climbing at the last
-    // of them and never drops below the first.
-    [this.skillFloor, this.skillCap] = skillRange(game, age);
-    this.skill = Math.min(this.skillCap, Math.max(this.skillFloor, skill));
+    this.age = age;
+    this.level = Math.min(LEVELS - 1, Math.max(0, level));
+    this.reached = Math.min(LEVELS - 1, Math.max(0, reached));
     this.gapTimer = 0.6;
     this.mode = 'running';
   }
@@ -494,14 +494,10 @@ export class Game {
   }
 
   nextQuestion() {
-    const reached = levelFromSkill(this.skill, this.gameId);
-    // Endless runs pull questions at random from the steps for the child's age, up to the
-    // one the child has reached.
-    const first = levelFromSkill(this.skillFloor, this.gameId);
-    const last = levelFromSkill(this.skillCap, this.gameId);
-    const widest = Math.min(last, Math.max(reached, first + CONFIG.endless.minSteps - 1));
-    const level = this.endless ? first + Math.floor(Math.random() * (widest - first + 1)) : reached;
-    const question = makeQuestion(this.gameId, level, this.lastText);
+    // Endless runs pull questions at random from every level open to the child.
+    const widest = Math.min(LEVELS - 1, Math.max(this.reached, CONFIG.endless.minSteps - 1));
+    const level = this.endless ? Math.floor(Math.random() * (widest + 1)) : this.level;
+    const question = makeQuestion(this.gameId, this.age, level, this.lastText);
     this.lastText = question.text;
 
     const row = this.row;
@@ -520,13 +516,13 @@ export class Game {
     row.group.visible = true;
     this.setRowFade(1);
 
-    // In the colors game the doors themselves are the answers, with plain frames and no signs.
-    // In other games the doors get three random colors and a sign with the answer on top.
-    const isColor = question.kind === 'color';
-    const hexes = isColor ? question.choices.map((id) => COLORS[id]) : shuffle(Object.values(COLORS)).slice(0, 3);
+    // When the answers are colors, the doors themselves are the answers, with plain frames
+    // and no signs. Otherwise the doors get three bright colors and a sign with the answer on top.
+    const isColor = question.paint === true;
+    const hexes = isColor ? question.choices.map((id) => COLORS[id]) : shuffle(DOOR_COLORS).slice(0, 3);
     this.doors.forEach((door, i) => {
       door.panelMaterial.color.set(hexes[i]);
-      if (isColor) door.frameMaterial.color.set('#fafafa');
+      if (isColor) door.frameMaterial.color.set('#eceff1');
       else door.frameMaterial.color.set(hexes[i]).multiplyScalar(0.7);
       door.hinge.rotation.y = 0;
       door.opening = false;
@@ -567,7 +563,6 @@ export class Game {
     const row = this.row;
     const door = this.doors[row.chosen];
     this.score += 1;
-    if (!this.endless) this.skill = Math.min(this.skill + 1, this.skillCap);
     this.doorsDone += 1;
     this.results.push(true);
     if (this.score % CONFIG.correctPerSpeedStep === 0) this.speedSteps += 1;
@@ -594,7 +589,6 @@ export class Game {
   answeredWrong() {
     const row = this.row;
     const q = row.question;
-    if (!this.endless) this.skill = Math.max(this.skillFloor, this.skill - 1);
     this.doorsDone += 1;
     this.results.push(false);
     this.speedSteps = Math.max(0, this.speedSteps - CONFIG.speedStepsLostOnMiss);
@@ -758,7 +752,7 @@ export class Game {
         endless: this.endless,
         score: this.score,
         total: CONFIG.doorsPerRun,
-        skill: this.skill,
+        level: this.level,
         results: [...this.results],
       });
     }
@@ -868,7 +862,7 @@ export class Game {
       travel: this.travelTime(),
       lane: this.lane,
       score: this.score,
-      skill: this.skill,
+      level: this.level,
       doorsDone: this.doorsDone,
       pushedBack: this.pushedBack,
       speed: this.speed,

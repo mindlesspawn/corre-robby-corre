@@ -106,10 +106,17 @@ function allLines() {
   }
   add(askText({ kind: 'more', answer: 1 }));
   add(askText({ kind: 'fewer', answer: 1 }));
-  for (let n = 1; n <= 6; n++) {
+  for (let n = 1; n <= 10; n++) {
     add(answerText({ kind: 'more', answer: n }));
     add(answerText({ kind: 'fewer', answer: n }));
   }
+
+  // What number comes next, and what comes next in a row
+  for (let n = 1; n <= 9; n++) {
+    add(askText({ kind: 'after', n, answer: n + 1 }));
+    add(answerText({ kind: 'after', n, answer: n + 1 }));
+  }
+  add(askText({ kind: 'pattern' }));
 
   // Sums up to 10. Bigger sums are left to the device's own voice.
   for (let a = 1; a <= 9; a++) {

@@ -4,7 +4,7 @@
 // For the iOS app, swap their insides for native storage and nothing else changes.
 
 import { CONFIG } from './config.js';
-import { AGES, GAME_IDS, ageOrDefault, gameOrDefault, skillRange } from './questions.js';
+import { AGES, GAME_IDS, LEVELS, ageOrDefault, gameOrDefault } from './questions.js';
 import { t } from './text.js';
 
 const KEY = 'number-run-save-v1';
@@ -28,7 +28,7 @@ const DEFAULTS = {
   pace: '', // belt speed: 'slow', 'normal' or 'fast'; empty means the starting speed from config.js
   game: '', // empty means: use the starting game from config.js
   age: 0, // the age picked on the start screen: 3, 4, 5 or 6 (six and older); 0 means the one in config.js
-  skills: {}, // progress up each game's ladder, kept apart for each age: { 3: { numbers: 12, colors: 3 } }
+  cleared: {}, // how many levels are cleared in each game, kept apart for each age: { 3: { numbers: 4 } }
 };
 
 async function readRaw() {
@@ -71,16 +71,16 @@ function cleanScores(list) {
     .slice(0, CONFIG.highScoreSlots);
 }
 
-function cleanSkills(saved) {
-  const skills = {};
+function cleanCleared(saved) {
+  const cleared = {};
   for (const age of AGES) {
-    skills[age] = {};
-    for (const id of GAME_IDS) skills[age][id] = wholeNumber(saved?.[age]?.[id]);
+    cleared[age] = {};
+    for (const id of GAME_IDS) cleared[age][id] = Math.min(LEVELS, wholeNumber(saved?.[age]?.[id]));
   }
-  return skills;
+  return cleared;
 }
 
-let state = { ...DEFAULTS, skills: cleanSkills({}) };
+let state = { ...DEFAULTS, cleared: cleanCleared({}) };
 
 export const store = {
   async init() {
@@ -106,10 +106,10 @@ export const store = {
         language: typeof saved.language === 'string' ? saved.language : '',
         game: typeof saved.game === 'string' ? saved.game : '',
         age: AGES.includes(saved.age) ? saved.age : 0,
-        skills: cleanSkills(saved.skills),
+        cleared: cleanCleared(saved.cleared),
       };
     } catch {
-      state = { ...DEFAULTS, skills: cleanSkills({}) };
+      state = { ...DEFAULTS, cleared: cleanCleared({}) };
     }
     return state;
   },
@@ -126,24 +126,24 @@ export const store = {
 
   // The game being played, and the child's progress in it.
   game() {
-    return gameOrDefault(state.game);
+    return gameOrDefault(state.game, this.age());
   },
 
-  // The age picked on the start screen. Each age has its own steps and its own progress,
+  // The age picked on the start screen. Each age has its own levels and its own progress,
   // so two children of different ages can share a device.
   age() {
     return ageOrDefault(state.age);
   },
 
-  // Progress in a game for the age that is picked, always inside that age's steps.
-  skill(gameId = this.game()) {
-    const [lowest, highest] = skillRange(gameId, this.age());
-    return Math.min(highest, Math.max(lowest, state.skills[this.age()]?.[gameId] ?? 0));
+  // How many levels of a game are cleared, for the age that is picked.
+  cleared(gameId = this.game()) {
+    return state.cleared[this.age()]?.[gameId] ?? 0;
   },
 
-  setSkill(gameId, value) {
+  setCleared(gameId, count) {
     const age = this.age();
-    this.update({ skills: { ...state.skills, [age]: { ...state.skills[age], [gameId]: wholeNumber(value) } } });
+    const levels = Math.min(LEVELS, wholeNumber(count));
+    this.update({ cleared: { ...state.cleared, [age]: { ...state.cleared[age], [gameId]: levels } } });
   },
 
   // True when a score earns a place in the high score table.

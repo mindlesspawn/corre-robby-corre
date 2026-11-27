@@ -53,11 +53,19 @@ const es = {
   },
 
   // The games on the start screen.
-  games: { numbers: 'Números', colors: 'Colores', princess: 'Princesa', shapes: 'Figuras' },
+  games: { numbers: 'Números', colors: 'Colores', princess: 'Princesa', shapes: 'Figuras', patterns: 'Patrones' },
 
   // The age buttons on the start screen.
   ages: { 3: '3 años', 4: '4 años', 5: '5 años', 6: '6+ años' },
   labelAge: 'Edad',
+
+  // The ten levels of the chosen game.
+  labelLevels: 'Niveles',
+  levelLabel: (n) => `Nivel ${n}`,
+  levelCleared: (n) => `⭐ ¡Pasaste el nivel ${n}!`,
+  levelAgain: (n, need) => `Nivel ${n}: con ${need} ⭐ pasas al siguiente`,
+  allCleared: '🏆 ¡Pasaste los 10 niveles!',
+  advancedTitle: 'Para adultos o niños avanzados',
   wordMore: 'más',
   wordFewer: 'menos',
 
@@ -69,6 +77,9 @@ const es = {
     orange: 'naranja',
     purple: 'morado',
     pink: 'rosa',
+    brown: 'café',
+    black: 'negro',
+    white: 'blanco',
   },
 
   // The things shown to count: [one, many, 'f' for "una ..." words or 'm' for "un ..." words].
@@ -94,11 +105,19 @@ const es = {
     shoe: ['el', 'zapato'],
     rose: ['la', 'rosa'],
     frog: ['la', 'rana'],
+    gem: ['la', 'joya'],
+    fairy: ['el', 'hada'],
+    dragon: ['el', 'dragón'],
+    key: ['la', 'llave'],
     circle: ['el', 'círculo'],
     square: ['el', 'cuadrado'],
     triangle: ['el', 'triángulo'],
     star: ['la', 'estrella'],
     heart: ['el', 'corazón'],
+    rectangle: ['el', 'rectángulo'],
+    oval: ['el', 'óvalo'],
+    diamond: ['el', 'rombo'],
+    hexagon: ['el', 'hexágono'],
   },
 
   // What the voice says. Numbers are written as digits; the voice reads them as words.
@@ -116,6 +135,9 @@ const es = {
     fewer: '¿Dónde hay menos?',
     isMore: (n) => `Aquí hay más. Hay ${n}.`,
     isFewer: (n) => `Aquí hay menos. Hay ${n}.`,
+    after: (n) => `¿Qué número sigue después del ${n}?`,
+    isAfter: (n, next) => `Después del ${n} sigue el ${next}`,
+    next: '¿Qué sigue?',
     add: (a, b) => `¿Cuánto es ${a} más ${b}?`,
     color: (name) => `Busca el color ${name}`,
     isCount: (n, [one, many, g]) => (n === 1 ? `Hay ${g === 'm' ? 'un' : 'una'} ${one}` : `Hay ${n} ${many}`),
@@ -175,10 +197,17 @@ const en = {
     zero: 'Keep trying!',
   },
 
-  games: { numbers: 'Numbers', colors: 'Colors', princess: 'Princess', shapes: 'Shapes' },
+  games: { numbers: 'Numbers', colors: 'Colors', princess: 'Princess', shapes: 'Shapes', patterns: 'Patterns' },
 
   ages: { 3: 'Age 3', 4: 'Age 4', 5: 'Age 5', 6: 'Age 6+' },
   labelAge: 'Age',
+
+  labelLevels: 'Levels',
+  levelLabel: (n) => `Level ${n}`,
+  levelCleared: (n) => `⭐ You cleared level ${n}!`,
+  levelAgain: (n, need) => `Level ${n}: get ${need} ⭐ to move on`,
+  allCleared: '🏆 You cleared all 10 levels!',
+  advancedTitle: 'For grown-ups or advanced kids',
   wordMore: 'more',
   wordFewer: 'fewer',
 
@@ -190,6 +219,9 @@ const en = {
     orange: 'orange',
     purple: 'purple',
     pink: 'pink',
+    brown: 'brown',
+    black: 'black',
+    white: 'white',
   },
 
   items: {
@@ -213,11 +245,19 @@ const en = {
     shoe: ['the', 'shoe'],
     rose: ['the', 'rose'],
     frog: ['the', 'frog'],
+    gem: ['the', 'gem'],
+    fairy: ['the', 'fairy'],
+    dragon: ['the', 'dragon'],
+    key: ['the', 'key'],
     circle: ['the', 'circle'],
     square: ['the', 'square'],
     triangle: ['the', 'triangle'],
     star: ['the', 'star'],
     heart: ['the', 'heart'],
+    rectangle: ['the', 'rectangle'],
+    oval: ['the', 'oval'],
+    diamond: ['the', 'diamond'],
+    hexagon: ['the', 'hexagon'],
   },
 
   say: {
@@ -231,6 +271,9 @@ const en = {
     fewer: 'Which door has fewer?',
     isMore: (n) => `This one has more. It has ${n}.`,
     isFewer: (n) => `This one has fewer. It has ${n}.`,
+    after: (n) => `What number comes after ${n}?`,
+    isAfter: (n, next) => `After ${n} comes ${next}`,
+    next: 'What comes next?',
     add: (a, b) => `What is ${a} plus ${b}?`,
     color: (name) => `Find the color ${name}`,
     isCount: (n, [one, many]) => (n === 1 ? `There is 1 ${one}` : `There are ${n} ${many}`),
@@ -283,6 +326,8 @@ export function askText(question) {
   if (question.kind === 'find') return say.find(question.answer);
   if (question.kind === 'more') return say.more;
   if (question.kind === 'fewer') return say.fewer;
+  if (question.kind === 'after') return say.after(question.n);
+  if (question.kind === 'pattern') return say.next;
   if (question.kind === 'color') return say.color(t.colorNames[question.answer]);
   if (question.kind === 'thing' || question.kind === 'shape') return say.findIt(t.nouns[question.answer]);
   return say.add(question.a, question.b);
@@ -294,6 +339,10 @@ export function answerText(question) {
   if (question.kind === 'find') return say.isFind(question.answer);
   if (question.kind === 'more') return say.isMore(question.answer);
   if (question.kind === 'fewer') return say.isFewer(question.answer);
+  if (question.kind === 'after') return say.isAfter(question.n, question.answer);
+  if (question.kind === 'pattern') {
+    return question.of === 'colors' ? say.isColor(t.colorNames[question.answer]) : say.hereIs(t.nouns[question.answer]);
+  }
   if (question.kind === 'color') return say.isColor(t.colorNames[question.answer]);
   if (question.kind === 'thing' || question.kind === 'shape') return say.hereIs(t.nouns[question.answer]);
   return say.isAdd(question.a, question.b, question.answer);

@@ -7,7 +7,7 @@ import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
-import { AGES, FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS } from './questions.js';
+import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
@@ -51,6 +51,8 @@ const el = {
   unlockNote: $('unlock-note'),
   games: $('games'),
   ages: $('ages'),
+  levels: $('levels'),
+  overLevel: $('over-level'),
   overTitle: $('over-title'),
   overStars: $('over-stars'),
   overScore: $('over-score'),
@@ -71,6 +73,8 @@ let thumbs = {};
 let screen = 'start';
 let lastScore = 0;
 let runGame = CONFIG.game; // the game the current run is playing
+let runLevel = 0; // the level the current run is playing (0 is the first)
+let pickedLevel = null; // an earlier level tapped on the start screen, to play it again
 let runResults = []; // right and wrong so far in this run
 let runEndless = false; // true while playing (or having just played) an endless run
 let currentQuestion = null;
@@ -161,8 +165,11 @@ function renderCharacters() {
 // The game picker: numbers, colors, and whatever is added to src/questions.js.
 function renderGames() {
   const current = store.game();
+  const list = gamesFor(store.age());
+  el.games.style.setProperty('--count', String(list.length));
+  el.games.classList.toggle('five', list.length > 4);
   el.games.replaceChildren(
-    ...GAME_IDS.map((id) => {
+    ...list.map((id) => {
       const button = tag('button', 'game-btn');
       button.append(tag('span', 'game-icon', GAMES[id].icon), tag('span', '', t.games[id] ?? id));
       button.type = 'button';
@@ -171,6 +178,7 @@ function renderGames() {
       button.setAttribute('aria-pressed', String(id === current));
       button.addEventListener('click', () => {
         store.update({ game: id });
+        pickedLevel = null;
         renderStart();
       });
       return button;
@@ -190,7 +198,38 @@ function renderAges() {
       button.setAttribute('aria-pressed', String(age === current));
       button.addEventListener('click', () => {
         store.update({ age });
-        renderAges();
+        pickedLevel = null;
+        renderStart();
+      });
+      return button;
+    }),
+  );
+}
+
+// The level about to be played (0 is the first): the next one to clear, unless an
+// earlier one was tapped. After all ten are cleared it is the last.
+function currentLevel() {
+  const next = Math.min(LEVELS - 1, store.cleared());
+  return pickedLevel === null ? next : Math.min(pickedLevel, next);
+}
+
+// The ten levels of the chosen game: gold once cleared, the one about to be played lit,
+// and grey until they open. A cleared level can be tapped to play it again.
+function renderLevels() {
+  const cleared = store.cleared();
+  const current = currentLevel();
+  el.levels.replaceChildren(
+    ...Array.from({ length: LEVELS }, (_, i) => {
+      const button = tag('button', 'level-btn', String(i + 1));
+      button.type = 'button';
+      button.classList.toggle('done', i < cleared);
+      button.classList.toggle('selected', i === current);
+      button.disabled = i > cleared;
+      button.setAttribute('aria-label', t.levelLabel(i + 1));
+      button.setAttribute('aria-pressed', String(i === current));
+      button.addEventListener('click', () => {
+        pickedLevel = i;
+        renderLevels();
       });
       return button;
     }),
@@ -205,6 +244,7 @@ function renderStart() {
   renderCharacters();
   renderGames();
   renderAges();
+  renderLevels();
   renderPaces();
   renderVoiceNote();
 }
@@ -296,6 +336,29 @@ function showQuestion(question, solved = false) {
     } else {
       parts.push(tag('span', 'listen', '🔊'));
     }
+  } else if (question.kind === 'after') {
+    // "3, 4, 5, ?": the numbers leading up to the missing one.
+    const row = tag('span', 'counting');
+    for (let n = Math.max(1, question.n - 2); n <= question.n; n++) row.append(tag('span', '', String(n)));
+    row.append(tag('span', solved ? 'answer' : 'missing', solved ? String(question.answer) : '?'));
+    parts.push(row);
+  } else if (question.kind === 'pattern') {
+    const piece = (id) => {
+      if (question.of === 'shapes') return shapePicture(id);
+      const swatch = tag('span', 'swatch');
+      swatch.style.background = COLORS[id];
+      return swatch;
+    };
+    const row = tag('span', 'pattern');
+    row.append(...question.sequence.map(piece));
+    if (solved) {
+      const next = piece(question.answer);
+      next.classList.add('next');
+      row.append(next);
+    } else {
+      row.append(tag('span', 'missing', '?'));
+    }
+    parts.push(row);
   } else if (question.kind === 'more' || question.kind === 'fewer') {
     parts.push(tag('span', 'word', question.kind === 'more' ? t.wordMore : t.wordFewer));
   } else if (question.kind === 'color') {
@@ -370,6 +433,7 @@ function startRun(endless = false) {
   runEndless = endless === true;
   el.progress.hidden = runEndless; // an endless run has no fixed number of doors to count off
   runGame = store.game();
+  runLevel = currentLevel();
   runResults = [];
   currentQuestion = null;
   game.setCharacter(currentCharacter());
@@ -383,8 +447,9 @@ function startRun(endless = false) {
   show('play');
   game.startRun({
     game: runGame,
-    skill: store.skill(runGame),
     age: store.age(),
+    level: runLevel,
+    reached: store.cleared(runGame),
     pace: currentPace(),
     endless: runEndless,
   });
@@ -395,7 +460,7 @@ function startRun(endless = false) {
 }
 
 // Adds a run's points and progress to the saved totals. Returns what changed.
-function bankRun(score, skill) {
+function bankRun(score) {
   const before = store.get();
   const totalPoints = before.totalPoints + score;
   const unlocked = CHARACTERS.filter((def) => def.unlockAt > before.totalPoints && def.unlockAt <= totalPoints);
@@ -407,7 +472,6 @@ function bankRun(score, skill) {
     // A newly unlocked character is picked straight away. It can be changed on the start screen.
     ...(newest ? { character: newest.id } : {}),
   });
-  if (!runEndless) store.setSkill(runGame, Math.max(0, Math.floor(skill)));
   return { newest, lastName: before.lastName };
 }
 
@@ -415,7 +479,7 @@ function goHome() {
   stopSpeaking();
   setMusicSpeed(1);
   // Leaving a run early still keeps the points and progress earned so far.
-  if (screen === 'pause') bankRun(game.score, game.skill);
+  if (screen === 'pause') bankRun(game.score);
   game.toIdle();
   game.setCharacter(currentCharacter());
   renderStart();
@@ -510,9 +574,21 @@ function friendlyTitle(score, total, endless) {
   return t.overTitle.zero;
 }
 
-function finishRun({ score, total, skill, endless }) {
+function finishRun({ score, total, endless }) {
   lastScore = score;
-  const { newest, lastName } = bankRun(score, skill);
+  const { newest, lastName } = bankRun(score);
+
+  // Enough right answers clear the level and open the next one. Playing a cleared level
+  // again changes nothing, and an endless run is not a level.
+  const cleared = store.cleared(runGame);
+  const passed = !endless && score >= CONFIG.clearAt;
+  if (passed && runLevel === cleared) store.setCleared(runGame, cleared + 1);
+  pickedLevel = null;
+  el.overLevel.hidden = endless;
+  $('btn-over-scores').hidden = !endless; // the high score table is for endless runs
+  el.overLevel.classList.toggle('passed', passed);
+  if (passed) el.overLevel.textContent = store.cleared(runGame) >= LEVELS ? t.allCleared : t.levelCleared(runLevel + 1);
+  else el.overLevel.textContent = t.levelAgain(runLevel + 1, CONFIG.clearAt);
 
   el.overTitle.textContent = friendlyTitle(score, total, endless);
   el.overScore.textContent = String(score);
@@ -656,7 +732,7 @@ function wireButtons() {
   $('btn-endless').addEventListener('click', () => startRun(true));
   // "Play again" repeats whichever kind of run was just played.
   $('btn-again').addEventListener('click', () => startRun(runEndless));
-  $('btn-scores-play').addEventListener('click', () => startRun(runEndless));
+  $('btn-scores-play').addEventListener('click', () => startRun(true));
   $('btn-scores').addEventListener('click', () => showScores());
   $('btn-settings').addEventListener('click', () => show('settings'));
   $('btn-settings-done').addEventListener('click', () => {

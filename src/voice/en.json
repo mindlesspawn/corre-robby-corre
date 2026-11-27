@@ -467,6 +467,42 @@
     "27c1cb9d000b.mp3",
     3.22
   ],
+  "After 1 comes 2": [
+    "0a1dfbe72b06.mp3",
+    3.22
+  ],
+  "After 2 comes 3": [
+    "36c3f3ffac41.mp3",
+    2.62
+  ],
+  "After 3 comes 4": [
+    "610e0460eede.mp3",
+    3.46
+  ],
+  "After 4 comes 5": [
+    "305def0a69f3.mp3",
+    3.22
+  ],
+  "After 5 comes 6": [
+    "fe956427b7c8.mp3",
+    3.22
+  ],
+  "After 6 comes 7": [
+    "2a1cc31f2019.mp3",
+    3.17
+  ],
+  "After 7 comes 8": [
+    "e3081247365d.mp3",
+    2.66
+  ],
+  "After 8 comes 9": [
+    "18a4afc26dee.mp3",
+    2.81
+  ],
+  "After 9 comes 10": [
+    "f610b714732b.mp3",
+    3.6
+  ],
   "Awesome!": [
     "443aedf1c505.mp3",
     1.92
@@ -479,9 +515,17 @@
     "563c0a403bea.mp3",
     2.06
   ],
+  "Find the color black": [
+    "ea864c18171d.mp3",
+    2.9
+  ],
   "Find the color blue": [
     "77073f9e4658.mp3",
     2.06
+  ],
+  "Find the color brown": [
+    "be13e8a3c9c1.mp3",
+    3.5
   ],
   "Find the color green": [
     "fbed4ade2283.mp3",
@@ -503,6 +547,10 @@
     "4396a94b2b48.mp3",
     2.52
   ],
+  "Find the color white": [
+    "28d07d0d5390.mp3",
+    2.81
+  ],
   "Find the color yellow": [
     "0d86ff73eb4b.mp3",
     3.17
@@ -511,17 +559,49 @@
     "704d9643bbf5.mp3",
     1.97
   ],
+  "Find the diamond": [
+    "2db99c199855.mp3",
+    3.05
+  ],
+  "Find the dragon": [
+    "37bd6acd2a3a.mp3",
+    2.52
+  ],
   "Find the dress": [
     "43d2d90bd64d.mp3",
     3.31
+  ],
+  "Find the fairy": [
+    "c03662165ee4.mp3",
+    2.06
   ],
   "Find the frog": [
     "f56d68d3c457.mp3",
     2.81
   ],
+  "Find the gem": [
+    "aac4ccfd9673.mp3",
+    3.55
+  ],
   "Find the heart": [
     "803876ac72cb.mp3",
     1.7
+  ],
+  "Find the hexagon": [
+    "9ef15eb4dc21.mp3",
+    2.21
+  ],
+  "Find the key": [
+    "9d49c91f7e00.mp3",
+    2.95
+  ],
+  "Find the oval": [
+    "18fbc860ace4.mp3",
+    1.8
+  ],
+  "Find the rectangle": [
+    "da928554398c.mp3",
+    2.81
   ],
   "Find the ring": [
     "8193ef1c0b42.mp3",
@@ -615,17 +695,49 @@
     "0da2451fb348.mp3",
     1.75
   ],
+  "Here is the diamond": [
+    "c23f0b14b532.mp3",
+    2.06
+  ],
+  "Here is the dragon": [
+    "959a2664cab8.mp3",
+    2.02
+  ],
   "Here is the dress": [
     "fdc9164af579.mp3",
     3.12
+  ],
+  "Here is the fairy": [
+    "d705ff02c4af.mp3",
+    2.06
   ],
   "Here is the frog": [
     "386a6af01c97.mp3",
     2.52
   ],
+  "Here is the gem": [
+    "01a84e1afe22.mp3",
+    2.21
+  ],
   "Here is the heart": [
     "d284034995ad.mp3",
     2.76
+  ],
+  "Here is the hexagon": [
+    "d3ccbe33dceb.mp3",
+    2.62
+  ],
+  "Here is the key": [
+    "f9e3c0bff2a0.mp3",
+    2.66
+  ],
+  "Here is the oval": [
+    "a0347957372b.mp3",
+    2.76
+  ],
+  "Here is the rectangle": [
+    "957cacaaac65.mp3",
+    2.21
   ],
   "Here is the ring": [
     "724f4ad4ddfa.mp3",
@@ -1023,6 +1135,10 @@
     "5698577d616b.mp3",
     3.96
   ],
+  "This one has fewer. It has 10.": [
+    "d12799deb0c1.mp3",
+    4.46
+  ],
   "This one has fewer. It has 2.": [
     "6b922e201d9d.mp3",
     3.26
@@ -1043,9 +1159,25 @@
     "045c00ddd6d6.mp3",
     4.06
   ],
+  "This one has fewer. It has 7.": [
+    "fed6e4478491.mp3",
+    3.72
+  ],
+  "This one has fewer. It has 8.": [
+    "cd6b9d499700.mp3",
+    3.65
+  ],
+  "This one has fewer. It has 9.": [
+    "e8689f6d99ce.mp3",
+    3.86
+  ],
   "This one has more. It has 1.": [
     "f9166c00481d.mp3",
     4.75
+  ],
+  "This one has more. It has 10.": [
+    "7448d8a40a55.mp3",
+    3.31
   ],
   "This one has more. It has 2.": [
     "3819fc7d12ea.mp3",
@@ -1067,9 +1199,29 @@
     "6d808e30d551.mp3",
     3.82
   ],
+  "This one has more. It has 7.": [
+    "b09b5b28471e.mp3",
+    4.37
+  ],
+  "This one has more. It has 8.": [
+    "0a884dd8a089.mp3",
+    3.31
+  ],
+  "This one has more. It has 9.": [
+    "eb37ff980979.mp3",
+    4.42
+  ],
+  "This one is black": [
+    "855be5ae8b05.mp3",
+    2.52
+  ],
   "This one is blue": [
     "3b99831db7bf.mp3",
     2.35
+  ],
+  "This one is brown": [
+    "41e6ee66600d.mp3",
+    2.81
   ],
   "This one is green": [
     "04d83244d389.mp3",
@@ -1091,6 +1243,10 @@
     "dc397e6ec30d.mp3",
     2.76
   ],
+  "This one is white": [
+    "d09cf12a719e.mp3",
+    2.16
+  ],
   "This one is yellow": [
     "3db953f6dcfa.mp3",
     2.95
@@ -1098,6 +1254,10 @@
   "Well done!": [
     "e78d52816e27.mp3",
     1.8
+  ],
+  "What comes next?": [
+    "c3a463adbe1d.mp3",
+    3.22
   ],
   "What is 1 plus 1?": [
     "7804a5f4dbc3.mp3",
@@ -1278,6 +1438,42 @@
   "What is 9 plus 1?": [
     "5481fc297b2f.mp3",
     2.81
+  ],
+  "What number comes after 1?": [
+    "4c3262296518.mp3",
+    3.05
+  ],
+  "What number comes after 2?": [
+    "93f6c5f86dbe.mp3",
+    2.66
+  ],
+  "What number comes after 3?": [
+    "a7055008c29c.mp3",
+    3.65
+  ],
+  "What number comes after 4?": [
+    "0326d4e4953e.mp3",
+    2.4
+  ],
+  "What number comes after 5?": [
+    "7d022417f460.mp3",
+    3.41
+  ],
+  "What number comes after 6?": [
+    "d795bda5e01d.mp3",
+    3.55
+  ],
+  "What number comes after 7?": [
+    "80f8d84be7a8.mp3",
+    2.71
+  ],
+  "What number comes after 8?": [
+    "72def522a8a3.mp3",
+    2.52
+  ],
+  "What number comes after 9?": [
+    "8bcd2e6b94e2.mp3",
+    2.35
   ],
   "Where are 10 dots?": [
     "176200d215fe.mp3",

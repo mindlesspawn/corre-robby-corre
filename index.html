@@ -53,14 +53,11 @@
         <div id="games" class="games"></div>
         <!-- How hard: the child's age. Each age has its own steps in every game. -->
         <div id="ages" class="ages" role="group" data-t-label="labelAge"></div>
+        <!-- The ten levels of the chosen game: gold once cleared, grey until they open. -->
+        <div id="levels" class="levels" role="group" data-t-label="labelLevels"></div>
         <div class="play-row">
           <button id="btn-play" class="big-btn" type="button" data-t="play"></button>
-          <!-- Endless: faster and faster, for the high score table -->
-          <button id="btn-endless" class="big-btn endless-btn" type="button" data-t="endless"></button>
-        </div>
-        <div class="button-row">
-          <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-          <!-- Speed, sound, music and language are on the settings screen. -->
+          <!-- Speed, sound, music, language and endless mode are on the settings screen. -->
           <button id="btn-settings" class="small-btn toggle-btn" type="button" data-t-label="labelSettings">⚙️</button>
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
@@ -94,6 +91,14 @@
           <p class="setting-name" data-t="settingLanguage"></p>
           <div id="languages" class="lang-row"></div>
         </div>
+        <!-- Endless: faster and faster until the first miss, for the high score table. -->
+        <div class="setting">
+          <p class="setting-name" data-t="advancedTitle"></p>
+          <div class="button-row">
+            <button id="btn-endless" class="small-btn endless-btn" type="button" data-t="endless"></button>
+            <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
+          </div>
+        </div>
         <button id="btn-settings-done" class="big-btn" type="button" data-t="done"></button>
       </div>
     </section>
@@ -106,6 +111,8 @@
         <p class="score-line">
           <span data-t="scoreBefore"></span><strong id="over-score">0</strong><span data-t="scoreAfter"></span>
         </p>
+        <!-- Whether the level was cleared, or how many stars clear it. -->
+        <p id="over-level" class="over-level" hidden></p>
         <div id="over-unlock" class="unlock" hidden>
           <img id="over-unlock-img" alt="" />
           <p id="over-unlock-text"></p>
@@ -140,7 +147,7 @@
         <h2 data-t="scoresTitle"></h2>
         <ol id="score-list" class="score-list"></ol>
         <p id="score-empty" class="note" data-t="noScores" hidden></p>
-        <button id="btn-scores-play" class="big-btn" type="button" data-t="play"></button>
+        <button id="btn-scores-play" class="big-btn endless-btn" type="button" data-t="endless"></button>
         <div class="button-row">
           <button id="btn-scores-home" class="small-btn" type="button" data-t="home"></button>
         </div>

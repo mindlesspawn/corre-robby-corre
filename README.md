@@ -8,35 +8,42 @@ The game starts in Spanish. The settings screen (the ⚙️ button on the start 
 
 Pick a game on the start screen.
 
-- **Números (numbers):** small amounts as dots, comparing more and fewer, counting pictures and fingers, then written numbers, then small sums with pictures.
-- **Colores (colors):** see a color and find the door of that color, then find it from hearing its name alone.
-- **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Made for a three year old.
-- **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star and a heart.
+- **Números (numbers):** small amounts as dots, comparing more and fewer, counting pictures and fingers, written numbers, what number comes next, then sums.
+- **Colores (colors):** see a color and find the door of that color, then find it from hearing its name alone. Ten colors in all.
+- **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Thirteen things in all. Made for a three year old.
+- **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star, a heart, a rectangle, an oval, a diamond, and a hexagon.
+- **Patrones (patterns):** a repeating row, such as red, blue, red, blue: find what comes next. From age 4.
 
-Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough.
+## Ages and levels
 
-## Ages
+The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the ten levels of the chosen game.
 
-The start screen has one row of age buttons: 3, 4, 5, and 6+. Picking an age is the only difficulty setting. Each age has its own batch of steps in every game, and a child stays inside that batch: the game moves them up and down within it, never out of it. Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
+- Picking an age is the only difficulty setting. Every game has its own ten levels for each age.
+- A level is one run of 10 doors. Getting 7 or more right clears it and opens the next one. Fewer than 7 changes nothing: the same level is there to try again.
+- Each level adds a little: one more color or shape, a bigger number, a harder pattern. Some levels mix what came before, as a review.
+- Cleared levels turn gold and can be tapped to play them again. Levels that are not open yet are grey.
+- Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
 
-| Age | Numbers | Colors and princess things | Shapes |
-| --- | --- | --- | --- |
-| 3 | Amounts up to 3 seen at a glance; more and fewer with very different amounts | Match by sight, then find 3 from the name alone | Circle, square, and triangle |
-| 4 | Amounts up to 5; more and fewer with close amounts; written numbers up to 5, first with their dots | Find 3, then 6, from the name alone | Circle, square, and triangle by name; then a star and a heart |
-| 5 | Counting up to 10 with written numbers; sums up to 10 shown with pictures | Find 6, then all of them, from the name alone | All five shapes, by sight and then by name |
-| 6+ | Sums written only as numbers: up to 10, up to 20, then with two-digit numbers | All of them from the name alone | All five shapes from the name alone |
+| Age | Numbers | Colors | Princess things | Shapes | Patterns |
+| --- | --- | --- | --- | --- | --- |
+| 3 | Amounts up to 3, then 4, seen at a glance; more and fewer with very different amounts | Match by sight up to 7 colors; find up to 5 by name | Match by sight up to 9; find up to 5 by name | Circle, square, and triangle, then star, heart, and rectangle | None |
+| 4 | Amounts up to 5; close amounts; written numbers up to 5, first with their dots | Find up to 7 by name, then colors that look alike | Find up to 9 by name | Up to 9 shapes by sight, 8 by name | Two-part rows (red, blue), then rows with a double (red, red, blue) |
+| 5 | Counting up to 10; what number comes next; amounts up to 10; sums up to 10 with pictures | All 10 by name, then colors that look alike | All 13 by name | All 9 by name, then shapes that look alike | Up to three-part rows and doubled pairs |
+| 6+ | Sums written only as numbers: up to 10, up to 20, then with two-digit numbers | All 10 by name, then every set of colors that look alike | All 13 by name | All 9 by name, then shapes that look alike | Four-part rows |
 
-The ages are typical expectations, not rules. Pick the age whose steps fit the child, whatever their birthday says. The sources for this batching are under "What the learning steps are based on" below.
+The exact levels are in `src/questions.js`, one line each.
+
+The ages are typical expectations, not rules. Pick the age whose levels fit the child, whatever their birthday says. The sources for this batching are under "What the learning steps are based on" below.
 
 ## Endless mode
 
-The purple "Sin fin" button starts an endless run, and endless runs are what the high score table records.
+Endless mode is on the settings screen (the ⚙️ button), under "Para adultos o niños avanzados", next to the high score table it fills.
 
-- Questions come at random from the steps for the chosen age that the child has reached in the chosen game.
+- Questions come at random from the levels open to the child, for the chosen age and game.
 - Every right answer makes the belt faster, down to under a second per row of doors.
 - It goes on for as long as the answers are right. The first miss ends the run.
 - It has sounds but no talking. The question is shown in the banner and written underneath.
-- An endless run does not move a child up or down the learning steps.
+- An endless run does not clear a level.
 
 ## How a run works
 
@@ -75,14 +82,26 @@ How the steps are batched by age (checked again on 27 November 2026):
 | 5 | Counts to 10 and names some numbers between 1 and 5; by 60 months answers "how many?" for about 10 objects and adds up to 5; in kindergarten adds within 10 with objects or drawings | 2, 4, 11 |
 | 6+ | First grade: adds within 20, fluently within 10, and adds a two-digit and a one-digit number | 6 |
 
+What research from Vanderbilt University added (checked on 27 November 2026):
+
+| What the game does | Why | Source |
+| --- | --- | --- |
+| Has a patterns game, from age 4 | In a study that followed 517 children from low-income homes from age 4 to 11, knowing repeating patterns in pre-school was one of three things that predicted maths in fifth grade. Children just starting pre-school scored very low on patterns, so the game starts them at 4. | 12 |
+| Keeps comparing amounts going up to age 5, with amounts up to 10 | The other two predictors were comparing amounts and counting objects. The authors say comparing amounts gets too little attention in pre-school. | 12 |
+| Asks "what number comes next" at ages 5 and 6 | A Vanderbilt teacher-training deck names moving up and down the number sequence as something to practise. | 13 |
+| Keeps sounds and movement tied to the answer, with no extras to tap | In a study of children aged 2 to 4 using a touchscreen app, and in a later review, sounds, animations and tappable extras that had nothing to do with the task got in the way of learning. | 14, 15 |
+
+Two things from that research are advice for grown-ups, not features. Children under about 3 learn little from a screen on their own, and children of 3 to 5 learn more when a grown-up plays alongside, talks about what is on the screen, and connects it to real things ("you have three grapes too") (sources 15, 16).
+
 Limits worth knowing:
 
+- The pattern study shows a link, not a cause, it covered children from low-income homes only, and its authors call their pattern test only moderately reliable.
 - The sources describe what is typical by an age. They do not say which exact questions belong to which birthday, so where each batch starts and ends is a judgment made from them. The princess game follows the colors game's batching, since both are about learning names.
 
 - The order of steps is expert judgment. The main guide (source 1) says its panel found no direct evidence for any one particular order.
 - Nearly all of this research was done with English-speaking children.
 - The princess game (finding a picture from its name) fits the general goal of fast-growing vocabulary at this age (source 2), but the sources do not prescribe that particular activity. It is a design choice.
-- Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes after", and dots in varied layouts.
+- Not built yet, though the sources recommend them: counting out a requested number ("dame 3"), tapping things to count them, "what comes before", and dots in varied layouts.
 - The guidance for this age says to avoid fast-paced programs and let children go at their own pace (sources 8, 10). The belt therefore keeps one speed through a run, has a slow setting, and waits for the voice. The doors do still arrive on their own, so a child cannot stop them to think for as long as they like. The speed settings are in `src/config.js`.
 - The sources give no direct evidence on how long a round should be or on penalties.
 
@@ -99,12 +118,17 @@ Sources:
 9. Pitchford and Mullen (2006), on children learning color words: <https://www.mvr.mcgill.ca/Kathy/PDF-05-09/Pitchford-Mullen-2006.pdf>
 10. American Academy of Pediatrics, *Media and Young Minds* (2016): <https://www.eurekalert.org/news-releases/695617>
 11. Common Core State Standards, Kindergarten operations and counting: <https://www.thecorestandards.org/Math/Content/K/OA/>, <https://www.thecorestandards.org/Math/Content/K/CC/>
+12. Rittle-Johnson, Fyfe, Hofer and Farran (2016), *Early Math Trajectories*, Vanderbilt University: <https://cdn.vanderbilt.edu/t2-my/my-prd/wp-content/uploads/sites/1185/2020/04/Early-Math-Trajectories_Final.pdf>
+13. Peabody Research Institute, Vanderbilt University, *It's More Than Counting to 10!* (2016): <https://cdn.vanderbilt.edu/vu-my/wp-content/uploads/sites/1479/2016/09/14123103/pre-k-math-091516.pdf>
+14. Russo-Johnson, Troseth, Duncan and Mesghina (2017), on touchscreens and word learning: <https://pmc.ncbi.nlm.nih.gov/articles/PMC5388766>
+15. A review of research on how young children learn from screens: <https://pmc.ncbi.nlm.nih.gov/articles/PMC10783145>
+16. Troseth, *Understanding Children's Learning in Digital Contexts* (slides), Vanderbilt University: <https://www.nichd.nih.gov/sites/default/files/2018-03/TrosethChildrensDigitalLearning.pdf>
 
 ## The voice
 
 The game speaks with recorded clips in both languages, so it says the same thing in the same voice on every phone, tablet, and computer. The Spanish voice is Mexican Spanish and the English voice is American English. Both are computer-generated (made with OpenAI text-to-speech), not a person.
 
-- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 344 in each language.
+- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 393 in each language.
 - After each recording run, every clip was transcribed back and compared with its line.
 - Sums bigger than 10 have no clip. For those the game uses the voice built into the device. If the device has no voice for that language, the game stays quiet for those sums, and the written question under the banner is there for a grown-up to read aloud.
 - The sound button turns off the sound effects and the voice.
