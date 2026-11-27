@@ -56,8 +56,6 @@
           <div id="stages" class="stages"></div>
           <p id="level-note" class="level-note"></p>
         </div>
-        <!-- How fast the belt moves -->
-        <div id="paces" class="lang-row"></div>
         <div class="play-row">
           <button id="btn-play" class="big-btn" type="button" data-t="play"></button>
           <!-- Endless: faster and faster, for the high score table -->
@@ -65,17 +63,41 @@
         </div>
         <div class="button-row">
           <button id="btn-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-          <!-- Turns every sound off: voice, effects, and music. -->
-          <button id="btn-mute-start" class="small-btn toggle-btn" type="button" data-t-label="labelSound"></button>
-        </div>
-        <!-- Music has its own volume. Sliding to zero, or tapping the note, turns only the music off. -->
-        <div class="music-row">
-          <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
-          <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
+          <!-- Speed, sound, music and language are on the settings screen. -->
+          <button id="btn-settings" class="small-btn toggle-btn" type="button" data-t-label="labelSettings">⚙️</button>
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
         <p id="voice-note" class="voice-note" hidden></p>
-        <div id="languages" class="lang-row"></div>
+      </div>
+    </section>
+
+    <!-- Settings, for grown-ups -->
+    <section id="screen-settings" class="screen" hidden>
+      <div class="panel">
+        <h2 data-t="settingsTitle"></h2>
+        <!-- How fast the belt moves -->
+        <div class="setting">
+          <p class="setting-name" data-t="settingSpeed"></p>
+          <div id="paces" class="lang-row"></div>
+        </div>
+        <!-- Turns every sound off: voice, effects, and music. -->
+        <div class="setting">
+          <p class="setting-name" data-t="settingSound"></p>
+          <button id="btn-mute-start" class="small-btn sound-btn" type="button"></button>
+        </div>
+        <!-- Music has its own volume. Sliding to zero, or tapping the note, turns only the music off. -->
+        <div class="setting">
+          <p class="setting-name" data-t="settingMusic"></p>
+          <div class="music-row">
+            <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
+            <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
+          </div>
+        </div>
+        <div class="setting">
+          <p class="setting-name" data-t="settingLanguage"></p>
+          <div id="languages" class="lang-row"></div>
+        </div>
+        <button id="btn-settings-done" class="big-btn" type="button" data-t="done"></button>
       </div>
     </section>
 

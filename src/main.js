@@ -65,7 +65,7 @@ const el = {
   scoreEmpty: $('score-empty'),
 };
 
-const SCREENS = ['start', 'over', 'scores', 'pause'];
+const SCREENS = ['start', 'settings', 'over', 'scores', 'pause'];
 
 let game = null;
 let thumbs = {};
@@ -208,6 +208,8 @@ function renderLevel() {
 function renderStart() {
   const { totalPoints, best } = store.get();
   el.stats.textContent = best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`;
+  // Points only matter while there is a character left to unlock, so the line is hidden otherwise.
+  el.stats.hidden = CHARACTERS.every((def) => isUnlocked(def, totalPoints));
   renderCharacters();
   renderGames();
   renderLevel();
@@ -609,7 +611,7 @@ function applyMute() {
   setMusicVolume(musicVolume);
   setMusic(playing);
   el.mute.textContent = muted ? '🔇' : '🔊';
-  el.muteStart.textContent = muted ? '🔇' : '🔊';
+  el.muteStart.textContent = muted ? t.soundOff : t.soundOn;
   el.muteStart.classList.toggle('off', muted);
   el.muteStart.setAttribute('aria-pressed', String(!muted));
   for (const row of el.musicRows) row.classList.toggle('off', !playing);
@@ -658,6 +660,11 @@ function wireButtons() {
   $('btn-again').addEventListener('click', () => startRun(runEndless));
   $('btn-scores-play').addEventListener('click', () => startRun(runEndless));
   $('btn-scores').addEventListener('click', () => showScores());
+  $('btn-settings').addEventListener('click', () => show('settings'));
+  $('btn-settings-done').addEventListener('click', () => {
+    renderStart();
+    show('start');
+  });
   $('btn-over-scores').addEventListener('click', () => showScores());
   $('btn-home').addEventListener('click', goHome);
   $('btn-scores-home').addEventListener('click', goHome);

@@ -2,7 +2,7 @@
 
 A learning runner for small children. Three doors come down the treadmill and the runner goes through the right one.
 
-The game starts in Spanish. The start screen has an Español / English switch, and each device remembers its choice. The title is the same in both, and is written all in lower case on purpose.
+The game starts in Spanish. The settings screen (the ⚙️ button on the start screen) has an Español / English switch, and each device remembers its choice. The title is the same in both, and is written all in lower case on purpose.
 
 ## The games
 
@@ -35,7 +35,7 @@ The purple "Sin fin" button starts an endless run, and endless runs are what the
 - A right door opens, with confetti and a happy spin. Every third right answer earns a special trick: a backflip, a high double spin, or a dance.
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
-- The belt has three speeds, picked on the start screen: slow, normal, and fast. It keeps that speed through a run.
+- The belt has three speeds, picked on the settings screen (the ⚙️ button on the start screen): slow, normal, and fast. It keeps that speed through a run.
 - The next doors wait until the voice has finished talking, and a long question slows the belt for that row, so there is always time to think after hearing it (about 3.5 seconds on slow, 2.5 on normal, 2 on fast).
 - Praise is spoken with every other right answer and with every trick, not every time.
 - Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The high score table is for endless runs.
@@ -101,7 +101,7 @@ A quiet tune loops in the background: a marimba melody, a classical guitar picki
 
 - It is much quieter than the voice, and dips further while the voice is talking.
 - In an endless run it speeds up with the belt.
-- The music has its own volume slider, next to the 🎵 button on the start screen and on the pause screen. Sliding it to zero, or tapping 🎵, turns only the music off. Each device remembers where the slider was left.
+- The music has its own volume slider, next to the 🎵 button on the settings screen and on the pause screen. Sliding it to zero, or tapping 🎵, turns only the music off. Each device remembers where the slider was left.
 - The 🔊 button turns everything off.
 
 ## Play it online

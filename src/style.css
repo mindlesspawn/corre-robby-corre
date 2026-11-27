@@ -1150,30 +1150,31 @@ h2 {
   }
 }
 
-/* A short phone: the start screen has one more row now, so everything sits a little closer. */
-@media (max-height: 700px) {
-  .panel {
-    gap: 7px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-  .music-row .small-btn {
-    min-height: 40px;
-    padding-top: 6px;
-    padding-bottom: 6px;
-  }
-  .music-slider {
-    height: 40px;
-  }
+/* The settings screen: each setting is its name, then its control. */
+.setting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #f1f7fe;
+  border-radius: 18px;
+  padding: 8px 10px 10px;
 }
 
-/* A short phone: the category buttons need a little room, so the title and the
-   character pictures give some up. */
-@media (max-height: 700px) {
-  h1 {
-    font-size: clamp(34px, 10.5vw, 60px);
-  }
-  .characters .character img {
-    max-width: 58px;
+.setting-name {
+  font-size: 15px;
+  font-weight: 800;
+  text-align: left;
+  opacity: 0.7;
+  padding-left: 4px;
+}
+
+.sound-btn.off {
+  background: #eceff1;
+  box-shadow: 0 4px 0 #cfd8dc;
+}
+
+@media (min-width: 600px) and (min-height: 700px) {
+  .setting-name {
+    font-size: 19px;
   }
 }
