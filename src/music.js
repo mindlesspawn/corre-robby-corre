@@ -9,8 +9,9 @@ import { audioContext } from './audio.js';
 import { isSpeaking } from './speech.js';
 
 const TEMPO = 96; // beats a minute
-// How loud the music is. At 0.08 it measures about a fifth as loud as the recorded voice.
-const LEVEL = 0.08;
+// How loud the music is. It is kept far in the background: at 0.025 it measures less than
+// a tenth as loud as the recorded voice. Raise it a little at a time.
+const LEVEL = 0.025;
 const WHILE_TALKING = 0.25; // the music drops to this share of LEVEL while the voice talks
 const FASTEST = 1.9; // the most the tune can speed up (in an endless run)
 
@@ -33,22 +34,22 @@ const PICKING = [
 // The tune, one line per bar: the chord, the marimba's eight notes ("." is a rest),
 // which picking pattern the guitar uses, and whether the soft drum plays.
 const SONG = [
-  ['C', '76 . 79 . 76 . 72 .', 0, false],
-  ['Am', '81 . 79 . 76 . . .', 0, false],
-  ['F', '77 . 81 . 79 . 77 .', 0, false],
-  ['G', '74 . . . 79 . . .', 0, false],
-  ['C', '76 . 79 . 84 . 79 .', 0, true],
-  ['Am', '81 . 79 . 76 . 72 .', 0, true],
-  ['Dm', '74 . 77 . 76 . 74 .', 0, true],
-  ['G', '79 . . . 74 . 71 .', 0, true],
-  ['F', '81 81 . 77 . 81 . .', 1, true],
-  ['C', '79 79 . 76 . 79 . .', 1, true],
-  ['G', '74 . 79 . 83 . 79 .', 1, true],
-  ['Am', '81 . . . 76 . 72 .', 1, true],
-  ['F', '77 . 81 . 84 . 81 .', 1, true],
-  ['C', '79 . 76 . 72 . 76 .', 1, true],
-  ['G', '74 76 77 . 74 . 71 .', 1, true],
-  ['C', '72 . . . 84 . . .', 1, true],
+  ['C', '64 . 67 . 64 . 60 .', 0, false],
+  ['Am', '69 . 67 . 64 . . .', 0, false],
+  ['F', '65 . 69 . 67 . 65 .', 0, false],
+  ['G', '62 . . . 67 . . .', 0, false],
+  ['C', '64 . 67 . 72 . 67 .', 0, true],
+  ['Am', '69 . 67 . 64 . 60 .', 0, true],
+  ['Dm', '62 . 65 . 64 . 62 .', 0, true],
+  ['G', '67 . . . 62 . 59 .', 0, true],
+  ['F', '69 69 . 65 . 69 . .', 1, true],
+  ['C', '67 67 . 64 . 67 . .', 1, true],
+  ['G', '62 . 67 . 71 . 67 .', 1, true],
+  ['Am', '69 . . . 64 . 60 .', 1, true],
+  ['F', '65 . 69 . 72 . 69 .', 1, true],
+  ['C', '67 . 64 . 60 . 64 .', 1, true],
+  ['G', '62 64 65 . 62 . 59 .', 1, true],
+  ['C', '60 . . . 72 . . .', 1, true],
 ].map(([chord, melody, picking, drum]) => ({
   chord: CHORDS[chord],
   melody: melody.split(' ').map((note) => (note === '.' ? 0 : Number(note))),
@@ -69,7 +70,7 @@ function marimba(ctx, out, key, when, loud) {
   const ring = Math.max(0.3, 0.75 - (key - 60) * 0.014);
   for (const [times, share, lasts] of [
     [1, 1, ring],
-    [4, 0.22, 0.12],
+    [4, 0.1, 0.12],
   ]) {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -138,7 +139,7 @@ function shaker(ctx, out, when, loud) {
   const gain = ctx.createGain();
   source.buffer = hisses.get(ctx.sampleRate);
   bright.type = 'highpass';
-  bright.frequency.value = 6000;
+  bright.frequency.value = 4500;
   gain.gain.setValueAtTime(0.0001, when);
   gain.gain.exponentialRampToValueAtTime(loud, when + 0.006);
   gain.gain.exponentialRampToValueAtTime(0.0001, when + 0.07);
@@ -173,7 +174,7 @@ export function playStep(ctx, out, step, when) {
   const low = string === 0 || string === 4;
   guitar(ctx, out, bar.chord[string], when, low ? 0.5 : 0.3);
 
-  shaker(ctx, out, when, onBeat ? 0.05 : 0.1);
+  shaker(ctx, out, when, onBeat ? 0.04 : 0.07);
   if (bar.drum) {
     if (at === 0 || at === 4) thump(ctx, out, when, 0.32, 210, 140, 0.16);
     if (at === 2 || at === 6) thump(ctx, out, when, 0.1, 760, 700, 0.06);
@@ -197,7 +198,11 @@ function tick() {
   if (outFor !== ctx) {
     out = ctx.createGain();
     out.gain.value = 0.0001;
-    out.connect(ctx.destination);
+    // Everything goes through a filter that takes the sharp edge off, so it sits in the background.
+    const mellow = ctx.createBiquadFilter();
+    mellow.type = 'lowpass';
+    mellow.frequency.value = 3200;
+    out.connect(mellow).connect(ctx.destination);
     outFor = ctx;
   }
   out.gain.setTargetAtTime(LEVEL * (isSpeaking() ? WHILE_TALKING : 1), ctx.currentTime, 0.15);
