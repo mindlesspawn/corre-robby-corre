@@ -209,46 +209,63 @@ export const CHARACTERS = [
   },
 
   {
-    // A little ninja hero in a bright red suit with a white headband. An original design:
-    // a colorful masked hero, not a copy of any TV character.
+    // A regular ninja: dark suit and hood, red headband and sash, wrapped arms and legs,
+    // and two swords crossed on its back, which show best when it jumps and spins.
     id: 'ninja',
     name: { es: 'Ninja', en: 'Ninja' },
     unlockAt: 0,
-    move: 'bounce',
+    move: 'run',
     facesCamera: true,
     tricks: ['flip', 'bigspin', 'dance'], // a ninja leads with a backflip
     look: {
       kind: 'shapes',
       parts: [
-        // legs and white boots
-        { shape: 'cylinder', size: [0.25, 0.5], at: [-0.18, 0.34, 0], color: '#c62828', smooth: true },
-        { shape: 'cylinder', size: [0.25, 0.5], at: [0.18, 0.34, 0], color: '#c62828', smooth: true },
-        { shape: 'ball', size: [0.32], scale: [1, 0.6, 1.35], at: [-0.18, 0.1, -0.07], color: '#fafafa', smooth: true },
-        { shape: 'ball', size: [0.32], scale: [1, 0.6, 1.35], at: [0.18, 0.1, -0.07], color: '#fafafa', smooth: true },
-        // suit, black belt, gold buckle, white chest stripe
-        { shape: 'ball', size: [0.74], scale: [1, 1.12, 0.82], at: [0, 0.92, 0], color: '#e53935', smooth: true, shiny: true },
-        { shape: 'cylinder', size: [0.68, 0.1], at: [0, 0.7, 0], color: '#212121', smooth: true },
-        { shape: 'box', size: [0.16, 0.12, 0.06], at: [0, 0.7, -0.31], color: '#fdd835' },
-        { shape: 'box', size: [0.1, 0.34, 0.04], at: [0, 1.0, -0.3], color: '#fafafa' },
-        // arms and white gloves, which swing as it bounces
-        { shape: 'cylinder', size: [0.17, 0.46], at: [-0.43, 0.9, 0], turn: [0, 0, -18], color: '#e53935', smooth: true, tag: 'armL', pivot: [-0.36, 1.1, 0] },
-        { shape: 'ball', size: [0.22], at: [-0.5, 0.67, 0], color: '#fafafa', smooth: true, tag: 'armL' },
-        { shape: 'cylinder', size: [0.17, 0.46], at: [0.43, 0.9, 0], turn: [0, 0, 18], color: '#e53935', smooth: true, tag: 'armR', pivot: [0.36, 1.1, 0] },
-        { shape: 'ball', size: [0.22], at: [0.5, 0.67, 0], color: '#fafafa', smooth: true, tag: 'armR' },
-        // hooded head with a dark opening for the eyes
-        { shape: 'ball', size: [0.8], at: [0, 1.5, 0], color: '#e53935', smooth: true, shiny: true },
-        { shape: 'ball', size: [0.62], scale: [1, 0.34, 0.5], at: [0, 1.53, -0.265], color: '#212121', smooth: true },
-        // eyes: round most of the time, happy curves after a right answer
-        { shape: 'ball', size: [0.16], at: [-0.13, 1.53, -0.37], color: '#ffffff', smooth: true, tag: 'eyes', pivot: [0, 1.53, -0.37], mood: ['calm', 'oops'] },
-        { shape: 'ball', size: [0.16], at: [0.13, 1.53, -0.37], color: '#ffffff', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
-        { shape: 'ball', size: [0.08], at: [-0.13, 1.53, -0.43], color: '#111111', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
-        { shape: 'ball', size: [0.08], at: [0.13, 1.53, -0.43], color: '#111111', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
-        { shape: 'arc', size: [0.15, 0.04], at: [-0.13, 1.5, -0.42], color: '#ffffff', mood: 'yay' },
-        { shape: 'arc', size: [0.15, 0.04], at: [0.13, 1.5, -0.42], color: '#ffffff', mood: 'yay' },
-        // white headband with two tails flying out to one side
-        { shape: 'cylinder', size: [0.82, 0.1], at: [0, 1.7, 0], color: '#fafafa', smooth: true },
-        { shape: 'box', size: [0.08, 0.36, 0.03], at: [0.47, 1.56, 0.08], turn: [0, 0, 28], color: '#fafafa', tag: 'tail', pivot: [0.4, 1.7, 0.08] },
-        { shape: 'box', size: [0.08, 0.3, 0.03], at: [0.55, 1.62, 0.14], turn: [0, 0, 50], color: '#fafafa', tag: 'tail' },
+        // two swords crossed on the back: dark sheath, gold guard, pale grip, gold ends
+        { shape: 'cylinder', size: [0.1, 1.05], at: [-0.014, 0.73, 0.36], turn: [0, 0, -35], color: '#5d4037', smooth: true },
+        { shape: 'ball', size: [0.11], at: [-0.316, 0.3, 0.36], color: '#fdd835', smooth: true, shiny: true },
+        { shape: 'cylinder', size: [0.22, 0.04], at: [0.298, 1.176, 0.36], turn: [0, 0, -35], color: '#fdd835', smooth: true, shiny: true },
+        { shape: 'cylinder', size: [0.09, 0.5], at: [0.459, 1.405, 0.36], turn: [0, 0, -35], color: '#eceff1', smooth: true },
+        { shape: 'ball', size: [0.12], at: [0.614, 1.626, 0.36], color: '#fdd835', smooth: true, shiny: true },
+        { shape: 'cylinder', size: [0.1, 1.05], at: [0.014, 0.73, 0.43], turn: [0, 0, 35], color: '#5d4037', smooth: true },
+        { shape: 'ball', size: [0.11], at: [0.316, 0.3, 0.43], color: '#fdd835', smooth: true, shiny: true },
+        { shape: 'cylinder', size: [0.22, 0.04], at: [-0.298, 1.176, 0.43], turn: [0, 0, 35], color: '#fdd835', smooth: true, shiny: true },
+        { shape: 'cylinder', size: [0.09, 0.5], at: [-0.459, 1.405, 0.43], turn: [0, 0, 35], color: '#eceff1', smooth: true },
+        { shape: 'ball', size: [0.12], at: [-0.614, 1.626, 0.43], color: '#fdd835', smooth: true, shiny: true },
+        // legs that run: dark trousers, grey shin wraps, soft black shoes
+        { shape: 'cylinder', size: [0.24, 0.44], at: [-0.17, 0.33, 0], color: '#263159', smooth: true, tag: 'legL', pivot: [-0.17, 0.52, 0] },
+        { shape: 'cylinder', size: [0.26, 0.16], at: [-0.17, 0.25, 0], color: '#b0bec5', smooth: true, tag: 'legL' },
+        { shape: 'ball', size: [0.3], scale: [1, 0.6, 1.35], at: [-0.17, 0.09, -0.06], color: '#151a33', smooth: true, tag: 'legL' },
+        { shape: 'cylinder', size: [0.24, 0.44], at: [0.17, 0.33, 0], color: '#263159', smooth: true, tag: 'legR', pivot: [0.17, 0.52, 0] },
+        { shape: 'cylinder', size: [0.26, 0.16], at: [0.17, 0.25, 0], color: '#b0bec5', smooth: true, tag: 'legR' },
+        { shape: 'ball', size: [0.3], scale: [1, 0.6, 1.35], at: [0.17, 0.09, -0.06], color: '#151a33', smooth: true, tag: 'legR' },
+        // dark suit with a red sash tied at the side
+        { shape: 'ball', size: [0.72], scale: [1, 1.1, 0.82], at: [0, 0.88, 0], color: '#263159', smooth: true },
+        { shape: 'cylinder', size: [0.7, 0.11], scale: [1, 1, 0.84], at: [0, 0.7, 0], color: '#e53935', smooth: true },
+        { shape: 'ball', size: [0.14], at: [0.2, 0.7, -0.27], color: '#e53935', smooth: true },
+        { shape: 'box', size: [0.08, 0.24, 0.03], at: [0.17, 0.57, -0.29], turn: [0, 0, -8], color: '#e53935' },
+        { shape: 'box', size: [0.08, 0.2, 0.03], at: [0.25, 0.59, -0.28], turn: [0, 0, 14], color: '#e53935' },
+        // arms that swing: dark sleeves, grey wrist wraps, bare hands
+        { shape: 'cylinder', size: [0.17, 0.44], at: [-0.42, 0.9, 0], turn: [0, 0, -16], color: '#263159', smooth: true, tag: 'armL', pivot: [-0.34, 1.08, 0] },
+        { shape: 'cylinder', size: [0.185, 0.14], at: [-0.455, 0.78, 0], turn: [0, 0, -16], color: '#b0bec5', smooth: true, tag: 'armL' },
+        { shape: 'ball', size: [0.2], at: [-0.49, 0.67, 0], color: '#f2c9a0', smooth: true, tag: 'armL' },
+        { shape: 'cylinder', size: [0.17, 0.44], at: [0.42, 0.9, 0], turn: [0, 0, 16], color: '#263159', smooth: true, tag: 'armR', pivot: [0.34, 1.08, 0] },
+        { shape: 'cylinder', size: [0.185, 0.14], at: [0.455, 0.78, 0], turn: [0, 0, 16], color: '#b0bec5', smooth: true, tag: 'armR' },
+        { shape: 'ball', size: [0.2], at: [0.49, 0.67, 0], color: '#f2c9a0', smooth: true, tag: 'armR' },
+        // hooded head, with an opening that shows only the eyes
+        { shape: 'ball', size: [0.82], at: [0, 1.5, 0], color: '#263159', smooth: true },
+        { shape: 'ball', size: [0.66], scale: [1, 0.36, 0.5], at: [0, 1.53, -0.262], color: '#f2c9a0', smooth: true },
+        // eyes: round with a sparkle most of the time, happy curves after a right answer
+        { shape: 'ball', size: [0.13], scale: [1, 1.15, 0.5], at: [-0.14, 1.53, -0.41], color: '#111111', smooth: true, tag: 'eyes', pivot: [0, 1.53, -0.4], mood: ['calm', 'oops'] },
+        { shape: 'ball', size: [0.13], scale: [1, 1.15, 0.5], at: [0.14, 1.53, -0.41], color: '#111111', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
+        { shape: 'ball', size: [0.045], at: [-0.155, 1.556, -0.43], color: '#ffffff', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
+        { shape: 'ball', size: [0.045], at: [0.125, 1.556, -0.43], color: '#ffffff', smooth: true, tag: 'eyes', mood: ['calm', 'oops'] },
+        { shape: 'arc', size: [0.15, 0.04], at: [-0.14, 1.51, -0.43], color: '#111111', mood: 'yay' },
+        { shape: 'arc', size: [0.15, 0.04], at: [0.14, 1.51, -0.43], color: '#111111', mood: 'yay' },
+        // red headband, knotted at the back with two tails that sway
+        { shape: 'cylinder', size: [0.78, 0.1], at: [0, 1.7, 0], color: '#e53935', smooth: true },
+        { shape: 'ball', size: [0.14], at: [0, 1.7, 0.39], color: '#e53935', smooth: true },
+        { shape: 'box', size: [0.08, 0.36, 0.03], at: [-0.06, 1.53, 0.49], turn: [22, 0, -10], color: '#e53935', tag: 'tail', pivot: [0, 1.7, 0.4] },
+        { shape: 'box', size: [0.08, 0.3, 0.03], at: [0.07, 1.56, 0.5], turn: [26, 0, 12], color: '#e53935', tag: 'tail' },
       ],
     },
   },
