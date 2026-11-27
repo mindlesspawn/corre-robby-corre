@@ -7,7 +7,8 @@
 // pattern. What each age is given follows early-childhood sources, listed in the README.
 //
 // Kinds of question:
-//   same     the banner shows a few things; find the door with the same number of dots
+//   same     the banner shows a few things and says how many; find the door with that
+//            number (shown with its dots underneath)
 //   count    the banner shows a few things; find the door with the number that says how many
 //   find     the banner shows a number; find the door with that many dots
 //   more     find the door with the most dots ("fewer": the door with the least).
@@ -135,7 +136,7 @@ function formFor(id, strength) {
 
 // --- Short ways to write a level --------------------------------------------------------
 
-const same = (max) => ({ kind: 'same', max });
+const same = (max) => ({ kind: 'same', max }); // things or fingers -> the door with that number
 const find = (max) => ({ kind: 'find', max });
 const more = (max, gap) => ({ kind: 'more', max, gap });
 const fewer = (max, gap) => ({ kind: 'fewer', max, gap });
@@ -501,10 +502,12 @@ function amount(max) {
   return { answer, wrong };
 }
 
-// Things in the banner, dots on the doors.
+// Things or fingers in the banner, and the amount said aloud. Each door shows a number
+// with that many dots underneath, so a child who cannot read numbers yet can match the
+// dots and sees the number every time.
 function makeSame({ max }) {
   const { answer, wrong } = amount(max);
-  return { kind: 'same', text: `same ${answer}`, item: anyItem(), doors: 'dots', answer, wrong };
+  return { kind: 'same', text: `same ${answer}`, item: anyItem(), doors: 'both', answer, wrong };
 }
 
 // Things in the banner, numbers on the doors (doors: 'both' adds the dots under each number).
