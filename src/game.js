@@ -313,7 +313,7 @@ export class Game {
     const text = String(value);
     const paired = this.row.question?.doors === 'both'; // a number with its dots underneath
     let size = paired ? 230 : 300;
-    const font = (px) => `900 ${px}px "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif`;
+    const font = (px) => `700 ${px}px "Fredoka Variable", "Arial Rounded MT Bold", "Helvetica Neue", Arial, sans-serif`;
     g.font = font(size);
     while (size > 80 && g.measureText(text).width > w - 56) {
       size -= 12;

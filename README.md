@@ -133,3 +133,5 @@ The game only works this way while `npm run dev` is running on this computer.
 | Recording the Spanish clips | `scripts/record-voice.mjs` |
 | Where scores and progress are saved (swap for iOS storage later) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
+| The look of the menus and buttons | `src/style.css` |
+| The letters (Fredoka, a free rounded font bundled with the game) | the first line of `src/main.js` |

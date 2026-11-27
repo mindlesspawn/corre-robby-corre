@@ -5,6 +5,9 @@
   --green-dark: #2e7d32;
   --blue: #1e88e5;
   --orange: #fb8c00;
+  --sun: #ffb300;
+  --sun-dark: #f59300;
+  --tile-edge: #cfe4f8;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
@@ -29,8 +32,9 @@ body {
   overscroll-behavior: none;
   background: #9ad8ff;
   color: var(--ink);
-  font-family: ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Nunito', system-ui, -apple-system, 'Segoe UI',
-    sans-serif;
+  /* Fredoka comes with the game (see main.js), so every device shows the same rounded letters. */
+  font-family: 'Fredoka Variable', ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', system-ui, -apple-system,
+    'Segoe UI', sans-serif;
   /* Stops the page from behaving like a web page under small fingers. */
   -webkit-user-select: none;
   user-select: none;
@@ -192,7 +196,7 @@ button {
   display: flex;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  background: rgba(154, 216, 255, 0.35);
+  background: linear-gradient(180deg, rgba(154, 216, 255, 0.6), rgba(154, 216, 255, 0.2) 60%, rgba(143, 214, 127, 0.3));
 }
 
 .panel {
@@ -202,7 +206,7 @@ button {
   border-radius: 30px;
   padding: 22px 20px 20px;
   text-align: center;
-  box-shadow: 0 8px 0 rgba(26, 35, 126, 0.2);
+  box-shadow: 0 8px 0 rgba(26, 35, 126, 0.16), 0 18px 40px rgba(26, 35, 126, 0.2);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -214,19 +218,59 @@ p {
   margin: 0;
 }
 
+/* The title: each word in its own color, bobbing gently. */
 h1 {
-  font-size: clamp(38px, 12vw, 56px);
+  font-size: clamp(40px, 12.5vw, 60px);
   font-weight: 900;
-  line-height: 1;
+  line-height: 0.95;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.26em;
+}
+
+h1 span {
+  display: inline-block;
+  text-shadow: 0 0.06em 0 rgba(26, 35, 126, 0.16);
+  animation: bob 2.8s ease-in-out infinite;
+}
+
+h1 span:nth-child(3n + 1) {
+  color: #e53935;
+}
+
+h1 span:nth-child(3n + 2) {
+  color: var(--blue);
+  animation-delay: -0.9s;
+}
+
+h1 span:nth-child(3n) {
+  color: var(--green);
+  animation-delay: -1.8s;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1.5deg);
+  }
 }
 
 h2 {
   font-size: clamp(32px, 10vw, 46px);
   font-weight: 900;
   line-height: 1.05;
+  text-wrap: balance;
 }
 
 .stats {
+  align-self: center;
+  background: #fff8e1;
+  border-radius: 18px;
+  padding: 4px 16px;
   font-size: clamp(15px, 4.7vw, 20px);
   font-weight: 800;
   text-wrap: balance;
@@ -251,18 +295,19 @@ h2 {
 
 .big-btn {
   width: 100%;
-  background: var(--green);
+  background: linear-gradient(180deg, #5cc463, #3d9b42);
   color: #fff;
   font-size: 32px;
   font-weight: 900;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.14);
   padding: 14px 16px 16px;
   border-radius: 22px;
-  box-shadow: 0 6px 0 var(--green-dark);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 6px 0 var(--green-dark);
 }
 
 .big-btn:active {
   transform: translateY(4px);
-  box-shadow: 0 2px 0 var(--green-dark);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), 0 2px 0 var(--green-dark);
 }
 
 .button-row {
@@ -273,7 +318,7 @@ h2 {
 
 .small-btn {
   flex: 1;
-  background: #e3f2fd;
+  background: linear-gradient(180deg, #f3f9ff, #dcedfc);
   font-size: 17px;
   font-weight: 800;
   white-space: nowrap;
@@ -327,8 +372,9 @@ h2 {
 }
 
 .character {
-  background: #e3f2fd;
-  border: 5px solid transparent;
+  background: #fff;
+  border: 5px solid var(--tile-edge);
+  box-shadow: 0 4px 0 var(--tile-edge);
   border-radius: 20px;
   padding: 8px 4px 8px;
   display: flex;
@@ -348,9 +394,12 @@ h2 {
   pointer-events: none;
 }
 
+/* The chosen one is lit up in yellow and lifted a little. */
 .character.selected {
-  border-color: var(--green);
-  background: #e8f5e9;
+  border-color: var(--sun);
+  background: #fff8e1;
+  box-shadow: 0 4px 0 var(--sun-dark);
+  transform: translateY(-3px);
 }
 
 .character.locked img {
@@ -654,8 +703,8 @@ h2 {
 }
 
 .progress i {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #cfd8dc;
 }
@@ -663,6 +712,7 @@ h2 {
 .progress i.hit {
   background: #ffca28;
   box-shadow: inset 0 0 0 2px #f9a825;
+  animation: pop 0.35s ease-out;
 }
 
 .progress i.miss {
@@ -683,8 +733,9 @@ h2 {
 
 .game-btn {
   flex: 1;
-  background: #e3f2fd;
-  border: 4px solid transparent;
+  background: #fff;
+  border: 3px solid var(--tile-edge);
+  box-shadow: 0 4px 0 var(--tile-edge);
   border-radius: 18px;
   padding: 8px 6px;
   min-height: 50px;
@@ -694,14 +745,19 @@ h2 {
 }
 
 .game-btn.selected {
-  border-color: var(--green);
-  background: #e8f5e9;
+  border-color: var(--sun);
+  background: #fff8e1;
+  box-shadow: 0 4px 0 var(--sun-dark);
+  transform: translateY(-3px);
 }
 
 .level-row {
   display: flex;
   align-items: center;
   gap: 8px;
+  background: #f1f7fe;
+  border-radius: 18px;
+  padding: 5px 8px;
 }
 
 .step-btn {
@@ -730,12 +786,13 @@ h2 {
 
 /* --- Stars on the end screen ------------------------------------------------------ */
 
+/* Five stars to a row, like a ten-frame. */
 .over-stars {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
   justify-content: center;
-  gap: 2px;
-  font-size: 26px;
+  gap: 2px 8px;
+  font-size: 30px;
   line-height: 1.15;
 }
 
@@ -744,9 +801,22 @@ h2 {
   opacity: 0.25;
 }
 
+/* Earned stars pop in one after another (main.js sets each one's delay). */
 .over-stars span.earned {
   filter: none;
   opacity: 1;
+  animation: star-in 0.45s cubic-bezier(0.3, 1.6, 0.5, 1) backwards;
+}
+
+@keyframes star-in {
+  0% {
+    transform: scale(0) rotate(-40deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
 }
 
 @media (max-height: 700px) {
@@ -914,12 +984,41 @@ h2 {
   padding-right: 6px;
   font-size: clamp(15px, 4.6vw, 22px);
   white-space: nowrap;
-  background: #8e24aa;
-  box-shadow: 0 6px 0 #6a1b9a;
+  background: linear-gradient(180deg, #b24fc4, #8e24aa);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 6px 0 #6a1b9a;
 }
 
 .play-row .endless-btn:active {
-  box-shadow: 0 2px 0 #6a1b9a;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.3), 0 2px 0 #6a1b9a;
+}
+
+/* The Play button on the start screen has a play triangle and breathes, to say "press me". */
+#btn-play {
+  animation: breathe 1.9s ease-in-out infinite;
+}
+
+#btn-play:active {
+  animation: none;
+}
+
+#btn-play::before {
+  content: '';
+  display: inline-block;
+  margin-right: 0.3em;
+  border-left: 0.52em solid #fff;
+  border-top: 0.34em solid transparent;
+  border-bottom: 0.34em solid transparent;
+  filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.14));
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
 }
 
 @media (min-width: 600px) and (min-height: 700px) {

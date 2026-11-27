@@ -1,5 +1,7 @@
 // Menus, buttons, saving, sounds, and the voice. The 3D game itself is in game.js.
 
+// The rounded letters, bundled with the game so they also work with no internet.
+import '@fontsource-variable/fredoka';
 import './style.css';
 import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
@@ -500,7 +502,11 @@ function finishRun({ score, total, skill, endless }) {
   el.overScore.textContent = String(score);
   el.overStars.hidden = endless; // the row of ten stars only makes sense for a run of ten doors
   el.overStars.replaceChildren(
-    ...Array.from({ length: total }, (_, i) => tag('span', i < score ? 'earned' : '', '⭐')),
+    ...Array.from({ length: total }, (_, i) => {
+      const star = tag('span', i < score ? 'earned' : '', '⭐');
+      star.style.animationDelay = `${0.25 + i * 0.09}s`; // earned stars pop in one after another
+      return star;
+    }),
   );
 
   el.overUnlock.hidden = !newest;
@@ -529,7 +535,9 @@ function showScores(highlight = -1) {
   el.scoreList.replaceChildren(
     ...list.map((row, i) => {
       const item = tag('li', i === highlight ? 'mine' : '');
-      item.append(tag('span', 'rank', String(i + 1)), tag('span', 'name', row.name), tag('span', '', `⭐ ${row.score}`));
+      // Medals for the top three, numbers after that.
+      const rank = ['🥇', '🥈', '🥉'][i] ?? String(i + 1);
+      item.append(tag('span', 'rank', rank), tag('span', 'name', row.name), tag('span', '', `⭐ ${row.score}`));
       return item;
     }),
   );
@@ -691,7 +699,9 @@ function wireTouch() {
 async function init() {
   // The title is the same in every language.
   document.title = CONFIG.title;
-  el.title.textContent = CONFIG.title;
+  // One piece per word, so each word gets its own color.
+  el.title.replaceChildren(...CONFIG.title.split(' ').map((word) => tag('span', '', word)));
+  el.title.setAttribute('aria-label', CONFIG.title);
   el.nameInput.maxLength = CONFIG.nameMaxLength;
   el.progress.replaceChildren(...Array.from({ length: CONFIG.doorsPerRun }, () => tag('i')));
 
@@ -723,6 +733,8 @@ async function init() {
   measureQuestionArea();
   // The list of voices can arrive late; when it does, check again whether the game can talk.
   onVoicesChanged(renderVoiceNote);
+  // The letters can arrive late too, and change how tall the question area is.
+  document.fonts?.load('700 40px "Fredoka Variable"').then(measureQuestionArea, () => {});
 
   // A handle for the automatic test player. Only present while developing.
   if (import.meta.env.DEV) window.__game = game;
