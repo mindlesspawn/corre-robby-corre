@@ -77,15 +77,15 @@ Sources:
 
 ## The voice
 
-In Spanish the game speaks with recorded clips, so it says the same thing in the same voice on every phone, tablet, and computer. The voice is Mexican Spanish. It is computer-generated (made with OpenAI text-to-speech), not a person.
+The game speaks with recorded clips in both languages, so it says the same thing in the same voice on every phone, tablet, and computer. The Spanish voice is Mexican Spanish and the English voice is American English. Both are computer-generated (made with OpenAI text-to-speech), not a person.
 
-- The clips are in `public/voice/es/`, one for each line the game can say: 344 in all.
+- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 344 in each language.
 - After each recording run, every clip was transcribed back and compared with its line.
-- Sums bigger than 10 have no clip. For those, and for everything in English, the game uses the voice built into the device. If the device has no voice for that language, the game stays quiet, says so on the start screen, and the written question under the banner is there for a grown-up to read aloud.
+- Sums bigger than 10 have no clip. For those the game uses the voice built into the device. If the device has no voice for that language, the game stays quiet for those sums, and the written question under the banner is there for a grown-up to read aloud.
 - The sound button turns off the sound effects and the voice.
 - On an iPhone or iPad, the switch on the side that silences the phone also silences the game.
 
-To record again after changing the Spanish words in `src/text.js`:
+To record again after changing the spoken words in `src/text.js` (for English, add `--language en`):
 
 ```powershell
 node scripts/record-voice.mjs --key-file "C:\path\to\.env" --check --fix
@@ -138,8 +138,8 @@ The game only works this way while `npm run dev` is running on this computer.
 | Characters, their looks, faces, and unlock costs | `src/characters.js` |
 | The three belt speeds, doors per run, how fast steps go up, colors, the title | `src/config.js` |
 | How a look is built (pictures and 3D models go here later) | `src/looks.js` |
-| The voice, and which clip says which line | `src/speech.js`, `src/voice/es.json` |
-| Recording the Spanish clips | `scripts/record-voice.mjs` |
+| The voice, and which clip says which line | `src/speech.js`, `src/voice/es.json`, `src/voice/en.json` |
+| Recording the voice clips | `scripts/record-voice.mjs` |
 | Where scores and progress are saved (swap for iOS storage later) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
 | The background tune (its notes, speed, and loudness) | `src/music.js` |

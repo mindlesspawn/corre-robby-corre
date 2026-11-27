@@ -1,16 +1,17 @@
 // The spoken voice.
 //
-// Spanish lines are recorded clips (public/voice/es), so the game says the same thing in
-// the same voice on every device. They are made by scripts/record-voice.mjs.
-// Anything without a clip (English, and very large sums) falls back to the voice built
-// into the phone, tablet, or computer. If the device has no voice for that language
-// either, the game stays quiet and says so on the start screen.
+// The lines are recorded clips (public/voice/es and public/voice/en), so the game says the
+// same thing in the same voice on every device. They are made by scripts/record-voice.mjs.
+// Anything without a clip (very large sums) falls back to the voice built into the phone,
+// tablet, or computer. If the device has no voice for that language either, the game stays
+// quiet for those lines.
 
 import { playVoiceClip, preloadVoiceClip, stopVoiceClip, voiceBusy } from './audio.js';
+import englishClips from './voice/en.json';
 import spanishClips from './voice/es.json';
 
 // Which recorded clip says each line, and how long it lasts: { language: { 'the line': ['file.mp3', seconds] } }
-const CLIPS = { es: spanishClips };
+const CLIPS = { es: spanishClips, en: englishClips };
 
 const PREFERRED = {
   es: ['es-MX', 'es-US', 'es-419', 'es-ES'],

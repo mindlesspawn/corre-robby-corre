@@ -5,8 +5,10 @@
 // so after changing a few words you only pay for the new lines.
 //
 //   node scripts/record-voice.mjs --key-file "C:/path/to/.env"
+//   node scripts/record-voice.mjs --language en --key-file "C:/path/to/.env"
 //
 // Options:
+//   --language <code>  es (Spanish, the default) or en (English)
 //   --key-file <path>  a file with a line OPENAI_API_KEY=...  (or set OPENAI_API_KEY yourself)
 //   --limit <n>        only record the first n missing clips (for a trial run)
 //   --check            also listen back: transcribe the clips and compare them with the text
@@ -23,22 +25,56 @@ import { COLORS } from '../src/config.js';
 import { FINGERS, ITEMS, SHAPES, THINGS } from '../src/questions.js';
 import { answerText, askText, setLanguage, spokenAnswer, t } from '../src/text.js';
 
-const LANGUAGE = 'es';
+const args = process.argv.slice(2);
+const flag = (name) => args.includes(name);
+const option = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
+
 const VOICE = 'coral';
 const BACKUP_VOICE = 'nova';
 const MODELS = ['gpt-4o-mini-tts', 'tts-1-hd', 'tts-1'];
-// How the voice should sound. Only the newer models listen to this.
-const STYLE =
-  'Habla en español de México con voz cálida, alegre y muy clara, sin prisa, ' +
-  'como una maestra de preescolar que le habla con cariño a un niño de tres años.';
+
+// What changes from one language to the next.
+const VOICES = {
+  es: {
+    // How the voice should sound. Only the newer models listen to this.
+    style:
+      'Habla en español de México con voz cálida, alegre y muy clara, sin prisa, ' +
+      'como una maestra de preescolar que le habla con cariño a un niño de tres años.',
+    // Tells the listeners what kind of sentences to expect when they check the clips.
+    hint:
+      'Frases cortas en español de México para niños pequeños. ' +
+      'Hay cuatro flores. ¿Dónde hay tres? Uno, dos, tres. Hay diez manzanas. Aquí hay más. Busca la corona.',
+    // Words the listeners may write differently from the game: number words, "+",
+    // and the different ways of writing the sound "hay".
+    sameWord: {
+      un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10,
+      hai: 'hay', ai: 'hay', ay: 'hay',
+    },
+    plus: 'mas',
+  },
+  en: {
+    style:
+      'Speak in American English with a warm, cheerful and very clear voice, unhurried, ' +
+      'like a preschool teacher talking kindly to a three-year-old child.',
+    hint:
+      'Short sentences in English for small children. ' +
+      'There are four flowers. Where are three dots? One, two, three. There are ten apples. ' +
+      'This one has more. Find the crown.',
+    sameWord: {
+      one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+      colour: 'color',
+    },
+    plus: 'plus',
+  },
+};
+
+const LANGUAGE = option('--language') ?? 'es';
+if (!VOICES[LANGUAGE]) throw new Error(`No voice is set up for "${LANGUAGE}". Choose one of: ${Object.keys(VOICES).join(', ')}.`);
+const { style: STYLE, hint: HINT, sameWord: SAME_WORD, plus: PLUS } = VOICES[LANGUAGE];
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const clipFolder = path.join(root, 'public', 'voice', LANGUAGE);
 const listFile = path.join(root, 'src', 'voice', `${LANGUAGE}.json`);
-
-const args = process.argv.slice(2);
-const flag = (name) => args.includes(name);
-const option = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 
 // --- Every line the game can say in this language -----------------------------------
 
@@ -169,12 +205,9 @@ async function chooseVoice(sample) {
 }
 
 // Listening back. Very short clips are easy to mishear, and the listener sometimes writes
-// Spanish sounds in another language's spelling, so each clip gets two listeners and a hint
-// about what kind of sentences to expect.
+// one language's sounds in another language's spelling, so each clip gets two listeners and
+// a hint about what kind of sentences to expect.
 const LISTENERS = ['gpt-4o-mini-transcribe', 'whisper-1'];
-const HINT =
-  'Frases cortas en español de México para niños pequeños. ' +
-  'Hay cuatro flores. ¿Dónde hay tres? Uno, dos, tres. Hay diez manzanas. Aquí hay más. Busca la corona.';
 
 async function transcribe(file, model) {
   const form = new FormData();
@@ -202,16 +235,14 @@ async function mishearing(text, file) {
 }
 
 // Makes two pieces of text comparable: no accents or punctuation, number words as digits,
-// and the different ways of writing the sound "hay" treated as the same.
-const SAME_WORD = {
-  un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10,
-  hai: 'hay', ai: 'hay', ay: 'hay',
-};
+// "+" as its word, and words that can be written two ways treated as the same.
 function plain(text) {
   return text
     .toLowerCase()
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')
+    .replace(/\+/g, ` ${PLUS} `)
+    .replace(/'/g, '')
     .replace(/[^a-z0-9 ]+/g, ' ')
     .split(/\s+/)
     .filter(Boolean)
