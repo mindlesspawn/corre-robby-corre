@@ -13,17 +13,26 @@ Pick a game on the start screen.
 - **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Made for a three year old.
 - **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star and a heart.
 
-Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough. Progress is saved for each game.
+Each game is a ladder of small steps. A right answer moves a child a little way up and a wrong answer a little way down, so the game settles at what is just hard enough.
 
-The steps are grouped into a few categories, shown as buttons under the game picker. Numbers has five: amounts up to 3, amounts up to 5, counting to 10 with written numbers, small sums with pictures, and bigger sums. The other games have two each. The lit button is where the child is now. Tapping another one starts them at its first step, which is how to set the game for a different child. The line under the buttons says what the child is doing at the moment.
+## Ages
 
-In the numbers game, playing alone stops climbing at sums up to 10 shown with pictures. Harder sums are marked "para niños mayores" and are only reached when a grown-up picks the last category ("23 + 4").
+The start screen has one row of age buttons: 3, 4, 5, and 6+. Picking an age is the only difficulty setting. Each age has its own batch of steps in every game, and a child stays inside that batch: the game moves them up and down within it, never out of it. Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
+
+| Age | Numbers | Colors and princess things | Shapes |
+| --- | --- | --- | --- |
+| 3 | Amounts up to 3 seen at a glance; more and fewer with very different amounts | Match by sight, then find 3 from the name alone | Circle, square, and triangle |
+| 4 | Amounts up to 5; more and fewer with close amounts; written numbers up to 5, first with their dots | Find 3, then 6, from the name alone | Circle, square, and triangle by name; then a star and a heart |
+| 5 | Counting up to 10 with written numbers; sums up to 10 shown with pictures | Find 6, then all of them, from the name alone | All five shapes, by sight and then by name |
+| 6+ | Sums written only as numbers: up to 10, up to 20, then with two-digit numbers | All of them from the name alone | All five shapes from the name alone |
+
+The ages are typical expectations, not rules. Pick the age whose steps fit the child, whatever their birthday says. The sources for this batching are under "What the learning steps are based on" below.
 
 ## Endless mode
 
 The purple "Sin fin" button starts an endless run, and endless runs are what the high score table records.
 
-- Questions come at random from every step the child has reached in the chosen game.
+- Questions come at random from the steps for the chosen age that the child has reached in the chosen game.
 - Every right answer makes the belt faster, down to under a second per row of doors.
 - It goes on for as long as the answers are right. The first miss ends the run.
 - It has sounds but no talking. The question is shown in the banner and written underneath.
@@ -50,12 +59,25 @@ The steps were checked on 26 November 2026 against published early-childhood tea
 | Asks "more" and "fewer" before any written numbers | Comparing comes straight after counting, and before numerals | 1, 2 |
 | Brings in written numbers late, each with its dots, then on their own | Numerals are taught once children can recognise, count, and compare amounts; linking a numeral to an amount up to 5 is expected by about age 5 | 1, 2, 4 |
 | Uses fingers and dice-style dots | Fingers are a recommended informal tool; dice patterns are standard examples | 1, 3 |
-| Stops automatic progress at sums up to 10, shown with pictures | Adding up to 5 is expected by about age 5; some four year olds can find sums up to 10 with objects or fingers; sums written only as numbers, and sums to 20, come later | 2, 5, 6 |
+| Keeps sums for ages 3 to 5 at 10 or less, shown with pictures | Adding up to 5 is expected by about age 5; some four year olds can find sums up to 10 with objects or fingers; sums written only as numbers, and sums to 20, come later | 2, 5, 6 |
 | Starts shapes with a circle, a square, and a triangle | Recognising and naming a typical circle, square, and sometimes a triangle is expected at 3 to 4; matching identical shapes comes earlier | 2, 3 |
 | Shows and says the right answer after a mistake, and adjusts difficulty in small steps | Feedback that explains, plus levelling, is what separated maths apps that helped from those that did not | 7, 8 |
 | Teaches pink, orange, and purple alongside the other colors | Most basic color words are learned in any order at about age 3 | 9 |
 
+How the steps are batched by age (checked again on 27 November 2026):
+
+| Age | What the source expects | Source |
+| --- | --- | --- |
+| 3 (36 to 48 months) | Begins to recognise the number in a small group without counting; begins to compare small groups, such as 2 blocks and 4; recognises and names a typical circle, square, and sometimes a triangle | 2 |
+| 3 | Shows they know at least one color by 30 months; most basic color words arrive at about 3 | 4, 9 |
+| 4 (48 to 60 months) | By 60 months: recognises up to 5 objects at a glance; tells which of two groups has more for up to at least 5 objects; links a written numeral from 0 to 5 to an amount; recognises a greater number of shapes | 2 |
+| 4 | Names a few colors | 4 |
+| 5 | Counts to 10 and names some numbers between 1 and 5; by 60 months answers "how many?" for about 10 objects and adds up to 5; in kindergarten adds within 10 with objects or drawings | 2, 4, 11 |
+| 6+ | First grade: adds within 20, fluently within 10, and adds a two-digit and a one-digit number | 6 |
+
 Limits worth knowing:
+
+- The sources describe what is typical by an age. They do not say which exact questions belong to which birthday, so where each batch starts and ends is a judgment made from them. The princess game follows the colors game's batching, since both are about learning names.
 
 - The order of steps is expert judgment. The main guide (source 1) says its panel found no direct evidence for any one particular order.
 - Nearly all of this research was done with English-speaking children.
@@ -69,13 +91,14 @@ Sources:
 1. Institute of Education Sciences, *Teaching Math to Young Children* practice guide (2013): <https://ies.ed.gov/ncee/wwc/PracticeGuide/18>
 2. Head Start *Early Learning Outcomes Framework* (2015), mathematics goals: <https://www.govinfo.gov/content/pkg/GOVPUB-HE23_1100-PURL-gpo65456/pdf/GOVPUB-HE23_1100-PURL-gpo65456.pdf>
 3. Clements and Sarama, *Learning Trajectories*: <https://www.learningtrajectories.org/>
-4. CDC developmental milestones, 5 years: <https://www.cdc.gov/act-early/milestones/5-years.html>
+4. CDC developmental milestones at 30 months, 4 years, and 5 years: <https://www.cdc.gov/act-early/milestones/30-months.html>, <https://www.cdc.gov/act-early/milestones/4-years.html>, <https://www.cdc.gov/act-early/milestones/5-years.html>
 5. IES Regional Educational Laboratory, problem-solving progression: <https://ies.ed.gov/ncee/rel/math-young-children/pdf/TMYC_Mod4_Solving_Basic_Problems_Developmental_Progression.pdf>
 6. Common Core State Standards, Grade 1 operations: <https://www.thecorestandards.org/Math/Content/1/OA/>
 7. Outhwaite and others (2023), review of maths apps for young children: <https://discovery.ucl.ac.uk/10170561/1/Outhwaite%20et%20al.%202023.pdf>
 8. Hirsh-Pasek and others (2015), *Putting Education in "Educational" Apps*: <https://www.psychologicalscience.org/publications/educational-apps.html>
 9. Pitchford and Mullen (2006), on children learning color words: <https://www.mvr.mcgill.ca/Kathy/PDF-05-09/Pitchford-Mullen-2006.pdf>
 10. American Academy of Pediatrics, *Media and Young Minds* (2016): <https://www.eurekalert.org/news-releases/695617>
+11. Common Core State Standards, Kindergarten operations and counting: <https://www.thecorestandards.org/Math/Content/K/OA/>, <https://www.thecorestandards.org/Math/Content/K/CC/>
 
 ## The voice
 

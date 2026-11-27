@@ -5,8 +5,8 @@
 // the ladder and each wrong answer a little way down (see answersPerLevel in config.js),
 // so every game settles at whatever is just hard enough. Progress is saved per game.
 //
-// The steps are grouped into a few categories. The start screen shows one button per
-// category; tapping one starts the child at its first step.
+// Each game also says which of its steps belong to each age ("ages"). The start screen
+// has one button per age, and a child only plays the steps for the age that is picked.
 //
 // Kinds of question:
 //   same   the banner shows a few things; find the door with the same number of dots
@@ -19,8 +19,7 @@
 //   thing  the banner shows or names a thing (a crown, a castle...); find its picture
 //   shape  the banner shows or names a shape; find the door with that shape
 //
-// To add a step, add a line to one of a game's categories.
-// To add a category, add it to the game and its name to "groups" in src/text.js.
+// To add a step, add a line to a game's levels, then check the numbers in its "ages".
 // To add a game, add an entry to GAMES and its name to src/text.js.
 // To add a new kind of question (shapes, letters...), add a maker below, then teach
 // src/main.js how to show it and src/text.js how to say it.
@@ -74,17 +73,8 @@ export const SHAPES = {
 const ALL_SHAPES = Object.keys(SHAPES);
 const FIRST_SHAPES = ALL_SHAPES.slice(0, 3);
 
-// Turns a game's categories into one ladder of steps, and remembers where each category
-// starts and ends on it.
-function ladder(categories) {
-  const levels = [];
-  const groups = [];
-  for (const [id, steps] of categories) {
-    groups.push({ id, from: levels.length, to: levels.length + steps.length - 1 });
-    levels.push(...steps);
-  }
-  return { levels, groups };
-}
+// The age groups on the start screen. 6 means six and older.
+export const AGES = [3, 4, 5, 6];
 
 export const GAMES = {
   // The order follows early-childhood teaching guidance (sources are in the README):
@@ -92,125 +82,86 @@ export const GAMES = {
   // arriving together with their dots. Sums stay small and are shown with pictures.
   numbers: {
     icon: '🔢',
-    ...ladder([
-      [
-        'upTo3',
-        [
-          { kind: 'same', max: 3 }, // three stars, said aloud -> the door with three dots
-          { kind: 'find', max: 3 }, // "three", said and shown -> the door with three dots
-          { kind: 'compare', max: 6, gap: 3 }, // which door has more, or fewer? very different amounts
-        ],
-      ],
-      [
-        'upTo5',
-        [
-          { kind: 'same', max: 5 },
-          { kind: 'find', max: 5 },
-          { kind: 'compare', max: 5, gap: 1 }, // close amounts
-        ],
-      ],
-      [
-        'counting',
-        [
-          { kind: 'count', max: 3, doors: 'both' }, // written numbers arrive, each with its dots
-          { kind: 'count', max: 5, doors: 'both' },
-          { kind: 'count', max: 5 }, // the number on its own
-          { kind: 'count', max: 7 },
-          { kind: 'count', max: 10 },
-        ],
-      ],
-      [
-        'sums',
-        [
-          { kind: 'add', oneMore: true, maxSum: 5, pictures: true }, // 2 + 1, shown with apples
-          { kind: 'add', maxSum: 5, pictures: true },
-          { kind: 'add', maxSum: 10, pictures: true },
-        ],
-      ],
-      // Playing alone never goes past this point. This last category is for older children
-      // and is only reached when a grown-up picks it on the start screen.
-      [
-        'bigSums',
-        [
-          { kind: 'add', maxSum: 10, grownUp: true },
-          { kind: 'add', maxSum: 20, grownUp: true },
-          { kind: 'add', maxSum: 50, bigFirst: true, grownUp: true }, // 23 + 4
-          { kind: 'add', maxSum: 99, twoDigit: true, grownUp: true }, // 23 + 45
-        ],
-      ],
-    ]),
+    levels: [
+      { kind: 'same', max: 3 }, // 0: three stars, said aloud -> the door with three dots
+      { kind: 'find', max: 3 }, // 1: "three", said and shown -> the door with three dots
+      { kind: 'compare', max: 6, gap: 3 }, // 2: which door has more, or fewer? very different amounts
+      { kind: 'same', max: 5 }, // 3
+      { kind: 'find', max: 5 }, // 4
+      { kind: 'compare', max: 5, gap: 1 }, // 5: close amounts
+      { kind: 'count', max: 3, doors: 'both' }, // 6: written numbers arrive, each with its dots
+      { kind: 'count', max: 5, doors: 'both' }, // 7
+      { kind: 'count', max: 5 }, // 8: the number on its own
+      { kind: 'count', max: 7 }, // 9
+      { kind: 'count', max: 10 }, // 10
+      { kind: 'add', oneMore: true, maxSum: 5, pictures: true }, // 11: 2 + 1, shown with apples
+      { kind: 'add', maxSum: 5, pictures: true }, // 12
+      { kind: 'add', maxSum: 10, pictures: true }, // 13
+      { kind: 'add', maxSum: 10 }, // 14: sums written only as numbers
+      { kind: 'add', maxSum: 20 }, // 15
+      { kind: 'add', maxSum: 50, bigFirst: true }, // 16: 23 + 4
+      { kind: 'add', maxSum: 99, twoDigit: true }, // 17: 23 + 45
+    ],
+    // Which steps each age plays: [first, last]. The reasons and sources are in the README.
+    ages: {
+      3: [0, 2], // amounts up to 3 by sight; more and fewer with very different amounts
+      4: [3, 8], // amounts up to 5, close amounts, written numbers up to 5
+      5: [9, 13], // counting to 10, sums up to 10 with pictures
+      6: [14, 17], // sums written as numbers, up to two digits
+    },
   },
 
   colors: {
     icon: '🎨',
-    ...ladder([
+    levels: [
       // "show: true" shows the color and says its name. The child matches what they see.
-      [
-        'see',
-        [
-          { kind: 'color', colors: FIRST_COLORS, show: true },
-          { kind: 'color', colors: MORE_COLORS, show: true },
-        ],
-      ],
+      { kind: 'color', colors: FIRST_COLORS, show: true }, // 0
+      { kind: 'color', colors: MORE_COLORS, show: true }, // 1
       // "show: false" only says the name. The child has to know the color.
-      [
-        'hear',
-        [
-          { kind: 'color', colors: FIRST_COLORS, show: false },
-          { kind: 'color', colors: MORE_COLORS, show: false },
-          { kind: 'color', colors: ALL_COLORS, show: false },
-        ],
-      ],
-    ]),
+      { kind: 'color', colors: FIRST_COLORS, show: false }, // 2
+      { kind: 'color', colors: MORE_COLORS, show: false }, // 3
+      { kind: 'color', colors: ALL_COLORS, show: false }, // 4
+    ],
+    ages: { 3: [0, 2], 4: [2, 3], 5: [3, 4], 6: [4, 4] },
   },
 
   // Finding princess things by sight, then by name. Aimed at a three year old.
   princess: {
     icon: '👑',
-    ...ladder([
-      [
-        'see',
-        [
-          { kind: 'thing', pool: FIRST_THINGS, show: true },
-          { kind: 'thing', pool: MORE_THINGS, show: true },
-        ],
-      ],
-      [
-        'hear',
-        [
-          { kind: 'thing', pool: FIRST_THINGS, show: false },
-          { kind: 'thing', pool: MORE_THINGS, show: false },
-          { kind: 'thing', pool: ALL_THINGS, show: false },
-        ],
-      ],
-    ]),
+    levels: [
+      { kind: 'thing', pool: FIRST_THINGS, show: true }, // 0
+      { kind: 'thing', pool: MORE_THINGS, show: true }, // 1
+      { kind: 'thing', pool: FIRST_THINGS, show: false }, // 2
+      { kind: 'thing', pool: MORE_THINGS, show: false }, // 3
+      { kind: 'thing', pool: ALL_THINGS, show: false }, // 4
+    ],
+    ages: { 3: [0, 2], 4: [2, 3], 5: [3, 4], 6: [4, 4] },
   },
 
   // Circle, square and triangle come first: those are the shapes expected at three to four.
   shapes: {
     icon: '🔷',
-    ...ladder([
-      [
-        'shapes3',
-        [
-          { kind: 'shape', pool: FIRST_SHAPES, show: true },
-          { kind: 'shape', pool: FIRST_SHAPES, show: false },
-        ],
-      ],
-      [
-        'shapes5',
-        [
-          { kind: 'shape', pool: ALL_SHAPES, show: true },
-          { kind: 'shape', pool: ALL_SHAPES, show: false },
-        ],
-      ],
-    ]),
+    levels: [
+      { kind: 'shape', pool: FIRST_SHAPES, show: true }, // 0
+      { kind: 'shape', pool: FIRST_SHAPES, show: false }, // 1
+      { kind: 'shape', pool: ALL_SHAPES, show: true }, // 2
+      { kind: 'shape', pool: ALL_SHAPES, show: false }, // 3
+    ],
+    ages: { 3: [0, 1], 4: [1, 3], 5: [2, 3], 6: [3, 3] },
   },
 };
 
 export const GAME_IDS = Object.keys(GAMES);
 
 export const gameOrDefault = (id) => (GAMES[id] ? id : GAMES[CONFIG.game] ? CONFIG.game : GAME_IDS[0]);
+
+export const ageOrDefault = (age) => (AGES.includes(age) ? age : AGES.includes(CONFIG.age) ? CONFIG.age : AGES[0]);
+
+// The lowest and highest progress number a child of that age can have in a game.
+export function skillRange(gameId, age) {
+  const [first, last] = GAMES[gameOrDefault(gameId)].ages[ageOrDefault(age)];
+  return [first * CONFIG.answersPerLevel, (last + 1) * CONFIG.answersPerLevel - 1];
+}
 
 const range = (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i);
 
@@ -352,14 +303,6 @@ const MAKERS = {
 export function levelFromSkill(skill, gameId) {
   const top = GAMES[gameOrDefault(gameId)].levels.length - 1;
   return Math.min(top, Math.max(0, Math.floor((skill || 0) / CONFIG.answersPerLevel)));
-}
-
-// Steps marked grownUp are only reached when a grown-up picks them on the start screen.
-// This is the highest progress number that playing alone can reach in a game.
-export function autoTopSkill(gameId) {
-  const levels = GAMES[gameOrDefault(gameId)].levels;
-  const first = levels.findIndex((level) => level.grownUp);
-  return first === -1 ? Infinity : first * CONFIG.answersPerLevel - 1;
 }
 
 // Builds the next question, with the three door choices already shuffled.

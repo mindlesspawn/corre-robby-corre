@@ -10,6 +10,7 @@ export const CONFIG = {
 
   // The game picked the first time someone plays. The games are listed in src/questions.js.
   game: 'numbers',
+  age: 3, // the age picked the first time someone plays: 3, 4, 5 or 6 (six and older)
 
   // --- Treadmill -----------------------------------------------------------
   laneWidth: 2, // distance between lane centres

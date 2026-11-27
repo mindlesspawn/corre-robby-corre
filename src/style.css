@@ -850,48 +850,31 @@ h2 {
   transform: translateY(-3px);
 }
 
-/* How hard: one button per category of the chosen game, and a line saying what the
-   child is doing now. */
-.level-row {
+/* How hard: one button per age. */
+.ages {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  background: #f1f7fe;
-  border-radius: 18px;
-  padding: 6px;
+  gap: 8px;
 }
 
-.stages {
-  display: flex;
-  gap: 6px;
-}
-
-.stage-btn {
+.age-btn {
   flex: 1;
   min-width: 0;
-  min-height: 40px;
+  min-height: 44px;
   padding: 4px 2px;
   background: #fff;
   border: 3px solid var(--tile-edge);
-  border-radius: 14px;
-  font-size: 16px;
+  box-shadow: 0 4px 0 var(--tile-edge);
+  border-radius: 16px;
+  font-size: 17px;
   font-weight: 800;
   white-space: nowrap;
 }
 
-.stage-btn.selected {
+.age-btn.selected {
   border-color: var(--sun);
   background: #fff8e1;
-  box-shadow: 0 3px 0 var(--sun-dark);
-  transform: translateY(-2px);
-}
-
-.level-note {
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.2;
-  opacity: 0.8;
-  text-wrap: balance;
+  box-shadow: 0 4px 0 var(--sun-dark);
+  transform: translateY(-3px);
 }
 
 /* --- Stars on the end screen ------------------------------------------------------ */
@@ -935,9 +918,9 @@ h2 {
     padding: 5px 6px;
     font-size: 17px;
   }
-  .stage-btn {
-    min-height: 34px;
-    font-size: 15px;
+  .age-btn {
+    min-height: 40px;
+    font-size: 16px;
   }
   .characters .character img {
     max-width: 70px;
@@ -949,12 +932,9 @@ h2 {
     font-size: 26px;
     min-height: 66px;
   }
-  .stage-btn {
-    min-height: 54px;
-    font-size: 22px;
-  }
-  .level-note {
-    font-size: 17px;
+  .age-btn {
+    min-height: 58px;
+    font-size: 24px;
   }
   .over-stars {
     font-size: 40px;

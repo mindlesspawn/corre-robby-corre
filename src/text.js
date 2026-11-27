@@ -55,36 +55,9 @@ const es = {
   // The games on the start screen.
   games: { numbers: 'Números', colors: 'Colores', princess: 'Princesa', shapes: 'Figuras' },
 
-  // The categories on the start screen: a few big steps for each game.
-  groups: {
-    upTo3: '1 – 3',
-    upTo5: '1 – 5',
-    counting: '1 – 10',
-    sums: '2 + 1',
-    bigSums: '23 + 4',
-    see: '👀 Ver',
-    hear: '👂 Escuchar',
-    shapes3: '3 figuras',
-    shapes5: '5 figuras',
-  },
-  // What the child is doing right now, written under the categories for grown-ups.
-  levelName: (step) => {
-    if (step.kind === 'same') return `oír el número y buscarlo, hasta ${step.max}`;
-    if (step.kind === 'count') return step.doors === 'both' ? `contar hasta ${step.max}, número con puntos` : `contar hasta ${step.max}`;
-    if (step.kind === 'find') return `del número a los puntos, hasta ${step.max}`;
-    if (step.kind === 'compare') return step.gap > 1 ? 'dónde hay más o menos (fácil)' : `dónde hay más o menos, hasta ${step.max}`;
-    if (step.kind === 'more') return step.gap > 1 ? 'dónde hay más (fácil)' : `dónde hay más, hasta ${step.max}`;
-    if (step.kind === 'fewer') return `dónde hay menos, hasta ${step.max}`;
-    if (step.kind === 'color') {
-      return step.show ? `ver y encontrar ${step.colors.length} colores` : `escuchar y encontrar ${step.colors.length} colores`;
-    }
-    if (step.kind === 'thing') return `${step.show ? 'ver' : 'escuchar'} y encontrar ${step.pool.length} cosas`;
-    if (step.kind === 'shape') return `${step.show ? 'ver' : 'escuchar'} y encontrar ${step.pool.length} figuras`;
-    if (step.oneMore) return 'uno más';
-    if (step.maxSum > 20) return 'sumas con números grandes';
-    return step.pictures ? `sumas hasta ${step.maxSum}, con dibujos` : `sumas hasta ${step.maxSum}`;
-  },
-  advanced: 'para niños mayores',
+  // The age buttons on the start screen.
+  ages: { 3: '3 años', 4: '4 años', 5: '5 años', 6: '6+ años' },
+  labelAge: 'Edad',
   wordMore: 'más',
   wordFewer: 'menos',
 
@@ -204,34 +177,8 @@ const en = {
 
   games: { numbers: 'Numbers', colors: 'Colors', princess: 'Princess', shapes: 'Shapes' },
 
-  groups: {
-    upTo3: '1 – 3',
-    upTo5: '1 – 5',
-    counting: '1 – 10',
-    sums: '2 + 1',
-    bigSums: '23 + 4',
-    see: '👀 See',
-    hear: '👂 Listen',
-    shapes3: '3 shapes',
-    shapes5: '5 shapes',
-  },
-  levelName: (step) => {
-    if (step.kind === 'same') return `hear the number and find it, up to ${step.max}`;
-    if (step.kind === 'count') return step.doors === 'both' ? `count up to ${step.max}, number with dots` : `count up to ${step.max}`;
-    if (step.kind === 'find') return `number to dots, up to ${step.max}`;
-    if (step.kind === 'compare') return step.gap > 1 ? 'which has more or fewer (easy)' : `which has more or fewer, up to ${step.max}`;
-    if (step.kind === 'more') return step.gap > 1 ? 'which has more (easy)' : `which has more, up to ${step.max}`;
-    if (step.kind === 'fewer') return `which has fewer, up to ${step.max}`;
-    if (step.kind === 'color') {
-      return step.show ? `see and find ${step.colors.length} colors` : `listen and find ${step.colors.length} colors`;
-    }
-    if (step.kind === 'thing') return `${step.show ? 'see' : 'listen'} and find ${step.pool.length} things`;
-    if (step.kind === 'shape') return `${step.show ? 'see' : 'listen'} and find ${step.pool.length} shapes`;
-    if (step.oneMore) return 'one more';
-    if (step.maxSum > 20) return 'sums with big numbers';
-    return step.pictures ? `sums up to ${step.maxSum}, with pictures` : `sums up to ${step.maxSum}`;
-  },
-  advanced: 'for older children',
+  ages: { 3: 'Age 3', 4: 'Age 4', 5: 'Age 5', 6: 'Age 6+' },
+  labelAge: 'Age',
   wordMore: 'more',
   wordFewer: 'fewer',
 

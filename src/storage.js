@@ -4,7 +4,7 @@
 // For the iOS app, swap their insides for native storage and nothing else changes.
 
 import { CONFIG } from './config.js';
-import { GAME_IDS, gameOrDefault } from './questions.js';
+import { AGES, GAME_IDS, ageOrDefault, gameOrDefault, skillRange } from './questions.js';
 import { t } from './text.js';
 
 const KEY = 'number-run-save-v1';
@@ -27,7 +27,8 @@ const DEFAULTS = {
   language: '', // empty means: use the starting language from config.js
   pace: '', // belt speed: 'slow', 'normal' or 'fast'; empty means the starting speed from config.js
   game: '', // empty means: use the starting game from config.js
-  skills: {}, // progress up each game's ladder: { numbers: 12, colors: 3 }
+  age: 0, // the age picked on the start screen: 3, 4, 5 or 6 (six and older); 0 means the one in config.js
+  skills: {}, // progress up each game's ladder, kept apart for each age: { 3: { numbers: 12, colors: 3 } }
 };
 
 async function readRaw() {
@@ -72,7 +73,10 @@ function cleanScores(list) {
 
 function cleanSkills(saved) {
   const skills = {};
-  for (const id of GAME_IDS) skills[id] = wholeNumber(saved?.[id]);
+  for (const age of AGES) {
+    skills[age] = {};
+    for (const id of GAME_IDS) skills[age][id] = wholeNumber(saved?.[age]?.[id]);
+  }
   return skills;
 }
 
@@ -101,6 +105,7 @@ export const store = {
         pace: typeof saved.pace === 'string' ? saved.pace : '',
         language: typeof saved.language === 'string' ? saved.language : '',
         game: typeof saved.game === 'string' ? saved.game : '',
+        age: AGES.includes(saved.age) ? saved.age : 0,
         skills: cleanSkills(saved.skills),
       };
     } catch {
@@ -124,12 +129,21 @@ export const store = {
     return gameOrDefault(state.game);
   },
 
+  // The age picked on the start screen. Each age has its own steps and its own progress,
+  // so two children of different ages can share a device.
+  age() {
+    return ageOrDefault(state.age);
+  },
+
+  // Progress in a game for the age that is picked, always inside that age's steps.
   skill(gameId = this.game()) {
-    return state.skills[gameId] ?? 0;
+    const [lowest, highest] = skillRange(gameId, this.age());
+    return Math.min(highest, Math.max(lowest, state.skills[this.age()]?.[gameId] ?? 0));
   },
 
   setSkill(gameId, value) {
-    this.update({ skills: { ...state.skills, [gameId]: wholeNumber(value) } });
+    const age = this.age();
+    this.update({ skills: { ...state.skills, [age]: { ...state.skills[age], [gameId]: wholeNumber(value) } } });
   },
 
   // True when a score earns a place in the high score table.

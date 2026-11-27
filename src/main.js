@@ -7,7 +7,7 @@ import { COLORS, CONFIG } from './config.js';
 import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
-import { FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS, levelFromSkill } from './questions.js';
+import { AGES, FINGERS, GAMES, GAME_IDS, ITEMS, SHAPES, THINGS } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
 import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
@@ -50,8 +50,7 @@ const el = {
   characters: $('characters'),
   unlockNote: $('unlock-note'),
   games: $('games'),
-  levelNote: $('level-note'),
-  stages: $('stages'),
+  ages: $('ages'),
   overTitle: $('over-title'),
   overStars: $('over-stars'),
   overScore: $('over-score'),
@@ -179,30 +178,23 @@ function renderGames() {
   );
 }
 
-// The category picker: a few big steps for the chosen game. The lit one is where the child
-// is now. Tapping another starts them at its first step; playing still moves them up and
-// down from there, a little at a time.
-function renderLevel() {
-  const id = store.game();
-  const { levels, groups } = GAMES[id];
-  const level = levelFromSkill(store.skill(id), id);
-  const step = levels[level];
-  el.stages.replaceChildren(
-    ...groups.map((group) => {
-      const chosen = level >= group.from && level <= group.to;
-      const button = tag('button', 'stage-btn', t.groups[group.id] ?? group.id);
+// The age picker. Each age has its own steps in every game (see src/questions.js) and
+// its own saved progress, so picking the age is all it takes to hand the game to another child.
+function renderAges() {
+  const current = store.age();
+  el.ages.replaceChildren(
+    ...AGES.map((age) => {
+      const button = tag('button', 'age-btn', t.ages[age] ?? String(age));
       button.type = 'button';
-      button.classList.toggle('selected', chosen);
-      button.setAttribute('aria-pressed', String(chosen));
+      button.classList.toggle('selected', age === current);
+      button.setAttribute('aria-pressed', String(age === current));
       button.addEventListener('click', () => {
-        if (!chosen) store.setSkill(id, group.from * CONFIG.answersPerLevel);
-        renderLevel();
+        store.update({ age });
+        renderAges();
       });
       return button;
     }),
   );
-  // Steps for older children are marked, so a grown-up knows playing alone will not reach them.
-  el.levelNote.textContent = `${t.levelName(step)}${step.grownUp ? ` · ${t.advanced}` : ''}`;
 }
 
 function renderStart() {
@@ -212,7 +204,7 @@ function renderStart() {
   el.stats.hidden = CHARACTERS.every((def) => isUnlocked(def, totalPoints));
   renderCharacters();
   renderGames();
-  renderLevel();
+  renderAges();
   renderPaces();
   renderVoiceNote();
 }
@@ -389,7 +381,13 @@ function startRun(endless = false) {
   showProgress();
   el.hint.hidden = false;
   show('play');
-  game.startRun({ game: runGame, skill: store.skill(runGame), pace: currentPace(), endless: runEndless });
+  game.startRun({
+    game: runGame,
+    skill: store.skill(runGame),
+    age: store.age(),
+    pace: currentPace(),
+    endless: runEndless,
+  });
   // Nothing is spoken in an endless run: it has sounds only.
   if (runEndless) stopSpeaking();
   // Said inside the tap, which is what lets the voice work on iPhones and iPads.
@@ -406,10 +404,10 @@ function bankRun(score, skill) {
     totalPoints,
     // "Best" is the best endless run. An endless run does not move a child up or down the steps.
     best: runEndless ? Math.max(before.best, score) : before.best,
-    skills: runEndless ? before.skills : { ...before.skills, [runGame]: Math.max(0, Math.floor(skill)) },
     // A newly unlocked character is picked straight away. It can be changed on the start screen.
     ...(newest ? { character: newest.id } : {}),
   });
+  if (!runEndless) store.setSkill(runGame, Math.max(0, Math.floor(skill)));
   return { newest, lastName: before.lastName };
 }
 

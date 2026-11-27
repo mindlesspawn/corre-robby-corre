@@ -4,7 +4,7 @@
 import * as THREE from 'three';
 import { COLORS, CONFIG, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
-import { SHAPES, THINGS, autoTopSkill, levelFromSkill, makeQuestion, shuffle } from './questions.js';
+import { SHAPES, THINGS, levelFromSkill, makeQuestion, shuffle, skillRange } from './questions.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
@@ -80,6 +80,7 @@ export class Game {
     this.character = null;
     this.gameId = CONFIG.game;
     this.skill = 0;
+    this.skillFloor = 0;
     this.skillCap = Infinity;
     this.shake = 0;
     this.topClear = 0.28;
@@ -408,19 +409,19 @@ export class Game {
   }
 
   // game: which game to play (see src/questions.js). skill: the child's saved progress in it.
+  // age: the age picked on the start screen, which sets the steps the run stays inside.
   // pace: 'slow', 'normal' or 'fast' (see config.js).
   // endless: true for the mode that gets faster and faster until the first miss ends it.
-  startRun({ game = CONFIG.game, skill = 0, pace = CONFIG.pace, endless = false } = {}) {
+  startRun({ game = CONFIG.game, skill = 0, age = CONFIG.age, pace = CONFIG.pace, endless = false } = {}) {
     this.resetRun();
     this.pace = CONFIG.paces[pace] ?? CONFIG.paces[CONFIG.pace];
     this.endless = endless;
     this.endlessTravel = this.pace.travel;
     this.gameId = game;
-    this.skill = Math.max(0, skill);
-    // Playing alone stops climbing at the last step meant for small children.
-    // If a grown-up has already put the child past that point, there is no limit.
-    const top = autoTopSkill(game);
-    this.skillCap = this.skill > top ? Infinity : top;
+    // A run never leaves the steps for the child's age: it stops climbing at the last
+    // of them and never drops below the first.
+    [this.skillFloor, this.skillCap] = skillRange(game, age);
+    this.skill = Math.min(this.skillCap, Math.max(this.skillFloor, skill));
     this.gapTimer = 0.6;
     this.mode = 'running';
   }
@@ -494,10 +495,12 @@ export class Game {
 
   nextQuestion() {
     const reached = levelFromSkill(this.skill, this.gameId);
-    // Endless runs pull questions at random from every step up to the one the child has reached.
-    const level = this.endless
-      ? Math.floor(Math.random() * (Math.max(reached, CONFIG.endless.minSteps - 1) + 1))
-      : reached;
+    // Endless runs pull questions at random from the steps for the child's age, up to the
+    // one the child has reached.
+    const first = levelFromSkill(this.skillFloor, this.gameId);
+    const last = levelFromSkill(this.skillCap, this.gameId);
+    const widest = Math.min(last, Math.max(reached, first + CONFIG.endless.minSteps - 1));
+    const level = this.endless ? first + Math.floor(Math.random() * (widest - first + 1)) : reached;
     const question = makeQuestion(this.gameId, level, this.lastText);
     this.lastText = question.text;
 
@@ -591,7 +594,7 @@ export class Game {
   answeredWrong() {
     const row = this.row;
     const q = row.question;
-    if (!this.endless) this.skill = Math.max(0, this.skill - 1);
+    if (!this.endless) this.skill = Math.max(this.skillFloor, this.skill - 1);
     this.doorsDone += 1;
     this.results.push(false);
     this.speedSteps = Math.max(0, this.speedSteps - CONFIG.speedStepsLostOnMiss);
