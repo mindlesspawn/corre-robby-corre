@@ -14,6 +14,44 @@
   --safe-right: env(safe-area-inset-right, 0px);
 }
 
+/* The first-level practice stays on the real belt. Only the instruction card catches taps. */
+.screen.tutorial {
+  background: none;
+  pointer-events: none;
+  overflow: hidden;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.tutorial-card {
+  width: min(100%, 460px);
+  padding: 14px 16px;
+  border: 3px solid #fff;
+  border-radius: 24px;
+  background: #f7fcff;
+  box-shadow: 0 5px 0 #b6d9eb;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.tutorial-title { font-size: 16px; color: #40618d; margin-bottom: 6px; }
+#tutorial-instruction { font-size: clamp(20px, 4.8vw, 27px); font-weight: 600; line-height: 1.15; }
+.tutorial-actions { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 10px; }
+.tutorial-actions .small-btn { min-width: 44px; min-height: 44px; padding: 8px; }
+.tutorial-actions .quiet-btn { min-height: 44px; margin: 0; }
+.tutorial-actions .big-btn { min-height: 48px; padding: 8px 24px; font-size: 24px; }
+.tutorial-gesture { position: fixed; width: 0; height: 0; pointer-events: none; }
+.gesture-hand { position: absolute; left: -27px; top: -7px; filter: drop-shadow(0 3px 2px #20395b55); transform-origin: 27px 7px; animation: tutorial-tap 1.6s ease-in-out infinite; }
+.gesture-trail { position: absolute; width: 48px; height: 48px; left: -24px; top: -24px; border: 4px solid white; border-radius: 50%; box-shadow: 0 0 0 4px #1e88e5; animation: tutorial-ring 1.6s ease-out infinite; }
+[data-step="swipe"] .gesture-hand { animation: tutorial-swipe 2s ease-in-out infinite; }
+[data-step="swipe"] .gesture-trail { width: max(var(--swipe-distance), calc(-1 * var(--swipe-distance))); height: 0; left: min(0px, var(--swipe-distance)); top: 0; border: 0; border-top: 5px dashed white; border-radius: 0; box-shadow: 0 2px 0 #1e88e5; animation: none; }
+@keyframes tutorial-tap { 0%, 70%, 100% { transform: translateY(12px); } 35%, 50% { transform: translateY(0) scale(.9); } }
+@keyframes tutorial-ring { 0%, 30% { opacity: 0; transform: scale(.65); } 40% { opacity: 1; } 85%, 100% { opacity: 0; transform: scale(1.25); } }
+@keyframes tutorial-swipe { 0%, 15% { transform: translateX(0); opacity: 1; } 70%, 85% { transform: translateX(var(--swipe-distance)); opacity: 1; } 100% { transform: translateX(var(--swipe-distance)); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .gesture-hand, .gesture-trail, [data-step="swipe"] .gesture-hand { animation: none; }
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;

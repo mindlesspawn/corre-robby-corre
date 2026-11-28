@@ -82,7 +82,7 @@ export class Game {
     this.cameraHome = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster();
 
-    this.mode = 'idle'; // idle | running | finishing | over | paused
+    this.mode = 'idle'; // idle | tutorial | running | finishing | over | paused
     this.speed = IDLE_SPEED;
     this.character = null;
     this.gameId = CONFIG.game;
@@ -442,6 +442,9 @@ export class Game {
     this.inputLocked = false;
     this.shake = 0;
     this.row.state = 'none';
+    this.row.replayHold = false;
+    this.row.replaySpeed = null;
+    this.tutorialStep = null;
     this.row.group.visible = false;
     this.character?.calm();
   }
@@ -470,7 +473,7 @@ export class Game {
   }
 
   pause() {
-    if (this.mode !== 'running' && this.mode !== 'finishing') return false;
+    if (!['running', 'finishing', 'tutorial'].includes(this.mode)) return false;
     this.modeBeforePause = this.mode;
     this.mode = 'paused';
     return true;
@@ -484,17 +487,26 @@ export class Game {
 
   // --- Player input ---------------------------------------------------------
 
-  setLane(index) {
-    if (this.mode !== 'running' || this.inputLocked) return false;
+  setLane(index, input = 'tap') {
+    if (!['running', 'tutorial'].includes(this.mode) || this.inputLocked) return false;
     const lane = clamp(Math.round(index), 0, LANE_X.length - 1);
     if (lane === this.lane) return false;
     this.lane = lane;
     this.events.onMove?.(lane);
+    if (this.mode === 'tutorial') {
+      if (this.tutorialStep === 'tap' && (input === 'tap' || input === 'keyboard')) {
+        this.tutorialStep = 'swipe';
+        this.events.onTutorialStep?.('swipe');
+      } else if (this.tutorialStep === 'swipe' && (input === 'swipe' || input === 'keyboard')) {
+        this.tutorialStep = 'done';
+        this.events.onTutorialStep?.('done');
+      }
+    }
     return true;
   }
 
-  moveLane(direction) {
-    return this.setLane(this.lane + direction);
+  moveLane(direction, input = 'swipe') {
+    return this.setLane(this.lane + direction, input);
   }
 
   // A tap picks the lane under the finger: a door if the finger is on one,
@@ -531,6 +543,44 @@ export class Game {
     return Math.max(CONFIG.minTravelTime, this.pace.travel - CONFIG.travelTimeStep * this.speedSteps);
   }
 
+  thinkingTime(question) {
+    const ease = CONFIG.ageEase[this.age] ?? { slower: 1, perItem: 0 };
+    return this.pace.think * ease.slower + Math.min(14, thingsToCount(question)) * ease.perItem + 0.5;
+  }
+
+  // Keep the same doors, wait for the repeated voice, then give a whole new thinking window.
+  replayQuestion() {
+    const row = this.row;
+    if (this.mode !== 'running' || this.endless || row.state !== 'approach' || row.locked) return false;
+    row.replayHold = true;
+    row.replayWait = 0;
+    row.replayWaitLimit = (this.events.questionSeconds?.(row.question) ?? 0) + CONFIG.maxWaitForVoice;
+    row.replaySpeed = null;
+    this.speed = 0;
+    return true;
+  }
+
+  // Practice uses the actual controls and doors, with no timer, questions, or points.
+  startTutorial({ age = CONFIG.age, pace = CONFIG.pace } = {}) {
+    this.startRun({ game: 'colors', age, pace });
+    this.mode = 'tutorial';
+    this.nextQuestion();
+    this.row.z = -12;
+    this.row.age = 1;
+    this.speed = 0;
+    this.placeRow(0);
+    this.tutorialStep = 'tap';
+    this.events.onTutorialStep?.('tap');
+  }
+
+  tutorialPosition(lane) {
+    const rect = this.canvas.getBoundingClientRect();
+    // A resized camera may not have rendered yet when the overlay asks for its position.
+    this.camera.updateMatrixWorld();
+    const point = new THREE.Vector3(LANE_X[lane], DOOR_HEIGHT / 2, this.row.z).project(this.camera);
+    return { x: rect.left + (point.x + 1) * rect.width / 2, y: rect.top + (1 - point.y) * rect.height / 2 };
+  }
+
   nextQuestion() {
     // Endless runs pull questions at random from every level open to the child.
     const widest = Math.min(LEVELS - 1, Math.max(this.reached, CONFIG.endless.minSteps - 1));
@@ -548,10 +598,11 @@ export class Game {
     // Endless runs do not wait for anybody.
     // Younger children get a slower belt, and extra time for every thing there is to count.
     const ease = CONFIG.ageEase[this.age] ?? { slower: 1, perItem: 0 };
-    const toCount = Math.min(14, thingsToCount(question));
     row.travelTime = this.endless
       ? this.travelTime()
-      : Math.max(this.travelTime() * ease.slower, spoken + this.pace.think * ease.slower + toCount * ease.perItem + 0.5);
+      : Math.max(this.travelTime() * ease.slower, spoken + this.thinkingTime(question));
+    row.replayHold = false;
+    row.replaySpeed = null;
     row.age = 0;
     row.state = 'approach';
     row.locked = false;
@@ -576,13 +627,14 @@ export class Game {
       this.drawSign(door, question.choices[i]);
     });
 
-    this.events.onQuestion?.(question, { level, index: this.doorsDone, total: CONFIG.doorsPerRun });
+    if (this.mode !== 'tutorial') this.events.onQuestion?.(question, { level, index: this.doorsDone, total: CONFIG.doorsPerRun });
   }
 
   // The lane choice is fixed just before the doors arrive.
   lockIn() {
     const row = this.row;
     row.locked = true;
+    row.replaySpeed = null;
     row.chosen = this.lane;
     row.correct = row.chosen === row.question.correctIndex;
     this.inputLocked = true;
@@ -680,7 +732,8 @@ export class Game {
   update(dt) {
     const playing = this.mode === 'running' || this.mode === 'finishing';
     const travel = this.row.state === 'none' ? this.travelTime() : (this.row.travelTime ?? this.travelTime());
-    const targetSpeed = playing ? CONFIG.spawnDistance / travel : IDLE_SPEED;
+    const targetSpeed = this.mode === 'tutorial' || this.row.replayHold ? 0
+      : playing ? (this.row.replaySpeed ?? CONFIG.spawnDistance / travel) : IDLE_SPEED;
     this.speed += (targetSpeed - this.speed) * Math.min(1, dt * 2.5);
 
     this.markOffset = (this.markOffset + this.speed * dt) % MARK_SPACING;
@@ -738,6 +791,16 @@ export class Game {
       if (!this.endless && this.doorsDone >= CONFIG.doorsPerRun) this.startFinish();
       else this.nextQuestion();
       return;
+    }
+
+    if (row.replayHold) {
+      row.replayWait += dt;
+      // Allow speech to start, and bound the wait if a device's voice gets stuck.
+      if (row.replayWait < 0.15 || (this.events.isSpeaking?.() && row.replayWait < row.replayWaitLimit)) return;
+      row.replayHold = false;
+      const remaining = Math.max(0, this.runnerZ - this.character.front - row.z);
+      row.replaySpeed = remaining / this.thinkingTime(row.question);
+      this.speed = row.replaySpeed;
     }
 
     row.z += this.speed * dt;

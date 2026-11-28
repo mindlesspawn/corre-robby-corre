@@ -100,6 +100,8 @@ function allLines() {
   const add = (text) => text && lines.add(text);
 
   add(t.say.go);
+  add(t.tutorialTap);
+  add(t.tutorialSwipe);
   t.say.praise.forEach(add);
   add(t.say.finishZero);
   for (let n = 1; n <= 10; n++) add(t.say.finish(n));

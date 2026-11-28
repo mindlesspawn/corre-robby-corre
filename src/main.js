@@ -75,7 +75,7 @@ const el = {
   scoreEmpty: $('score-empty'),
 };
 
-const SCREENS = ['language', 'start', 'settings', 'support', 'over', 'scores', 'pause'];
+const SCREENS = ['language', 'start', 'settings', 'support', 'over', 'scores', 'pause', 'tutorial'];
 
 let game = null;
 let thumbs = {};
@@ -87,6 +87,7 @@ let pickedLevel = null; // an earlier level tapped on the start screen, to play 
 let runResults = []; // right and wrong so far in this run
 let runEndless = false; // true while playing (or having just played) an endless run
 let currentQuestion = null;
+let tutorialStartsRun = false;
 
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
@@ -94,7 +95,7 @@ const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
 function show(name) {
   for (const id of SCREENS) $(`screen-${id}`).hidden = id !== name;
-  el.hud.hidden = name !== 'play' && name !== 'pause';
+  el.hud.hidden = name !== 'play' && (name !== 'pause' || game?.modeBeforePause === 'tutorial');
   screen = name;
 }
 
@@ -451,6 +452,11 @@ function showQuestion(question, solved = false) {
 // so the view is framed with the doors below it. Measured with the tallest question there is.
 function measureQuestionArea() {
   if (!game) return;
+  if (screen === 'tutorial') {
+    game.setTopClear((document.querySelector('.tutorial-card').getBoundingClientRect().bottom + 12) / window.innerHeight);
+    placeTutorialHand();
+    return;
+  }
   const wasHidden = el.hud.hidden;
   const keep = { nodes: [...el.question.childNodes], ask: el.ask.textContent, className: el.question.className };
   el.hud.style.visibility = 'hidden';
@@ -490,8 +496,49 @@ function showProgress() {
 
 // --- A run -----------------------------------------------------------------------
 
+function tutorialWords() {
+  return game.tutorialStep === 'tap' ? t.tutorialTap : game.tutorialStep === 'swipe' ? t.tutorialSwipe : t.say.praise[0];
+}
+
+function placeTutorialHand() {
+  if (screen !== 'tutorial') return;
+  const gesture = $('tutorial-gesture');
+  const step = game.tutorialStep;
+  gesture.hidden = step === 'done';
+  gesture.dataset.step = step;
+  const fromLane = step === 'tap' ? (game.lane === 0 ? 2 : 0) : game.lane;
+  const toLane = fromLane === 2 ? 1 : fromLane + 1;
+  const from = game.tutorialPosition(fromLane);
+  const to = game.tutorialPosition(toLane);
+  gesture.style.left = `${from.x}px`;
+  gesture.style.top = `${from.y}px`;
+  gesture.style.setProperty('--swipe-distance', `${to.x - from.x}px`);
+}
+
+function startTutorial(playAfter = false) {
+  tutorialStartsRun = playAfter;
+  currentQuestion = null;
+  el.wow.hidden = true;
+  stopSpeaking();
+  setMusicSpeed(1);
+  game.setCharacter(currentCharacter());
+  show('tutorial');
+  preloadSpeech([t.tutorialTap, t.tutorialSwipe]);
+  game.startTutorial({ age: store.age(), pace: currentPace() });
+}
+
+function finishTutorial() {
+  stopSpeaking();
+  if (tutorialStartsRun) startRun(false, true);
+  else goHome();
+}
+
 // endless: true for the mode that gets faster and faster and goes on the high score table.
-function startRun(endless = false) {
+function startRun(endless = false, skipTutorial = false) {
+  if (!endless && !skipTutorial && currentLevel() === 0 && !store.get().tutorialAges[store.age()]) {
+    startTutorial(true);
+    return;
+  }
   runEndless = endless === true;
   el.progress.hidden = runEndless; // an endless run has no fixed number of doors to count off
   runGame = store.game();
@@ -507,6 +554,7 @@ function startRun(endless = false) {
   showProgress();
   el.hint.hidden = false;
   show('play');
+  measureQuestionArea();
   game.startRun({
     game: runGame,
     age: store.age(),
@@ -542,7 +590,7 @@ function goHome() {
   el.wow.hidden = true;
   setMusicSpeed(1);
   // Leaving a run early still keeps the points and progress earned so far.
-  if (screen === 'pause') bankRun(game.score);
+  if (screen === 'pause' && game.modeBeforePause !== 'tutorial') bankRun(game.score);
   game.toIdle();
   game.setCharacter(currentCharacter());
   renderStart();
@@ -550,13 +598,27 @@ function goHome() {
 }
 
 function pauseRun() {
-  if (screen === 'play' && game.pause()) {
+  if ((screen === 'play' || screen === 'tutorial') && game.pause()) {
     stopSpeaking();
     show('pause');
   }
 }
 
 const gameEvents = {
+  onTutorialStep(step) {
+    $('tutorial-instruction').textContent = step === 'done' ? t.tutorialDone : tutorialWords();
+    $('btn-tutorial-done').hidden = step !== 'done';
+    $('btn-tutorial-skip').hidden = step === 'done';
+    $('btn-tutorial-repeat').hidden = step === 'done';
+    $('btn-tutorial-done').querySelector('[data-t]').textContent = tutorialStartsRun ? t.play : t.done;
+    if (step === 'done') {
+      store.update({ tutorialAges: { ...store.get().tutorialAges, [store.age()]: true } });
+      sfx.correct();
+    }
+    measureQuestionArea();
+    speak(tutorialWords());
+  },
+
   onQuestion(question) {
     currentQuestion = question;
     showQuestion(question);
@@ -608,6 +670,7 @@ const gameEvents = {
   onMove() {
     el.hint.hidden = true;
     sfx.move();
+    if (screen === 'tutorial') requestAnimationFrame(placeTutorialHand);
   },
 
   onFinishing({ score, endless }) {
@@ -896,6 +959,11 @@ function slideVolume(slider) {
 // --- Wiring ----------------------------------------------------------------------------
 
 function wireButtons() {
+  $('btn-tutorial').addEventListener('click', () => startTutorial(false));
+  $('btn-tutorial-skip').addEventListener('click', finishTutorial);
+  $('btn-tutorial-done').addEventListener('click', finishTutorial);
+  $('btn-tutorial-repeat').addEventListener('click', () => speak(tutorialWords()));
+  $('btn-tutorial-sound').addEventListener('click', openSound);
   $('btn-play').addEventListener('click', () => startRun(false));
   $('btn-endless').addEventListener('click', () => startRun(true));
   // "Play again" repeats whichever kind of run was just played.
@@ -919,8 +987,10 @@ function wireButtons() {
   $('btn-pause-home').addEventListener('click', goHome);
   $('btn-pause').addEventListener('click', pauseRun);
   $('btn-resume').addEventListener('click', () => {
-    show('play');
     game.resume();
+    show(game.mode === 'tutorial' ? 'tutorial' : 'play');
+    measureQuestionArea();
+    if (game.mode === 'tutorial') speak(tutorialWords());
   });
   el.mute.addEventListener('click', openSound);
   el.soundStart.addEventListener('click', openSound);
@@ -931,9 +1001,9 @@ function wireButtons() {
     slider.addEventListener('change', () => slider.blur());
   }
 
-  // Tapping the question says it again.
+  // Replaying also stops the doors for the voice and renews the time to answer.
   el.question.addEventListener('click', () => {
-    if (currentQuestion) speak(askText(currentQuestion));
+    if (screen === 'play' && currentQuestion && game.replayQuestion()) speak(askText(currentQuestion));
   });
 
   el.nameForm.addEventListener('submit', (event) => {
@@ -973,13 +1043,13 @@ function wireTouch() {
     const dy = event.clientY - press.y;
     if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       press.swiped = true;
-      if (screen === 'play') game.moveLane(Math.sign(dx));
+      if (screen === 'play' || screen === 'tutorial') game.moveLane(Math.sign(dx));
     }
   });
   el.canvas.addEventListener('pointerup', (event) => {
     if (!press || event.pointerId !== press.id) return;
     const moved = Math.hypot(event.clientX - press.x, event.clientY - press.y);
-    if (!press.swiped && moved < 22 && screen === 'play') game.tapAt(press.x, press.y);
+    if (!press.swiped && moved < 22 && (screen === 'play' || screen === 'tutorial')) game.tapAt(press.x, press.y);
     press = null;
   });
   el.canvas.addEventListener('pointercancel', () => {
@@ -988,9 +1058,11 @@ function wireTouch() {
 
   // Arrow keys, for trying the game on a computer.
   window.addEventListener('keydown', (event) => {
-    if (screen !== 'play') return;
-    if (event.key === 'ArrowLeft') game.moveLane(-1);
-    if (event.key === 'ArrowRight') game.moveLane(1);
+    if (screen !== 'play' && screen !== 'tutorial') return;
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      event.preventDefault();
+      game.moveLane(event.key === 'ArrowLeft' ? -1 : 1, 'keyboard');
+    }
   });
 
   // Keep the page from zooming, scrolling, or popping up menus under small fingers.

@@ -31,6 +31,7 @@ const DEFAULTS = {
   game: '', // empty means: use the starting game from config.js
   age: 0, // the age picked on the start screen: 3, 4, 5 or 6 (six and older); 0 means the one in config.js
   cleared: {}, // how many levels are cleared in each game, kept apart for each age: { 3: { numbers: 4 } }
+  tutorialAges: {}, // completed movement practice, separately for each age sharing this device
 };
 
 // Inside the iOS app the save goes into the phone's own settings store, which iOS keeps
@@ -122,6 +123,7 @@ export const store = {
         game: typeof saved.game === 'string' ? saved.game : '',
         age: AGES.includes(saved.age) ? saved.age : 0,
         cleared: cleanCleared(saved.cleared),
+        tutorialAges: Object.fromEntries(AGES.filter((age) => saved.tutorialAges?.[age] === true).map((age) => [age, true])),
       };
     } catch {
       state = { ...DEFAULTS, cleared: cleanCleared({}) };

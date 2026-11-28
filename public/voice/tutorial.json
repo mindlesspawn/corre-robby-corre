@@ -1,0 +1,31 @@
+{
+  "voice_id": "NqP4oJdHHxqnWdXZZQVC",
+  "model_id": "eleven_v4",
+  "flow_url": "https://elevenlabs.io/app/flows/eSghLbLkXy57LDUzU4C0",
+  "recordings": [
+    {
+      "language": "es",
+      "text": "Toca otra puerta para moverte.",
+      "generation_id": "O3wvhlQ2tZbcuB12tDHb",
+      "duration_seconds": 2.08
+    },
+    {
+      "language": "es",
+      "text": "Ahora desliza el dedo hacia un lado.",
+      "generation_id": "oS0MCVjladLVn4Ztq3Gn",
+      "duration_seconds": 3.12
+    },
+    {
+      "language": "en",
+      "text": "Tap another door to move.",
+      "generation_id": "EfXGUlL6b4M2g2sX9GVG",
+      "duration_seconds": 2
+    },
+    {
+      "language": "en",
+      "text": "Now slide your finger to one side.",
+      "generation_id": "SOt4w62nNSNzTkJK6vYm",
+      "duration_seconds": 2.56
+    }
+  ]
+}
