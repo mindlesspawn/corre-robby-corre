@@ -62,7 +62,7 @@ PARA LA FAMILIA
 • Tres velocidades, y volumen de la música aparte.
 • El avance se guarda por edad, para que hermanos de distintas edades compartan el mismo aparato.
 
-La voz del juego está hecha por computadora.
+La voz del juego está generada por inteligencia artificial; no es una persona.
 
 **Keywords (100 letters at most, separated by commas)**
 
@@ -111,7 +111,7 @@ FOR THE FAMILY
 • Three speeds, and a separate music volume.
 • Progress is kept for each age, so brothers and sisters of different ages can share a device.
 
-The game's voice is computer-generated.
+The game's voice is AI-generated, not a person.
 
 **Keywords**
 
@@ -138,7 +138,7 @@ Paste this into "App Review Information":
 >
 > The settings screen is reached with the gear button on the start screen. There are no links out of the app. If a support link is added later it will be on the settings screen behind a parental gate (a multiplication question).
 >
-> The spoken voice is computer-generated (OpenAI text-to-speech), recorded in advance and stored inside the app.
+> The spoken voice is AI-generated (OpenAI text-to-speech), recorded in advance and stored inside the app.
 
 ## Still to make
 

@@ -11,6 +11,8 @@
 //   --language <code>  es (Spanish, the default) or en (English)
 //   --key-file <path>  a file with a line OPENAI_API_KEY=...  (or set OPENAI_API_KEY yourself)
 //   --limit <n>        only record the first n missing clips (for a trial run)
+//   --redo             record every line again, replacing the clips that are there
+//                      (for a change of voice; a clip is only replaced once its new one arrives)
 //   --check            also listen back: transcribe the clips and compare them with the text
 //   --list             just print the lines and stop
 //
@@ -29,13 +31,14 @@ const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
 const option = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 
-const VOICE = 'coral';
-const BACKUP_VOICE = 'nova';
 const MODELS = ['gpt-4o-mini-tts', 'tts-1-hd', 'tts-1'];
 
 // What changes from one language to the next.
 const VOICES = {
   es: {
+    // Which voice speaks, and the one to fall back on if the account cannot use it.
+    voice: 'coral',
+    backup: 'nova',
     // How the voice should sound. Only the newer models listen to this.
     style:
       'Habla en español de México con voz cálida, alegre y muy clara, sin prisa, ' +
@@ -53,9 +56,15 @@ const VOICES = {
     plus: 'mas',
   },
   en: {
+    // Picked by ear from test clips of seven voices and nine ways of directing them. The
+    // first English voice (coral, directed as "a preschool teacher") sounded too much like
+    // a machine putting on a performance; asking for a real person instead helped most.
+    voice: 'sage',
+    backup: 'coral',
     style:
-      'Speak in American English with a warm, cheerful and very clear voice, unhurried, ' +
-      'like a preschool teacher talking kindly to a three-year-old child.',
+      'You are a fun aunt playing a game with her three-year-old niece. Natural, everyday American English. ' +
+      'Genuinely playful and a little excited, the way a real person is with a small child, but never sing-song, ' +
+      'never like a cartoon or a TV host. Clear, and a little slower than normal.',
     hint:
       'Short sentences in English for small children. ' +
       'There are four flowers. Where are three dots? One, two, three. There are ten apples. ' +
@@ -70,7 +79,7 @@ const VOICES = {
 
 const LANGUAGE = option('--language') ?? 'es';
 if (!VOICES[LANGUAGE]) throw new Error(`No voice is set up for "${LANGUAGE}". Choose one of: ${Object.keys(VOICES).join(', ')}.`);
-const { style: STYLE, hint: HINT, sameWord: SAME_WORD, plus: PLUS } = VOICES[LANGUAGE];
+const { voice: VOICE, backup: BACKUP_VOICE, style: STYLE, hint: HINT, sameWord: SAME_WORD, plus: PLUS } = VOICES[LANGUAGE];
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const clipFolder = path.join(root, 'public', 'voice', LANGUAGE);
@@ -274,14 +283,15 @@ if (flag('--list')) {
   process.exit(0);
 }
 
-const needsKey = flag('--check') || lines.some((text) => !fs.existsSync(path.join(clipFolder, clipName(text))));
+const hasClip = (text) => !flag('--redo') && fs.existsSync(path.join(clipFolder, clipName(text)));
+const needsKey = flag('--check') || lines.some((text) => !hasClip(text));
 if (needsKey) key = readKey();
 fs.mkdirSync(clipFolder, { recursive: true });
 fs.mkdirSync(path.dirname(listFile), { recursive: true });
 
 const limit = Number(option('--limit')) || Infinity;
-const missing = lines.filter((text) => !fs.existsSync(path.join(clipFolder, clipName(text)))).slice(0, limit);
-console.log(`${lines.length - lines.filter((text) => !fs.existsSync(path.join(clipFolder, clipName(text)))).length} already recorded, recording ${missing.length} now.`);
+const missing = lines.filter((text) => !hasClip(text)).slice(0, limit);
+console.log(`${lines.filter(hasClip).length} already recorded, recording ${missing.length} now.`);
 
 let failed = 0;
 if (missing.length) {
