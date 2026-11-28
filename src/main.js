@@ -11,7 +11,8 @@ import { faceParts, faceSpot } from './faces.js';
 import { emojiPicture, preloadEmoji, withPictures, write } from './emoji.js';
 import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor, stickerFor } from './questions.js';
 import { store } from './storage.js';
-import { setMuted, sfx, unlockAudio } from './audio.js';
+import { setMuted, setSoundVolumes, voiceLevel, sfx, unlockAudio } from './audio.js';
+import { AUDIO_DEFAULTS } from './audio-settings.js';
 import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
 import {
   canSpeak,
@@ -21,6 +22,7 @@ import {
   speechSeconds,
   setSpeechLanguage,
   setSpeechMuted,
+  setSpeechVolume,
   speak,
   stopSpeaking,
   voiceState,
@@ -28,6 +30,10 @@ import {
 import { LANGUAGES, answerText, askText, getLanguage, nameOf, setLanguage, spokenAnswer, t } from './text.js';
 
 const $ = (id) => document.getElementById(id);
+
+for (const container of document.querySelectorAll('[data-volume-controls]')) {
+  container.append($('volume-controls-template').content.cloneNode(true));
+}
 
 const el = {
   canvas: $('scene'),
@@ -39,11 +45,10 @@ const el = {
   progress: $('progress'),
   hint: $('hint'),
   mute: $('btn-mute'),
-  muteStart: $('btn-mute-start'),
-  // The music switch and slider are on the start screen and on the pause screen.
-  musicRows: [...document.querySelectorAll('.music-row')],
-  musicButtons: [...document.querySelectorAll('.music-btn')],
-  musicSliders: [...document.querySelectorAll('.music-slider')],
+  soundStart: $('btn-sound-start'),
+  soundDialog: $('sound-dialog'),
+  muteButtons: [...document.querySelectorAll('.mute-button')],
+  volumeSliders: [...document.querySelectorAll('.volume-slider')],
   languages: $('languages'),
   paces: $('paces'),
   voiceNote: $('voice-note'),
@@ -836,52 +841,54 @@ function buildLanguagePick() {
 
 // --- Sound ---------------------------------------------------------------------------
 
-// The sound button turns off everything: sound effects, voice, and music.
-// The music button and the music slider change only the music.
+// The sound panel has independent music, voice and effects, plus overall volume.
 function applyMute() {
-  const { muted, music, musicVolume } = store.get();
-  const playing = music && !muted && musicVolume > 0;
+  const settings = store.get();
+  const { muted, music, musicVolume, masterVolume, voiceVolume } = settings;
+  const silent = muted || masterVolume === 0;
+  const playing = music && !silent && musicVolume > 0;
+  setSoundVolumes(settings);
   setMuted(muted);
-  setSpeechMuted(muted);
+  setSpeechVolume(voiceLevel());
+  setSpeechMuted(silent || voiceVolume === 0);
   setMusicVolume(musicVolume);
   setMusic(playing);
-  write(el.mute, muted ? '🔇' : '🔊');
-  write(el.muteStart, muted ? t.soundOff : t.soundOn);
-  el.muteStart.classList.toggle('off', muted);
-  el.muteStart.setAttribute('aria-pressed', String(!muted));
-  for (const row of el.musicRows) row.classList.toggle('off', !playing);
-  for (const button of el.musicButtons) {
-    button.classList.toggle('off', !playing);
-    button.setAttribute('aria-pressed', String(playing));
+  write(el.mute, silent ? '🔇' : '🔊');
+  write(el.soundStart, silent ? '🔇' : '🔊');
+  for (const button of el.muteButtons) {
+    write(button, silent ? t.soundOff : t.soundOn);
+    button.classList.toggle('off', silent);
+    button.setAttribute('aria-pressed', String(!silent));
   }
-  for (const slider of el.musicSliders) {
-    slider.value = String(Math.round(musicVolume * 100));
-    slider.style.setProperty('--v', String(musicVolume));
+  for (const slider of el.volumeSliders) {
+    const value = settings[slider.dataset.volume];
+    slider.value = String(Math.round(value * 100));
+    slider.style.setProperty('--v', String(value));
+    slider.setAttribute('aria-valuetext', `${slider.value}%`);
+    slider.parentElement.querySelector('output').value = `${slider.value}%`;
   }
 }
 
 function toggleMute() {
-  store.update({ muted: !store.get().muted });
+  const { muted, masterVolume } = store.get();
+  const silent = muted || masterVolume === 0;
+  store.update({ muted: !silent, masterVolume: masterVolume > 0 ? masterVolume : AUDIO_DEFAULTS.masterVolume });
   applyMute();
   renderVoiceNote();
 }
 
-function toggleMusic() {
-  const { muted, music, musicVolume } = store.get();
-  const playing = music && !muted && musicVolume > 0;
-  // Asking for music while all sound is off turns the sound back on too,
-  // and a slider left at zero goes back to where it started.
-  if (playing) store.update({ music: false });
-  else store.update({ muted: false, music: true, musicVolume: musicVolume > 0 ? musicVolume : 0.65 });
-  applyMute();
-  renderVoiceNote();
+function openSound() {
+  pauseRun();
+  if (!el.soundDialog.open) el.soundDialog.showModal();
 }
 
-// Sliding to zero turns the music off. Sliding up from anywhere turns it on.
-function slideMusic(slider) {
-  const musicVolume = Math.min(1, Math.max(0, Number(slider.value) / 100 || 0));
-  if (musicVolume > 0) store.update({ muted: false, music: true, musicVolume });
-  else store.update({ music: false, musicVolume: 0 });
+function slideVolume(slider) {
+  const key = slider.dataset.volume;
+  const value = Math.min(1, Math.max(0, Number(slider.value) / 100 || 0));
+  const patch = { [key]: value };
+  if (value > 0) patch.muted = false;
+  if (key === 'musicVolume') patch.music = value > 0;
+  store.update(patch);
   applyMute();
   renderVoiceNote();
 }
@@ -915,11 +922,11 @@ function wireButtons() {
     show('play');
     game.resume();
   });
-  el.mute.addEventListener('click', toggleMute);
-  el.muteStart.addEventListener('click', toggleMute);
-  for (const button of el.musicButtons) button.addEventListener('click', toggleMusic);
-  for (const slider of el.musicSliders) {
-    slider.addEventListener('input', () => slideMusic(slider));
+  el.mute.addEventListener('click', openSound);
+  el.soundStart.addEventListener('click', openSound);
+  for (const button of el.muteButtons) button.addEventListener('click', toggleMute);
+  for (const slider of el.volumeSliders) {
+    slider.addEventListener('input', () => slideVolume(slider));
     // Let go of the slider afterwards, so the arrow keys go back to moving the runner.
     slider.addEventListener('change', () => slider.blur());
   }

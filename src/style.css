@@ -359,31 +359,53 @@ h2 {
   box-shadow: 0 4px 0 #cfd8dc;
 }
 
-/* Music has no "off" picture of its own, so it gets a line through it. */
-.music-btn.off::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: #e53935;
-  box-shadow: 0 0 0 2px #eceff1;
-  transform: translate(-50%, -50%) rotate(-45deg);
-}
-
-/* The music's own volume: its switch, then a slider. */
-.music-row {
-  display: flex;
+/* The same labeled controls appear in the quick panel, settings and pause. */
+.volume-control {
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: 12px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 700;
 }
 
-.music-slider {
-  --v: 0.65; /* how far along the slider is, 0 to 1 (set in main.js) */
+.volume-control output {
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+
+.sound-dialog {
+  border: 0;
+  border-radius: 30px;
+  padding: 0;
+  margin: auto;
+  width: min(440px, calc(100% - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 32px - var(--safe-top) - var(--safe-bottom));
+  overflow-y: auto;
+  color: inherit;
+  background: var(--panel);
+}
+
+.sound-dialog::backdrop {
+  background: rgba(24, 45, 80, 0.45);
+}
+
+.sound-dialog .panel {
+  width: 100%;
+  margin: 0;
+  box-shadow: none;
+}
+
+.sound-dialog h2 {
+  font-size: 30px;
+}
+
+.volume-slider {
+  --v: 0.4; /* how far along the slider is, 0 to 1 (set in main.js) */
   --thumb: 30px;
-  flex: 1;
+  grid-column: 1 / -1;
+  width: 100%;
   min-width: 0;
   height: 44px;
   margin: 0;
@@ -394,7 +416,7 @@ h2 {
   cursor: pointer;
 }
 
-.music-slider::-webkit-slider-runnable-track {
+.volume-slider::-webkit-slider-runnable-track {
   height: 12px;
   border-radius: 6px;
   background: linear-gradient(
@@ -404,7 +426,7 @@ h2 {
   );
 }
 
-.music-slider::-webkit-slider-thumb {
+.volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: var(--thumb);
@@ -416,19 +438,19 @@ h2 {
   box-shadow: 0 3px 0 rgba(26, 35, 126, 0.18);
 }
 
-.music-slider::-moz-range-track {
+.volume-slider::-moz-range-track {
   height: 12px;
   border-radius: 6px;
   background: #cfe4f8;
 }
 
-.music-slider::-moz-range-progress {
+.volume-slider::-moz-range-progress {
   height: 12px;
   border-radius: 6px;
   background: var(--sun);
 }
 
-.music-slider::-moz-range-thumb {
+.volume-slider::-moz-range-thumb {
   box-sizing: border-box;
   width: var(--thumb);
   height: var(--thumb);
@@ -438,10 +460,10 @@ h2 {
   box-shadow: 0 3px 0 rgba(26, 35, 126, 0.18);
 }
 
-/* Music off: the slider keeps its place but goes grey. Sliding it turns the music back on. */
-.music-row.off .music-slider {
-  --sun: #b0bec5;
-  --sun-dark: #90a4ae;
+.volume-slider:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 12px;
 }
 
 /* Español | English switch on the start screen */

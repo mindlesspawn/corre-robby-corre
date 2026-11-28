@@ -1,0 +1,26 @@
+{
+  "title": "Sunny Steps",
+  "generatedOn": "2026-11-27",
+  "provider": "ElevenLabs",
+  "model": "eleven_music_v2",
+  "flowUrl": "https://elevenlabs.io/app/flows/gm6twH64ZaZCdZZOOQXM",
+  "generationId": "Bo05xirUQlKofUhfQR2T",
+  "take": 1,
+  "sourceDurationSeconds": 160,
+  "gameDurationSeconds": 157.5,
+  "requestedBpm": 96,
+  "instrumental": true,
+  "mastering": {
+    "crossfadeSeconds": 2.5,
+    "gainDb": -6.9,
+    "measuredLufs": -20.44,
+    "measuredTruePeakDb": -7.56,
+    "format": "MP3, 48 kHz, stereo, 160 kbps"
+  },
+  "prompt": "Instrumental acoustic soul-pop with a light bossa-nova groove, 96 BPM in 4/4, sunny and playfully confident but relaxed: warm Rhodes electric piano, fingerpicked nylon guitar, rounded melodic bass, brushed drums and soft shakers, with a mellow marimba sharing a short memorable rising-and-falling hook with the piano. Use gently syncopated rhythms, warm major-sixth and ninth chords, natural human dynamics and a clear uncluttered mix with soft treble; no vocals, humming, whistles, piercing bells, heavy bass, claps, dramatic swells or sound effects. Over 64 bars introduce the hook immediately, alternate four related melodic ideas and occasional sparse guitar-and-bass passages every eight bars, return to the opening harmony and same groove at the end for continuous looping, with no silence, fade-out, final chord or big ending.",
+  "alternateGenerationIds": [
+    "LHXUvcQMLzqD0ujE9caM",
+    "PhQYatgCl6lXgp2qEoOl",
+    "wVFPZtAOJFmVUlk4OCNF"
+  ]
+}

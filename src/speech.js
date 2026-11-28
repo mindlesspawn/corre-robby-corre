@@ -20,6 +20,7 @@ const PREFERRED = {
 
 let language = 'es';
 let muted = false;
+let volume = 1;
 let voice = null;
 let current = null; // holds on to the line being said; some browsers drop it otherwise
 
@@ -86,6 +87,12 @@ export function setSpeechMuted(value) {
   if (value) stopSpeaking();
 }
 
+export function setSpeechVolume(value) {
+  volume = Math.min(1, Math.max(0, Number(value) || 0));
+  if (current) current.volume = volume;
+  if (volume === 0) stopSpeaking();
+}
+
 export function stopSpeaking() {
   stopVoiceClip();
   synth()?.cancel();
@@ -132,6 +139,7 @@ function speakWithDevice(text, queue) {
   if (voice) line.voice = voice;
   line.rate = 0.9; // a little slower, for small listeners
   line.pitch = 1.15;
+  line.volume = volume;
   current = line;
 
   const say = () => {

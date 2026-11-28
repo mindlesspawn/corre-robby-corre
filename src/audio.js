@@ -1,8 +1,63 @@
 // Sound effects made from simple tones, so there are no sound files to load.
 // iOS only allows sound after the first touch, so unlockAudio() is called on every tap.
 
+import { AUDIO_DEFAULTS } from './audio-settings.js';
+
 let ctx = null;
 let muted = false;
+let volumes = { ...AUDIO_DEFAULTS };
+let master = null;
+let effects = null;
+let voiceOut = null;
+
+function setGain(node, value) {
+  if (!node || !ctx) return;
+  node.gain.cancelScheduledValues(ctx.currentTime);
+  node.gain.setTargetAtTime(value, ctx.currentTime, 0.015);
+}
+
+// Music, voice and effects all pass through the same overall volume control.
+export function audioOutput() {
+  if (!ctx) return null;
+  if (!master) {
+    master = ctx.createGain();
+    master.gain.value = muted ? 0 : volumes.masterVolume ** 2;
+    master.connect(ctx.destination);
+  }
+  return master;
+}
+
+function effectsOutput() {
+  if (!effects) {
+    effects = ctx.createGain();
+    effects.gain.value = volumes.effectsVolume ** 2;
+    effects.connect(audioOutput());
+  }
+  return effects;
+}
+
+function voiceOutput() {
+  if (!voiceOut) {
+    voiceOut = ctx.createGain();
+    voiceOut.gain.value = volumes.voiceVolume ** 2;
+    voiceOut.connect(audioOutput());
+  }
+  return voiceOut;
+}
+
+export function setSoundVolumes(settings) {
+  for (const key of ['masterVolume', 'voiceVolume', 'effectsVolume']) {
+    volumes[key] = Math.min(1, Math.max(0, Number(settings[key]) || 0));
+  }
+  setGain(master, muted ? 0 : volumes.masterVolume ** 2);
+  setGain(effects, volumes.effectsVolume ** 2);
+  setGain(voiceOut, volumes.voiceVolume ** 2);
+}
+
+// The device's speech synthesizer is outside Web Audio, so give it the same mix.
+export function voiceLevel() {
+  return muted ? 0 : (volumes.masterVolume * volumes.voiceVolume) ** 2;
+}
 
 // iPhones and iPads silence "game" sound when the switch on the side is set to silent.
 // Music and video are not silenced by it, so the game asks for that kind of sound.
@@ -79,6 +134,7 @@ export function audioContext() {
 
 export function setMuted(value) {
   muted = value;
+  setGain(master, muted ? 0 : volumes.masterVolume ** 2);
   if (value) stopVoiceClip();
 }
 
@@ -121,7 +177,7 @@ function startClip(url, mine, onFail) {
       if (mine !== request || muted) return;
       const source = ctx.createBufferSource();
       source.buffer = buffer;
-      source.connect(ctx.destination);
+      source.connect(voiceOutput());
       source.onended = () => {
         if (playing !== source) return;
         playing = null;
@@ -184,7 +240,7 @@ function tone({ freq, slideTo, start = 0, length = 0.15, type = 'sine', volume =
   gain.gain.setValueAtTime(0.0001, t0);
   gain.gain.exponentialRampToValueAtTime(volume, t0 + 0.015);
   gain.gain.exponentialRampToValueAtTime(0.0001, t0 + length);
-  osc.connect(gain).connect(ctx.destination);
+  osc.connect(gain).connect(effectsOutput());
   osc.start(t0);
   osc.stop(t0 + length + 0.03);
 }

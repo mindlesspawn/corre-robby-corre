@@ -188,12 +188,15 @@ Credits: the pictures are from Noto Emoji by Google, release `v2026-09-24-unicod
 
 ## The music
 
-A quiet tune loops in the background: a marimba melody, a classical guitar picking the chords, and light percussion. The game makes it from simple sounds as it plays, so there is no music file, and the loop (16 bars, 40 seconds) joins without a gap.
+A quiet instrumental, **Sunny Steps**, loops in the background. It was generated with ElevenLabs Music v2 from a brief aimed at adults listening while their children play: warm electric piano and nylon guitar, rounded bass, light percussion, and a memorable marimba hook with changing accompaniment. The prepared loop lasts about 2 minutes 38 seconds, replacing the previous 40-second synthesized tune.
 
 - It is much quieter than the voice, and dips further while the voice is talking.
-- In an endless run it speeds up with the belt.
-- The music has its own volume slider, next to the 🎵 button on the settings screen and on the pause screen. Sliding it to zero, or tapping 🎵, turns only the music off. Each device remembers where the slider was left.
-- The 🔊 button turns everything off.
+- In an endless run it gradually speeds up with the belt, by at most 18%, while preserving pitch.
+- Music starts quietly at 40%. Devices using the old 65% default move to 40% once; other saved choices stay as they were.
+- The 🔊 button beside Play and in the game toolbar opens four labeled sliders: overall volume, music, voice, and sound effects. Opening it during a run pauses the game. The same sliders are on Settings and Pause, and each device remembers every level.
+- The Sound on / Sound off button in these controls mutes everything and restores the saved levels. Each individual slider can silence its own channel at zero; the overall slider affects all three.
+- Switching apps pauses the recording and keeps its place. If the file cannot play, the original synthesized tune is used as a fallback.
+- The recording is bundled with the game; playback does not contact ElevenLabs. The [music notes](public/music/README.md) contain the research, generation details, and preparation instructions.
 
 ## Play it online
 
@@ -254,6 +257,6 @@ The game only works this way while `npm run dev` is running on this computer.
 | Where scores and progress are saved (the browser on the website, the phone inside the app) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
 | The little pictures shown in place of emoji (from Noto Emoji) | `public/art/emoji/`, `src/emoji.js`, `scripts/fetch-emoji.mjs` |
-| The background tune (its notes, speed, and loudness) | `src/music.js` |
+| The background recording, playback, and musical brief | `src/music.js`, `public/music/` |
 | The look of the menus and buttons | `src/style.css` |
 | The letters (Fredoka, a free rounded font bundled with the game) | the first line of `src/main.js` |
