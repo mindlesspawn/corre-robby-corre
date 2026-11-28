@@ -813,8 +813,12 @@ async function openSupport(destination = 'support') {
   supportDestination = destination;
   stopSpeaking();
   const native = destination === 'support' && hasNativeTips();
-  $('tip-gate-form').hidden = !native;
-  $('gate-answers').hidden = native;
+  // Tips and erasing ask for the answer to be typed, which a child tapping at random
+  // cannot get past. The other pages offer four answers to tap.
+  const typed = native || destination === 'erase';
+  $('tip-gate-form').hidden = !typed;
+  $('gate-answers').hidden = typed;
+  $('erase-page').hidden = true;
   $('tip-gate-status').hidden = true;
   $('tip-products').hidden = true;
   $('tip-status').hidden = true;
@@ -846,6 +850,27 @@ async function openSupport(destination = 'support') {
   }
   const [a, b] = [6 + Math.floor(Math.random() * 4), 6 + Math.floor(Math.random() * 4)];
   const right = a * b;
+  if (destination === 'erase') {
+    const input = $('tip-gate-answer');
+    input.value = '';
+    // The tips page may have left these two switched off.
+    input.disabled = false;
+    $('btn-tip-gate-submit').disabled = false;
+    $('gate-ask').textContent = t.gateAsk(a, b);
+    $('tip-gate-form').onsubmit = (event) => {
+      event.preventDefault();
+      input.blur();
+      if (screen !== 'support' || supportDestination !== 'erase') return;
+      if (input.value.trim() !== String(right)) {
+        show('settings');
+        return;
+      }
+      $('support-gate').hidden = true;
+      $('erase-page').hidden = false;
+      renderErase();
+    };
+    return;
+  }
   const answers = new Set([right]);
   for (const other of [right + a, right - b, right + 10, right - 7, right + 3]) {
     if (answers.size < 4 && other > 0) answers.add(other);
@@ -884,6 +909,57 @@ async function openSupport(destination = 'support') {
   $('support-gate').hidden = false;
   $('support-page').hidden = true;
   show('support');
+}
+
+// --- Erasing progress ---------------------------------------------------------------
+
+// What a grown-up can erase: the name on the button, the question asked before it is
+// erased, and what erasing does. The levels of the age picked on the start screen come
+// first, so one child can start a game over without touching a brother's or sister's levels.
+function erasable() {
+  const age = store.age();
+  const ageName = t.ages[age] ?? String(age);
+  return [
+    { name: t.eraseLevelsAge(ageName), ask: t.eraseLevelsAgeAsk(ageName), erase: () => store.eraseLevels([age]) },
+    { name: t.eraseLevelsAll, ask: t.eraseLevelsAllAsk, erase: () => store.eraseLevels() },
+    { name: t.eraseScores, ask: t.eraseScoresAsk, erase: () => store.eraseHighScores() },
+    { name: t.eraseAll, ask: t.eraseAllAsk, erase: () => store.eraseEverything() },
+  ];
+}
+
+// The erase page, shown once the grown-up question is answered. Tapping a thing asks
+// "are you sure" first; only the yes button there erases anything.
+function renderErase(done = false) {
+  $('erase-done').hidden = !done;
+  if (done) $('erase-done').textContent = t.eraseDone;
+  $('erase-choices').hidden = false;
+  $('erase-confirm').hidden = true;
+  $('erase-back-row').hidden = false;
+  $('btn-erase-yes').onclick = null;
+  $('erase-list').replaceChildren(
+    ...erasable().map((thing) => {
+      const button = tag('button', 'small-btn', thing.name);
+      button.type = 'button';
+      button.addEventListener('click', () => {
+        $('erase-done').hidden = true;
+        $('erase-choices').hidden = true;
+        $('erase-confirm').hidden = false;
+        // Only "no" and "yes" are offered while the question is up.
+        $('erase-back-row').hidden = true;
+        $('erase-ask').textContent = thing.ask;
+        $('btn-erase-yes').onclick = () => {
+          if (screen !== 'support' || supportDestination !== 'erase' || $('erase-page').hidden) return;
+          thing.erase();
+          // A level picked to play again may no longer be open, and the runner may have
+          // been a character that is locked again.
+          pickedLevel = null;
+          game.setCharacter(currentCharacter());
+          renderErase(true);
+        };
+      });
+      return button;
+    }),
+  );
 }
 
 // --- High scores ------------------------------------------------------------------
@@ -1042,6 +1118,9 @@ function wireButtons() {
   $('btn-support').addEventListener('click', () => openSupport());
   $('btn-tips-retry').addEventListener('click', () => openSupport());
   $('btn-privacy').addEventListener('click', () => openSupport('privacy'));
+  $('btn-erase').addEventListener('click', () => openSupport('erase'));
+  $('btn-erase-no').addEventListener('click', () => renderErase());
+  $('btn-erase-back').addEventListener('click', () => show('settings'));
   $('btn-gate-back').addEventListener('click', () => show('settings'));
   $('btn-support-back').addEventListener('click', () => show('settings'));
   $('btn-settings-done').addEventListener('click', () => {
@@ -1162,7 +1241,8 @@ function wireTouch() {
       pauseRun();
       // Leaving the app closes the adult area. A StoreKit result can finish safely
       // in native code, but never reopens payment UI over the child's game.
-      if (screen === 'support' && hasNativeTips()) show('settings');
+      // The erase page closes too, so a child handed the device does not find it open.
+      if (screen === 'support' && (hasNativeTips() || supportDestination === 'erase')) show('settings');
     }
   });
 

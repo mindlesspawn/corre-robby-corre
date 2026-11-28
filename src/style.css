@@ -1862,6 +1862,31 @@ h2 {
   color: var(--green-dark);
 }
 
+/* --- Erasing progress, on the grown-ups' page ------------------------------------------ */
+
+.erase-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* The names are long: they wrap on a narrow phone. */
+#erase-list .small-btn {
+  flex: none;
+  white-space: normal;
+}
+
+/* The one button that erases is red, with "no" beside it. */
+.small-btn.erase-yes {
+  background: linear-gradient(180deg, #ef5350, #d32f2f);
+  color: #fff;
+  box-shadow: 0 4px 0 #9a1f1f;
+}
+
+.small-btn.erase-yes:active {
+  box-shadow: 0 1px 0 #9a1f1f;
+}
+
 /* --- The first-time language screen ---------------------------------------------------- */
 
 /* The game's picture on top, then one big button for each language. */

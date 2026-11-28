@@ -183,4 +183,35 @@ export const store = {
     this.update({ highScores: list.slice(0, CONFIG.highScoreSlots), lastName: entry.name });
     return index;
   },
+
+  // --- Erasing. Only the grown-ups' page in the settings calls these. --------------------
+
+  // Forgets the cleared levels, and so the stickers, of every game for the ages given.
+  // Points and unlocked characters are kept.
+  eraseLevels(ages = AGES) {
+    const empty = cleanCleared({});
+    const cleared = { ...state.cleared };
+    for (const age of ages) if (AGES.includes(age)) cleared[age] = empty[age];
+    this.update({ cleared });
+  },
+
+  // Empties the high score table. The best endless run goes with it: it is the top of that table.
+  eraseHighScores() {
+    this.update({ highScores: [], best: 0 });
+  },
+
+  // Starts over as if the game had never been played: levels, high scores, points, the
+  // characters those points unlocked, and the first-level practice. The settings stay
+  // (language, sound, speed, and the age and game that are picked).
+  eraseEverything() {
+    this.update({
+      totalPoints: 0,
+      best: 0,
+      highScores: [],
+      lastName: '',
+      character: DEFAULTS.character,
+      cleared: cleanCleared({}),
+      tutorialAges: {},
+    });
+  },
 };

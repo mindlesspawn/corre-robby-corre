@@ -211,6 +211,17 @@ A phone is played upright. Held sideways, the game pauses and shows a phone turn
 
 Scores, progress, and unlocked characters are saved on each device, so they do not carry over from one device to another.
 
+### Erasing progress
+
+A grown-up can erase saved progress from the settings screen: the small "Borrar progreso" line at the bottom.
+
+- It first asks a times-table question, and the answer has to be typed, so a child tapping at random cannot get through. A wrong answer goes back to the settings screen.
+- The page then offers four things to erase: the levels of the age picked on the start screen (so one child can start over without touching another child's levels), the levels of every age, the endless high scores, or everything.
+- Tapping one asks "are you sure" and says what will go and what will stay. Only the red "Sí, borrar" button there erases anything.
+- Erasing levels also removes the stickers they earned. Erasing the high scores also resets the best endless run. Erasing everything also resets the points (and any characters they unlocked) and brings back the first-level practice. The settings always stay: language, sound, speed, and the age and game that are picked.
+- Nothing erased can be brought back. Putting the game in the background closes the page.
+- The erasing itself is in `src/storage.js`, and `tests/erase-progress.test.mjs` checks that each choice erases what it says and nothing else.
+
 To update the online game after a change, save the change to GitHub (commit and push to `main`). The new version is live about a minute later.
 
 ## Support

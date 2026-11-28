@@ -120,6 +120,25 @@ const es = {
   gateTitle: 'Solo para adultos',
   gateAsk: (a, b) => `¿Cuánto es ${a} × ${b}?`,
   back: 'Volver',
+
+  // Erasing saved progress, for grown-ups. Each thing that can be erased has the name on
+  // its button and the question asked before it is erased.
+  eraseButton: 'Borrar progreso',
+  eraseTitle: 'Borrar progreso',
+  eraseText: '¿Qué quieres borrar? Lo que borres no se puede recuperar.',
+  eraseLevelsAge: (age) => `Niveles de ${age}`,
+  eraseLevelsAgeAsk: (age) =>
+    `¿Borrar los niveles y las estampas de todos los juegos para ${age}? Las otras edades no cambian.`,
+  eraseLevelsAll: 'Niveles de todas las edades',
+  eraseLevelsAllAsk: '¿Borrar los niveles y las estampas de todos los juegos, para todas las edades?',
+  eraseScores: 'Récords de Sin fin',
+  eraseScoresAsk: '¿Borrar todos los récords de Sin fin? Los niveles no cambian.',
+  eraseAll: 'Todo, para empezar de cero',
+  eraseAllAsk:
+    '¿Borrar todo? Se borran los niveles, las estampas, los récords y los puntos, con los personajes que esos puntos desbloquearon. La práctica del principio vuelve a salir. Solo se quedan los ajustes (idioma, sonido y velocidad).',
+  eraseYes: 'Sí, borrar',
+  eraseNo: 'No, volver',
+  eraseDone: 'Listo, se borró.',
   wordMore: 'más',
   wordFewer: 'menos',
 
@@ -342,6 +361,23 @@ const en = {
   gateTitle: 'Grown-ups only',
   gateAsk: (a, b) => `What is ${a} × ${b}?`,
   back: 'Back',
+
+  eraseButton: 'Erase progress',
+  eraseTitle: 'Erase progress',
+  eraseText: 'What do you want to erase? Erased things cannot be brought back.',
+  eraseLevelsAge: (age) => `Levels for ${age.toLowerCase()}`,
+  eraseLevelsAgeAsk: (age) =>
+    `Erase the levels and stickers of every game for ${age.toLowerCase()}? The other ages do not change.`,
+  eraseLevelsAll: 'Levels for every age',
+  eraseLevelsAllAsk: 'Erase the levels and stickers of every game, for every age?',
+  eraseScores: 'Endless high scores',
+  eraseScoresAsk: 'Erase all the endless high scores? Levels do not change.',
+  eraseAll: 'Everything, to start over',
+  eraseAllAsk:
+    'Erase everything? The levels, stickers, high scores and points are erased, along with any characters those points unlocked. The first-level practice comes back. Only the settings stay (language, sound and speed).',
+  eraseYes: 'Yes, erase',
+  eraseNo: 'No, go back',
+  eraseDone: 'Done. It was erased.',
   wordMore: 'more',
   wordFewer: 'fewer',
 

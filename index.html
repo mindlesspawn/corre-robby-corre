@@ -139,6 +139,8 @@
         </div>
         <button id="btn-settings-done" class="big-btn" type="button" data-t="done"></button>
         <button id="btn-privacy" class="quiet-btn" type="button" data-t="privacyButton"></button>
+        <!-- Erasing levels or high scores. It opens with the grown-up question. -->
+        <button id="btn-erase" class="quiet-btn" type="button" data-t="eraseButton"></button>
         <!-- Native Apple tips, or configured web-only support links. -->
         <button id="btn-support" class="quiet-btn" type="button" data-t="supportButton" hidden></button>
       </div>
@@ -170,6 +172,26 @@
         <p class="support-thanks" data-t="supportThanks"></p>
         <div class="button-row">
           <button id="btn-support-back" class="small-btn" type="button" data-t="back"></button>
+        </div>
+      </div>
+      <!-- Erasing saved progress, reached only through the question above. First the things
+           that can be erased, then one "are you sure" step for the one that was tapped. -->
+      <div id="erase-page" class="panel" hidden>
+        <h2 data-t="eraseTitle"></h2>
+        <p id="erase-done" class="support-thanks" role="status" aria-live="polite" hidden></p>
+        <div id="erase-choices" class="erase-choices">
+          <p class="support-text" data-t="eraseText"></p>
+          <div id="erase-list" class="support-links"></div>
+        </div>
+        <div id="erase-confirm" class="erase-choices" hidden>
+          <p id="erase-ask" class="support-text"></p>
+          <div class="button-row">
+            <button id="btn-erase-no" class="small-btn" type="button" data-t="eraseNo"></button>
+            <button id="btn-erase-yes" class="small-btn erase-yes" type="button" data-t="eraseYes"></button>
+          </div>
+        </div>
+        <div id="erase-back-row" class="button-row">
+          <button id="btn-erase-back" class="small-btn" type="button" data-t="back"></button>
         </div>
       </div>
     </section>
