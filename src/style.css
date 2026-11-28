@@ -2040,22 +2040,34 @@ h2 {
   overflow: visible;
 }
 
+/* The colours of the strips are worked out from the gold of the pick (hue 80 in OKLCH).
+   Straight across the colour wheel from gold is blue (hue 260), so the strips are four
+   cool tints spaced evenly around it: orchid 320, periwinkle 280, sky 240, aqua 200. Gold
+   is then the only warm colour on the card, which is why the pick stands out on every
+   strip. All four tints have the same lightness (0.94) and the same strength (0.035), so
+   no group looks heavier than another, and going down the card the hue steps toward the
+   green of Play. The edge of the white tiles on each strip is a deeper tone of the same
+   hue (lightness 0.86, strength 0.07). */
 #screen-start .characters {
-  background: #e6f2ff;
+  background: #f6e4fa;
+  --tile-edge: #e6c3ee;
 }
 
 #screen-start .games,
 #screen-start .games.five,
 #screen-start .games.many {
-  background: #efe9ff;
+  background: #e6e9ff;
+  --tile-edge: #c7cdff;
 }
 
 #screen-start .ages {
-  background: #e6f7ea;
+  background: #d7efff;
+  --tile-edge: #a8d8fb;
 }
 
 #screen-start .levels {
-  background: #ffeef2;
+  background: #d1f3f4;
+  --tile-edge: #99dfe3;
 }
 
 /* The strips separate the groups, so the gaps between them can be small. */
