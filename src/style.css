@@ -2025,8 +2025,9 @@ h2 {
 /* --- The start screen, fifth pass: one big choice in each group ----------------------------- */
 
 /* There are four things to pick: a character, a game, an age and a level. Each group sits
-   on its own softly tinted strip, and in each one the thing that is picked is big and gold
-   while the rest are small and white. So the screen reads at a glance as "one of each". */
+   on its own softly tinted strip, and in each one the thing that is picked is gold and a
+   bit bigger than the rest. Nothing moves or hides when something is picked. So the screen
+   reads at a glance as "one of each". */
 #screen-start .characters,
 #screen-start .games,
 #screen-start .games.five,
@@ -2073,112 +2074,15 @@ h2 {
   transform: none;
 }
 
-/* Characters: the chosen one fills the left half, the others are squares on the right. */
-#screen-start .characters {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  align-items: stretch;
-  gap: 8px;
+/* Games: every game keeps its place, its picture and its name. The picked one grows a
+   little where it stands. */
+#screen-start .game-btn.selected {
+  position: relative;
+  z-index: 1;
+  transform: scale(1.1);
 }
 
-/* With four characters or fewer the small ones make a single row. They stand on the same
-   floor as the big one, instead of leaving an empty row under them. */
-#screen-start .characters:not(:has(.character:nth-child(5))) .character:not(.selected) {
-  grid-row: 1 / span 2;
-  align-self: end;
-}
-
-#screen-start .characters:not(:has(.character:nth-child(5))) .character.selected {
-  aspect-ratio: 1;
-}
-
-#screen-start .characters .character {
-  flex: none;
-  aspect-ratio: 1;
-  min-width: 0;
-  padding: 4px;
-  border-width: 3px;
-  justify-content: center;
-  font-size: 0; /* only the chosen one shows its name */
-}
-
-#screen-start .characters .character.selected {
-  grid-column: 1 / span 2;
-  grid-row: 1 / span 2;
-  aspect-ratio: auto;
-  padding: 6px 6px 8px;
-  border-width: 4px;
-  font-size: clamp(15px, 2.3vh, 20px);
-  letter-spacing: 0;
-}
-
-#screen-start .characters .character img {
-  width: 100%;
-  max-width: none;
-}
-
-#screen-start .characters .character.selected img {
-  flex: 1 1 0;
-  min-height: 0;
-  aspect-ratio: auto;
-}
-
-/* Games: the same idea, with the others as small picture squares. */
-#screen-start .games,
-#screen-start .games.five,
-#screen-start .games.many {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  flex-wrap: nowrap;
-  justify-content: stretch;
-  gap: 6px;
-}
-
-#screen-start .games .game-btn,
-#screen-start .games.five .game-btn,
-#screen-start .games.many .game-btn {
-  flex: none;
-  aspect-ratio: 1;
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  justify-content: center;
-  border-width: 3px;
-  box-shadow: 0 3px 0 var(--tile-edge);
-}
-
-#screen-start .games .game-btn span:not(.game-icon) {
-  display: none; /* only the chosen game shows its name */
-}
-
-#screen-start .games .game-btn .game-icon,
-#screen-start .games.many .game-btn .game-icon {
-  font-size: clamp(22px, 7.4vw, 34px);
-}
-
-#screen-start .games .game-btn.selected,
-#screen-start .games.five .game-btn.selected,
-#screen-start .games.many .game-btn.selected {
-  grid-column: 1 / span 2;
-  grid-row: 1 / span 2;
-  aspect-ratio: auto;
-  gap: 2px;
-  border-width: 4px;
-  font-size: clamp(15px, 2.2vh, 19px);
-  letter-spacing: 0;
-  box-shadow: 0 4px 0 var(--sun-dark);
-}
-
-#screen-start .games .game-btn.selected span:not(.game-icon) {
-  display: inline;
-}
-
-#screen-start .games .game-btn.selected .game-icon,
-#screen-start .games.many .game-btn.selected .game-icon {
-  font-size: clamp(44px, 15vw, 70px);
-}
-
-/* Ages: the chosen one is wider and bolder. */
+/* Ages: the picked one is a little wider and bolder. */
 #screen-start .ages {
   gap: 6px;
   align-items: center;
@@ -2186,101 +2090,90 @@ h2 {
 
 #screen-start .age-btn {
   flex: 1 1 0;
-  font-size: 14px;
-  opacity: 0.85;
 }
 
 #screen-start .age-btn.selected {
-  flex: 1.7 1 0;
-  min-height: clamp(40px, 5.8vh, 54px);
+  flex: 1.3 1 0;
+  min-height: clamp(38px, 5.4vh, 50px);
   border-width: 3px;
-  font-size: clamp(18px, 2.6vh, 22px);
-  opacity: 1;
+  font-size: clamp(17px, 2.4vh, 20px);
 }
 
 /* Levels: the one about to be played stands out the same way. */
 #screen-start .level-btn.selected {
+  position: relative;
+  z-index: 1;
   background: #ffe59a;
   border-color: var(--sun-dark);
   box-shadow: 0 3px 0 var(--sun-dark);
-  transform: scale(1.06);
+  transform: scale(1.1);
 }
 
-/* A tablet: the same layout, with the tablet's bigger letters. */
+/* A tablet: the same, with the tablet's bigger letters. */
 @media (min-width: 600px) and (min-height: 700px) {
-  #screen-start .characters .character.selected {
+  #screen-start .age-btn.selected {
     font-size: 24px;
+    min-height: 58px;
   }
-  #screen-start .characters .character img {
-    max-width: none;
+}
+
+/* The strips add a little height, so they are thin at the top and bottom, and the game
+   tiles on a phone (which are in two rows) are a little shorter. */
+#screen-start .characters,
+#screen-start .games,
+#screen-start .games.five,
+#screen-start .games.many,
+#screen-start .ages,
+#screen-start .levels {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+@media (max-width: 599px) {
+  #screen-start .games.many .game-btn {
+    padding-top: clamp(4px, 0.8vh, 8px);
+    padding-bottom: clamp(4px, 0.8vh, 8px);
   }
-  #screen-start .games .game-btn.selected,
-  #screen-start .games.many .game-btn.selected {
-    font-size: 22px;
+}
+
+/* A short phone: everything is a touch tighter, so Play stays on the screen. */
+@media (max-width: 599px) and (max-height: 700px) {
+  #screen-start .characters,
+  #screen-start .games,
+  #screen-start .games.five,
+  #screen-start .games.many,
+  #screen-start .ages,
+  #screen-start .levels {
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
-  #screen-start .age-btn {
-    font-size: 18px;
+  #screen-start .games.many .game-btn {
+    padding-top: 2px;
+    padding-bottom: 2px;
   }
   #screen-start .age-btn.selected {
-    font-size: 26px;
-    min-height: 60px;
+    min-height: 34px;
   }
 }
 
-/* The tiles are as wide as their column, and square when there is room. On a short or a
-   wide screen they are held to a share of the screen's height instead, so that both groups,
-   the age, the levels and Play all stay on the screen without scrolling. */
-#screen-start {
-  --tile-max: 7.8vh;
-}
-
-#screen-start .characters .character:not(.selected),
-#screen-start .games .game-btn:not(.selected) {
-  width: 100%;
-  max-height: var(--tile-max);
-}
-
-#screen-start .characters:not(:has(.character:nth-child(5))) .character.selected {
-  width: 100%;
-  max-height: calc(2 * var(--tile-max) + 8px);
-}
-
-#screen-start .characters .character img {
-  flex: 1 1 0;
-  min-height: 0;
-  object-fit: contain;
-}
-
-/* A short phone. */
-@media (max-height: 620px) {
-  #screen-start {
-    --tile-max: 6.6vh;
-  }
-  #screen-start .characters .character:not(.selected) {
-    padding: 2px;
+@media (max-width: 599px) and (max-height: 620px) {
+  #screen-start .characters .character.selected {
+    flex-grow: 1.5;
   }
 }
 
-/* A tablet held upright. */
-@media (min-width: 600px) and (min-height: 840px) {
-  #screen-start {
-    --tile-max: 7.6vh;
-  }
-  #screen-start .games .game-btn .game-icon,
-  #screen-start .games.many .game-btn .game-icon {
-    font-size: 44px;
-  }
-  #screen-start .games .game-btn.selected .game-icon,
-  #screen-start .games.many .game-btn.selected .game-icon {
-    font-size: 84px;
+/* A tablet shows the characters all the same size, so there the picked one grows a little
+   where it stands, like the games do. */
+@media (min-width: 600px) and (min-height: 700px) {
+  #screen-start .characters .character.selected {
+    position: relative;
+    z-index: 1;
+    transform: scale(1.06);
   }
 }
 
-/* A tablet on its side is short for its width: the levels go back to one row. */
+/* A tablet on its side is short for its width: the levels are one row. */
 @media (min-width: 600px) and (min-height: 700px) and (max-height: 839px) {
-  #screen-start {
-    --tile-max: 8.2vh;
-  }
   #screen-start .levels {
     grid-template-columns: repeat(10, minmax(0, 1fr));
     gap: 6px;
