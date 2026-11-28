@@ -1966,3 +1966,58 @@ h2 {
     font-size: 28px;
   }
 }
+
+/* --- The start screen, fourth pass: a bigger card, and the levels stacked ---------------- */
+
+/* The card reaches closer to the edges of the screen. */
+#screen-start {
+  padding-left: calc(var(--safe-left) + 10px);
+  padding-right: calc(var(--safe-right) + 10px);
+}
+
+.start {
+  width: min(100%, 470px);
+}
+
+/* On a phone tall enough for it, the ten levels are two rows of five, big enough to see
+   each sticker. Shorter phones, and a tall phone with the browser's bars showing, keep them
+   in one row so Play stays on the screen. */
+@media (min-height: 840px) {
+  #screen-start .levels {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(6px, 0.9vh, 10px) 8px;
+  }
+
+  #screen-start .level-btn {
+    aspect-ratio: auto;
+    height: clamp(38px, 4.9vh, 52px);
+    border-radius: 999px;
+    border-width: 3px;
+    font-size: clamp(16px, 2.4vh, 21px);
+  }
+
+  #screen-start .level-btn.done {
+    font-size: clamp(22px, 3.4vh, 30px);
+  }
+}
+
+/* A tablet: the same two rows, a little larger. */
+@media (min-width: 600px) and (min-height: 700px) {
+  .start {
+    width: min(100%, 640px);
+  }
+  #screen-start .levels {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 10px 12px;
+  }
+  #screen-start .level-btn {
+    aspect-ratio: auto;
+    height: clamp(50px, 5.6vh, 64px);
+    border-radius: 999px;
+    border-width: 3px;
+    font-size: 24px;
+  }
+  #screen-start .level-btn.done {
+    font-size: clamp(28px, 3.8vh, 38px);
+  }
+}
