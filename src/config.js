@@ -31,6 +31,19 @@ export const CONFIG = {
   pace: 'normal', // the speed picked the first time someone plays
   maxWaitForVoice: 6, // the next doors wait up to this long for the voice to finish talking
 
+  // Younger children get more time, whichever of the three speeds is picked.
+  //   slower   how many times longer a row of doors takes, and how much longer the time to think is
+  //   perItem  extra seconds for every thing there is to count: the things in the banner
+  //            and the dots on the fullest door. A three year old counts by touching each
+  //            one in turn, and that takes time.
+  // The first test with a three year old found the belt too fast to count by.
+  ageEase: {
+    3: { slower: 1.3, perItem: 0.7 },
+    4: { slower: 1.15, perItem: 0.5 },
+    5: { slower: 1.05, perItem: 0.3 },
+    6: { slower: 1, perItem: 0.15 },
+  },
+
   // The belt keeps one steady speed through a run, because guidance for small children says
   // to avoid fast-paced games. To make it speed up during a run (for older children), set
   // travelTimeStep to something like 0.25.

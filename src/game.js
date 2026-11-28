@@ -32,6 +32,16 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 // Where the dots go on a door sign, like the faces of a dice up to 6,
 // then rows of five. Returns [x, y, radius] for each dot.
+// How many things a child may have to count to answer a question: the things shown in the
+// banner, and the dots on the fullest door.
+function thingsToCount(question) {
+  const { kind, answer, choices, doors } = question;
+  const shown = kind === 'same' || kind === 'count' ? answer : kind === 'add' && question.pictures ? question.a + question.b : 0;
+  const numbers = ['same', 'count', 'find', 'more', 'fewer'].includes(kind);
+  const dots = numbers && (doors === 'dots' || doors === 'both') ? Math.max(...choices) : 0;
+  return shown + dots;
+}
+
 // Where the dots go on a door's sign: like the faces of a dice up to six, then two rows
 // of five.
 function dotLayout(count, w, h) {
@@ -522,7 +532,12 @@ export class Game {
     // (The extra half second covers the belt getting up to speed and the choice being
     // fixed a moment before the doors arrive.)
     // Endless runs do not wait for anybody.
-    row.travelTime = this.endless ? this.travelTime() : Math.max(this.travelTime(), spoken + this.pace.think + 0.5);
+    // Younger children get a slower belt, and extra time for every thing there is to count.
+    const ease = CONFIG.ageEase[this.age] ?? { slower: 1, perItem: 0 };
+    const toCount = Math.min(14, thingsToCount(question));
+    row.travelTime = this.endless
+      ? this.travelTime()
+      : Math.max(this.travelTime() * ease.slower, spoken + this.pace.think * ease.slower + toCount * ease.perItem + 0.5);
     row.age = 0;
     row.state = 'approach';
     row.locked = false;

@@ -55,6 +55,7 @@ Endless mode is on the settings screen (the ⚙️ button), under "Para adultos 
 - A wrong door gives a soft bump, shows which door was right, and says the answer. For small amounts the voice counts them out first. The next right door brings the runner forward again.
 - The question is shown as a picture, written underneath in words, and said out loud. Tapping the question says it again.
 - The belt has three speeds, picked on the settings screen (the ⚙️ button on the start screen): slow, normal, and fast. It keeps that speed through a run.
+- Younger children get more time at every speed. At age 3 the belt is about a third slower, and every thing there is to count (the things in the banner and the dots on the fullest door) adds a little more, so a question with three balls and doors of dots takes about ten seconds to arrive on normal. This came from the first test with a three year old, who found the belt too fast to count by. The amounts are under `ageEase` in `src/config.js`.
 - The next doors wait until the voice has finished talking, and a long question slows the belt for that row, so there is always time to think after hearing it (about 3.5 seconds on slow, 2.5 on normal, 2 on fast).
 - Praise is spoken with every other right answer and with every trick, not every time.
 - Every character is unlocked from the start. (A character can be turned into a prize again by giving it an unlock cost in `src/characters.js`.) The high score table is for endless runs.
