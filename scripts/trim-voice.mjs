@@ -1,5 +1,10 @@
 // Trims the quiet from the start and the end of the recorded voice clips.
 //
+// This was written for clips made by OpenAI's text-to-speech, and it only understands
+// their layout and their level of background hiss. The game's clips now come from
+// ElevenLabs, which arrive without dead air and do not need trimming; this script leaves
+// such files alone and says so. It is kept for a language recorded with an OpenAI voice.
+//
 // The text-to-speech service often leaves a second or two of near silence after a line,
 // and up to a second before it. The game waits for a clip to end before it moves on, so
 // that dead air shows up as a pause where nothing happens. This cuts each clip back to a

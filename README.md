@@ -156,13 +156,15 @@ Sources:
 
 ## The voice
 
-The game speaks with recorded clips in both languages, so it says the same thing in the same voice on every phone, tablet, and computer. The Spanish voice is Mexican Spanish and the English voice is American English. Both are AI-generated (made with OpenAI text-to-speech), not a person. OpenAI's rules ask that people who hear such a voice are told so; the privacy page and the store listing say it.
+The game speaks with recorded clips in both languages, so it says the same thing in the same voice on every phone, tablet, and computer. The voice is AI-generated, not a person, and the privacy page and the store listing say so.
 
-- Each language has its own voice and its own direction for how to speak, set under `VOICES` in `scripts/record-voice.mjs`. Spanish is the `coral` voice, directed as a preschool teacher. English is the `sage` voice, directed as "a fun aunt playing a game with her three-year-old niece". The first English voice (`coral`, as a teacher) sounded too much like a machine; the new one was picked by ear from test clips of seven voices and nine directions.
-- OpenAI has said the model used (`gpt-4o-mini-tts`) shuts down on January 6, 2027. Clips already recorded keep working. New lines recorded after that date will need another model, and may not match the voice.
-- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 447 in each language.
-- After each recording run, every clip was transcribed back and compared with its line.
-- The clips in both languages were then trimmed with `scripts/trim-voice.mjs`. The speech service often leaves a second or two of near silence after a line, and the game waits for a clip to end before it moves on, so that dead air showed up as a pause where nothing happened. The script cuts each clip back to at most 0.2 seconds of quiet before the voice and 0.5 after, without decoding the audio and without touching the voice itself. English went from 1,480 seconds of clips to 1,373, and Spanish from 1,411 to 1,301. After the Spanish trim every clip was decoded and compared with its untrimmed self: the spoken part was the same length and no measurable sound was lost.
+- The voice is the game's own. It was designed on ElevenLabs from a written description ("a cheerful young woman in her mid twenties with a light, friendly, energetic American voice, like a big sister or a favorite babysitter"), so the game does not share a stock voice with other apps. It was picked by ear from 24 designed voices. The same voice speaks both languages. Its id is `GAME_VOICE` in `scripts/record-voice.mjs`; the voice itself is saved on the game owner's ElevenLabs account under the name "corre robby".
+- Before that the game used OpenAI's voices: `coral` directed as a preschool teacher, then `sage` directed as a fun aunt for English. Both sounded too much like a machine. The recorder can still use an OpenAI voice for a language (set `service: 'openai'` in its entry under `VOICES`), but OpenAI has said its speech models shut down on January 6, 2027.
+- The clips are made with the ElevenLabs model `eleven_v4`, on a paid plan: ElevenLabs' free plan does not allow commercial use.
+- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 447 in each language, about 18 minutes of speech in each.
+- After recording, every clip was transcribed back (with OpenAI's speech recognition) and compared with its line: 447 of 447 matched word for word in both languages. Every clip was also decoded and measured: none is clipped, and none has more than 0.3 seconds of quiet before the voice or 0.6 after.
+- The new voice talks faster than the old ones: the English clips add up to 1,079 seconds where the last set was 1,373, and the Spanish to 1,052 where it was 1,301. The time a child has to answer after the voice stops is unchanged, because the belt's timing adds the thinking time on top of each clip's length.
+- `scripts/trim-voice.mjs` cuts dead air from clips. It was written for OpenAI's clips, which often ended in a second or two of near silence, and it only understands their layout. The ElevenLabs clips do not need it.
 - Sums bigger than 10 have no clip. For those the game uses the voice built into the device. If the device has no voice for that language, the game stays quiet for those sums, and the written question under the banner is there for a grown-up to read aloud.
 - The sound button turns off the sound effects and the voice.
 - On an iPhone or iPad, the switch on the side that silences the phone also silences the game.
@@ -173,7 +175,7 @@ To record again after changing the spoken words in `src/text.js` (for English, a
 node scripts/record-voice.mjs --key-file "C:\path\to\.env" --check --fix
 ```
 
-The file must contain a line `OPENAI_API_KEY=...`. Only lines without a clip are recorded, so a small change costs very little. To change a language's voice, edit its entry under `VOICES` and add `--redo`, which records every line again. After recording, run `node scripts/trim-voice.mjs --language en` (or `es`) and then the recorder once more for that language without `--redo` (it needs no key when every line has a clip), so the clip lengths in `src/voice/en.json` match the files. The key is sent only to OpenAI and is never printed or saved by the script. Do not put the key in this folder: this repository is public.
+The file must contain a line `ELEVENLABS_API_KEY=...` for recording and a line `OPENAI_API_KEY=...` for `--check`, which listens back. The ElevenLabs key needs permission for text to speech. Only lines without a clip are recorded, so a small change costs very little: ElevenLabs charges one credit for each character spoken. To change a language's voice, edit its entry under `VOICES` and add `--redo`, which records every line again. Each key is sent only to its own service and is never printed or saved by the script. Do not put a key in this folder: this repository is public.Do not put the key in this folder: this repository is public.
 
 ## The little pictures
 

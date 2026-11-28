@@ -138,7 +138,7 @@ Paste this into "App Review Information":
 >
 > The settings screen is reached with the gear button on the start screen. There are no links out of the app. If a support link is added later it will be on the settings screen behind a parental gate (a multiplication question).
 >
-> The spoken voice is AI-generated (OpenAI text-to-speech), recorded in advance and stored inside the app.
+> The spoken voice is AI-generated (ElevenLabs text-to-speech, a voice designed for this game), recorded in advance and stored inside the app.
 
 ## Still to make
 

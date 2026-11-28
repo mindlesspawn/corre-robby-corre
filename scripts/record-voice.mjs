@@ -1,4 +1,5 @@
-// Records the game's spoken lines as audio clips, using OpenAI text-to-speech.
+// Records the game's spoken lines as audio clips, using a text-to-speech service:
+// ElevenLabs for the voice (a voice designed for this game), and OpenAI to listen back.
 //
 // The list of lines is built from the game's own words (src/text.js), so every clip
 // matches what the game asks for, letter for letter. Clips that already exist are skipped,
@@ -9,14 +10,15 @@
 //
 // Options:
 //   --language <code>  es (Spanish, the default) or en (English)
-//   --key-file <path>  a file with a line OPENAI_API_KEY=...  (or set OPENAI_API_KEY yourself)
+//   --key-file <path>  a file with a line ELEVENLABS_API_KEY=... for recording, and a line
+//                      OPENAI_API_KEY=... for --check (or set those two yourself)
 //   --limit <n>        only record the first n missing clips (for a trial run)
 //   --redo             record every line again, replacing the clips that are there
 //                      (for a change of voice; a clip is only replaced once its new one arrives)
 //   --check            also listen back: transcribe the clips and compare them with the text
 //   --list             just print the lines and stop
 //
-// The key is only ever sent to OpenAI. It is never printed or written anywhere.
+// Each key is only ever sent to its own service. Neither is printed or written anywhere.
 
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
@@ -31,18 +33,28 @@ const args = process.argv.slice(2);
 const flag = (name) => args.includes(name);
 const option = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
 
+// The models tried, in order, when a language's service is OpenAI.
 const MODELS = ['gpt-4o-mini-tts', 'tts-1-hd', 'tts-1'];
 
+// The game's own voice. It was designed on ElevenLabs from a written description ("a
+// cheerful young woman in her mid twenties with a light, friendly, energetic American
+// voice, like a big sister or a favorite babysitter"), so that the game does not share
+// a stock voice with other apps. It was picked by ear from 24 designed voices, after
+// OpenAI's voices (coral, then sage) sounded too much like a machine. The voice lives on
+// the game owner's ElevenLabs account; this is its id there, which is no use without
+// that account's key.
+const GAME_VOICE = 'NqP4oJdHHxqnWdXZZQVC';
+
 // What changes from one language to the next.
+//   service  'elevenlabs' or 'openai'
+//   voice    the voice's id (ElevenLabs) or name (OpenAI); backup is a second OpenAI name
+//   model    the ElevenLabs model
+//   style    how an OpenAI voice should sound (ElevenLabs voices take no direction)
 const VOICES = {
   es: {
-    // Which voice speaks, and the one to fall back on if the account cannot use it.
-    voice: 'coral',
-    backup: 'nova',
-    // How the voice should sound. Only the newer models listen to this.
-    style:
-      'Habla en español de México con voz cálida, alegre y muy clara, sin prisa, ' +
-      'como una maestra de preescolar que le habla con cariño a un niño de tres años.',
+    service: 'elevenlabs',
+    voice: GAME_VOICE,
+    model: 'eleven_v4',
     // Tells the listeners what kind of sentences to expect when they check the clips.
     hint:
       'Frases cortas en español de México para niños pequeños. ' +
@@ -56,15 +68,9 @@ const VOICES = {
     plus: 'mas',
   },
   en: {
-    // Picked by ear from test clips of seven voices and nine ways of directing them. The
-    // first English voice (coral, directed as "a preschool teacher") sounded too much like
-    // a machine putting on a performance; asking for a real person instead helped most.
-    voice: 'sage',
-    backup: 'coral',
-    style:
-      'You are a fun aunt playing a game with her three-year-old niece. Natural, everyday American English. ' +
-      'Genuinely playful and a little excited, the way a real person is with a small child, but never sing-song, ' +
-      'never like a cartoon or a TV host. Clear, and a little slower than normal.',
+    service: 'elevenlabs',
+    voice: GAME_VOICE,
+    model: 'eleven_v4',
     hint:
       'Short sentences in English for small children. ' +
       'There are four flowers. Where are three dots? One, two, three. There are ten apples. ' +
@@ -79,7 +85,8 @@ const VOICES = {
 
 const LANGUAGE = option('--language') ?? 'es';
 if (!VOICES[LANGUAGE]) throw new Error(`No voice is set up for "${LANGUAGE}". Choose one of: ${Object.keys(VOICES).join(', ')}.`);
-const { voice: VOICE, backup: BACKUP_VOICE, style: STYLE, hint: HINT, sameWord: SAME_WORD, plus: PLUS } = VOICES[LANGUAGE];
+const { service: SERVICE = 'openai', voice: VOICE, backup: BACKUP_VOICE, model: MODEL, style: STYLE, hint: HINT, sameWord: SAME_WORD, plus: PLUS } =
+  VOICES[LANGUAGE];
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const clipFolder = path.join(root, 'public', 'voice', LANGUAGE);
@@ -154,37 +161,39 @@ function allLines() {
 
 const clipName = (text) => `${createHash('sha1').update(`${LANGUAGE}:${text}`).digest('hex').slice(0, 12)}.mp3`;
 
-// --- The key ------------------------------------------------------------------------
+// --- The keys -----------------------------------------------------------------------
 
-function readKey() {
-  if (process.env.OPENAI_API_KEY) return process.env.OPENAI_API_KEY.trim();
+const KEY_NAMES = { openai: 'OPENAI_API_KEY', elevenlabs: 'ELEVENLABS_API_KEY' };
+
+function readKey(service) {
+  const name = KEY_NAMES[service];
+  if (process.env[name]) return process.env[name].trim();
   const keyFile = option('--key-file');
-  if (!keyFile) throw new Error('No key. Pass --key-file <path to a .env file> or set OPENAI_API_KEY.');
+  if (!keyFile) throw new Error(`No key. Pass --key-file <path to a .env file> or set ${name}.`);
   const line = fs
     .readFileSync(keyFile, 'utf8')
     .split(/\r?\n/)
-    .find((entry) => entry.trim().startsWith('OPENAI_API_KEY='));
+    .find((entry) => entry.trim().startsWith(`${name}=`));
   const key = line?.slice(line.indexOf('=') + 1).trim().replace(/^["']|["']$/g, '');
-  if (!key) throw new Error('That file has no OPENAI_API_KEY line.');
+  if (!key) throw new Error(`That file has no ${name} line.`);
   return key;
 }
 
-// --- Talking to OpenAI --------------------------------------------------------------
+// --- Talking to the services --------------------------------------------------------
 
-let key = '';
+const keys = { openai: '', elevenlabs: '' };
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function request(url, init, tries = 4) {
+async function request(url, init, service = 'openai', tries = 4) {
+  const who = service === 'elevenlabs' ? 'ElevenLabs' : 'OpenAI';
+  const pass = service === 'elevenlabs' ? { 'xi-api-key': keys.elevenlabs } : { Authorization: `Bearer ${keys.openai}` };
   for (let attempt = 1; ; attempt++) {
-    const response = await fetch(url, {
-      ...init,
-      headers: { Authorization: `Bearer ${key}`, ...(init.headers ?? {}) },
-    });
+    const response = await fetch(url, { ...init, headers: { ...pass, ...(init.headers ?? {}) } });
     if (response.ok) return response;
     const detail = (await response.text()).slice(0, 300);
-    const retry = response.status === 429 || response.status >= 500;
+    const retry = response.status === 409 || response.status === 429 || response.status >= 500;
     if (!retry || attempt >= tries) {
-      const error = new Error(`OpenAI said ${response.status}: ${detail}`);
+      const error = new Error(`${who} said ${response.status}: ${detail}`);
       error.status = response.status;
       throw error;
     }
@@ -193,6 +202,19 @@ async function request(url, init, tries = 4) {
 }
 
 async function recordOne(text, model, voice) {
+  if (SERVICE === 'elevenlabs') {
+    const response = await request(
+      `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // The language is named so that numbers written as digits are read in it.
+        body: JSON.stringify({ text, model_id: model, language_code: LANGUAGE }),
+      },
+      'elevenlabs',
+    );
+    return Buffer.from(await response.arrayBuffer());
+  }
   const body = { model, voice, input: text, response_format: 'mp3' };
   if (model.startsWith('gpt-')) body.instructions = STYLE;
   const response = await request('https://api.openai.com/v1/audio/speech', {
@@ -205,6 +227,7 @@ async function recordOne(text, model, voice) {
 
 // Finds a model and voice this account can use, by trying one line.
 async function chooseVoice(sample) {
+  if (SERVICE === 'elevenlabs') return { model: MODEL, voice: VOICE, audio: await recordOne(sample, MODEL, VOICE) };
   let lastError;
   for (const model of MODELS) {
     for (const voice of [VOICE, BACKUP_VOICE]) {
@@ -284,8 +307,10 @@ if (flag('--list')) {
 }
 
 const hasClip = (text) => !flag('--redo') && fs.existsSync(path.join(clipFolder, clipName(text)));
-const needsKey = flag('--check') || lines.some((text) => !hasClip(text));
-if (needsKey) key = readKey();
+// Recording needs the key of the service that speaks; listening back needs OpenAI's.
+if (lines.some((text) => !hasClip(text)) || flag('--fix')) keys[SERVICE] = readKey(SERVICE);
+if (flag('--check')) keys.openai = readKey('openai');
+const atOnce = SERVICE === 'elevenlabs' ? 3 : 5; // how many lines are recorded at the same time
 fs.mkdirSync(clipFolder, { recursive: true });
 fs.mkdirSync(path.dirname(listFile), { recursive: true });
 
@@ -301,7 +326,7 @@ if (missing.length) {
   console.log(`Using model "${model}" with voice "${voice}".`);
 
   let done = 1;
-  await inBatches(missing.slice(1), 5, async (text) => {
+  await inBatches(missing.slice(1), atOnce, async (text) => {
     try {
       fs.writeFileSync(path.join(clipFolder, clipName(text)), await recordOne(text, model, voice));
     } catch (error) {
@@ -342,7 +367,7 @@ if (flag('--check')) {
     const { model, voice } = await chooseVoice(doubtful[0].text);
     for (let round = 1; round <= 3 && doubtful.length; round++) {
       const still = [];
-      await inBatches(doubtful, 5, async ({ text }) => {
+      await inBatches(doubtful, atOnce, async ({ text }) => {
         const file = path.join(clipFolder, recorded[text][0]);
         fs.writeFileSync(file, await recordOne(text, model, voice));
         const heard = await mishearing(text, file);
