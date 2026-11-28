@@ -18,7 +18,7 @@ Pick a game on the start screen.
 
 ## Ages and levels
 
-The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the ten levels of the chosen game in two rows of five.
+The start screen has the characters at the top (on a phone, a row to swipe through, so each one can be big), then the games, then one row of age buttons (3, 4, 5, and 6+) and, under it, the ten levels of the chosen game in one row of small buttons.
 
 - Picking an age is the only difficulty setting. Every game has its own ten levels for each age.
 - A level is one run of 10 doors. Getting 7 or more right clears it and opens the next one. Fewer than 7 changes nothing: the same level is there to try again.
