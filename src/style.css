@@ -1687,7 +1687,7 @@ h2 {
 }
 
 /* A short phone: the levels go back to one row, so everything fits without scrolling. */
-@media (max-height: 620px) {
+@media (max-height: 720px) {
   #screen-start .levels {
     grid-template-columns: repeat(10, minmax(0, 1fr));
     gap: 4px;
@@ -1823,4 +1823,45 @@ h2 {
 .language-btn .flag {
   font-size: 1.5em;
   line-height: 1;
+}
+
+/* More than five games: rows of four, with a short last row centred. */
+.games.many {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.games.many .game-btn {
+  flex: 0 0 calc((100% - 24px) / 4);
+  min-width: 0;
+}
+
+/* A short phone with two rows of games: the game tiles are a little shorter. */
+@media (max-height: 720px) {
+  #screen-start .games.many .game-btn {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  #screen-start .games.many .game-icon {
+    font-size: 22px;
+  }
+}
+
+/* A tablet is wide enough for all the games in one row. */
+@media (min-width: 600px) and (min-height: 700px) {
+  #screen-start .games.many {
+    flex-wrap: nowrap;
+  }
+  #screen-start .games.many .game-btn {
+    flex: 1 1 0;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  #screen-start .games.many .game-icon {
+    font-size: 34px;
+  }
 }

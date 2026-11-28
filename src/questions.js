@@ -16,7 +16,7 @@
 //   after    the banner counts 3, 4, 5 ... ; find the door with the number that comes next
 //   add      the banner shows a sum; find the door with the answer
 //   color    the banner shows or says a color; find the door of that color
-//   thing    the banner shows or names a thing (a crown, a castle...); find its picture
+//   thing    the banner shows or names a thing (a crown, a dog, a banana...); find its picture
 //   shape    the banner shows or names a shape; find the door with that shape
 //   pattern  the banner shows a repeating row (red, blue, red, blue...); find what comes next
 //   mix      one of several kinds above, picked afresh for each question (a review level)
@@ -59,8 +59,11 @@ const COOL = ['blue', 'purple', 'green'];
 const DARK = ['brown', 'black', 'purple'];
 const LIGHT = ['white', 'yellow', 'pink'];
 
-// Princess things, shown as little pictures. Their names in each language are in src/text.js.
+// The little pictures used by the "find it" games: princess things, animals and fruit.
+// Their names in each language are in src/text.js. Each game uses its own list below,
+// in the order the pictures are brought in, most familiar first.
 export const THINGS = {
+  // princess things
   crown: '👑',
   castle: '🏰',
   unicorn: '🦄',
@@ -74,8 +77,39 @@ export const THINGS = {
   fairy: '🧚',
   dragon: '🐉',
   key: '🔑',
+  // animals
+  dog: '🐶',
+  cat: '🐱',
+  cow: '🐮',
+  duck: '🦆',
+  pig: '🐷',
+  horse: '🐴',
+  chicken: '🐔',
+  rabbit: '🐰',
+  fish: '🐟',
+  bird: '🐦',
+  sheep: '🐑',
+  lion: '🦁',
+  elephant: '🐘',
+  monkey: '🐵',
+  // fruit
+  apple: '🍎',
+  banana: '🍌',
+  strawberry: '🍓',
+  orange: '🍊',
+  watermelon: '🍉',
+  pineapple: '🍍',
+  pear: '🍐',
+  lemon: '🍋',
+  peach: '🍑',
+  mango: '🥭',
+  coconut: '🥥',
+  avocado: '🥑',
+  kiwi: '🥝',
 };
-const THING_IDS = Object.keys(THINGS);
+const PRINCESS = ['crown', 'castle', 'unicorn', 'dress', 'ring', 'wand', 'shoe', 'rose', 'frog', 'gem', 'fairy', 'dragon', 'key'];
+const ANIMALS = ['dog', 'cat', 'cow', 'duck', 'pig', 'horse', 'chicken', 'rabbit', 'fish', 'bird', 'sheep', 'frog', 'lion', 'elephant', 'monkey'];
+const FRUIT = ['apple', 'banana', 'strawberry', 'orange', 'watermelon', 'pineapple', 'pear', 'lemon', 'peach', 'mango', 'coconut', 'avocado', 'kiwi'];
 
 // Shapes, as outlines inside a 100 x 100 box. Their names are in src/text.js.
 const starPoints = Array.from({ length: 10 }, (_, i) => {
@@ -151,8 +185,20 @@ const withPictures = { pictures: true };
 const colors = (n) => COLOR_IDS.slice(0, n);
 const seeColors = (n) => ({ kind: 'color', colors: colors(n), show: true });
 const hearColors = (n) => ({ kind: 'color', colors: Array.isArray(n) ? n : colors(n), show: false });
-const seeThings = (n) => ({ kind: 'thing', pool: THING_IDS.slice(0, n), show: true });
-const hearThings = (n) => ({ kind: 'thing', pool: THING_IDS.slice(0, n), show: false });
+// The ten levels of a "find it" game for each age, for any list of pictures: match by
+// sight first, then find from the name alone, a few more pictures at a time. The same
+// plan serves the princess, animal and fruit games.
+function findItPlans(list) {
+  const see = (n) => ({ kind: 'thing', pool: list.slice(0, n), show: true });
+  const hear = (n) => ({ kind: 'thing', pool: list.slice(0, n), show: false });
+  const all = list.length;
+  return {
+    3: [see(3), see(4), see(5), hear(3), see(6), mix(see(6), hear(3)), see(9), hear(4), mix(see(9), hear(4)), hear(5)],
+    4: [see(9), hear(4), hear(5), hear(6), mix(see(9), hear(6)), hear(7), hear(8), see(all), hear(9), mix(see(all), hear(9))],
+    5: [see(all), hear(6), hear(7), hear(8), hear(9), hear(10), hear(11), hear(12), hear(all), mix(see(all), hear(all))],
+    6: [see(all), hear(7), hear(8), hear(9), hear(10), hear(11), hear(12), hear(all), hear(all), hear(all)],
+  };
+}
 const seeShapes = (n) => ({ kind: 'shape', pool: SHAPE_IDS.slice(0, n), show: true });
 const hearShapes = (n) => ({ kind: 'shape', pool: Array.isArray(n) ? n : SHAPE_IDS.slice(0, n), show: false });
 
@@ -291,56 +337,21 @@ export const GAMES = {
   princess: {
     icon: '👑',
     stickers: ['👑', '💍', '👗', '👠', '🌹', '💎', '🧚', '🏰', '🦄', '👸'],
-    plans: {
-      3: [
-        seeThings(3),
-        seeThings(4),
-        seeThings(5),
-        hearThings(3),
-        seeThings(6),
-        mix(seeThings(6), hearThings(3)),
-        seeThings(9),
-        hearThings(4),
-        mix(seeThings(9), hearThings(4)),
-        hearThings(5),
-      ],
-      4: [
-        seeThings(9),
-        hearThings(4),
-        hearThings(5),
-        hearThings(6),
-        mix(seeThings(9), hearThings(6)),
-        hearThings(7),
-        hearThings(8),
-        seeThings(13),
-        hearThings(9),
-        mix(seeThings(13), hearThings(9)),
-      ],
-      5: [
-        seeThings(13),
-        hearThings(6),
-        hearThings(7),
-        hearThings(8),
-        hearThings(9),
-        hearThings(10),
-        hearThings(11),
-        hearThings(12),
-        hearThings(13),
-        mix(seeThings(13), hearThings(13)),
-      ],
-      6: [
-        seeThings(13),
-        hearThings(7),
-        hearThings(8),
-        hearThings(9),
-        hearThings(10),
-        hearThings(11),
-        hearThings(12),
-        hearThings(13),
-        hearThings(13),
-        hearThings(13),
-      ],
-    },
+    plans: findItPlans(PRINCESS),
+  },
+
+  // The same game with animals, and with fruit. A three year old who tried the game
+  // loved the princess, color and shape games, which are all of this kind.
+  animals: {
+    icon: '🐶',
+    stickers: ['🐾', '🦴', '🥕', '🧀', '🐚', '🌾', '🍯', '🥜', '🏡', '🎪'],
+    plans: findItPlans(ANIMALS),
+  },
+
+  fruit: {
+    icon: '🍓',
+    stickers: ['🥤', '🍧', '🍰', '🧃', '🍦', '🥧', '🍹', '🧺', '🌳', '🥗'],
+    plans: findItPlans(FRUIT),
   },
 
   // Circle, square and triangle come first: those are the shapes expected at three to four.

@@ -807,17 +807,37 @@
     "1a93e60d69c7.mp3",
     4.01
   ],
+  "Aquí está el aguacate": [
+    "a8acb31fd8b5.mp3",
+    2.57
+  ],
   "Aquí está el anillo": [
     "25c1870674b3.mp3",
     2.26
+  ],
+  "Aquí está el caballo": [
+    "501cd679dbd5.mp3",
+    2.66
   ],
   "Aquí está el castillo": [
     "626abb601350.mp3",
     2.76
   ],
+  "Aquí está el cerdo": [
+    "e7ceb6176231.mp3",
+    2.76
+  ],
   "Aquí está el círculo": [
     "128114721ca4.mp3",
     3.31
+  ],
+  "Aquí está el coco": [
+    "36612ccec475.mp3",
+    2.81
+  ],
+  "Aquí está el conejo": [
+    "e6286d11431f.mp3",
+    2.26
   ],
   "Aquí está el corazón": [
     "dd5e77a1c480.mp3",
@@ -829,7 +849,19 @@
   ],
   "Aquí está el dragón": [
     "d752fbb878e6.mp3",
-    2.9
+    2.81
+  ],
+  "Aquí está el durazno": [
+    "9ed1577e7a8e.mp3",
+    2.35
+  ],
+  "Aquí está el elefante": [
+    "fc316049148e.mp3",
+    3.31
+  ],
+  "Aquí está el gato": [
+    "b2e806c26c1e.mp3",
+    3
   ],
   "Aquí está el hada": [
     "cfe6bf02612e.mp3",
@@ -839,9 +871,49 @@
     "776b24fa7227.mp3",
     3.12
   ],
+  "Aquí está el kiwi": [
+    "d9e1d2edeade.mp3",
+    3.05
+  ],
+  "Aquí está el león": [
+    "57ed7925ed05.mp3",
+    2.57
+  ],
+  "Aquí está el limón": [
+    "24ffd6cab423.mp3",
+    2.52
+  ],
+  "Aquí está el mango": [
+    "5b9d663e86c0.mp3",
+    1.85
+  ],
+  "Aquí está el mono": [
+    "159ac4f7ffbf.mp3",
+    2.57
+  ],
   "Aquí está el óvalo": [
     "9b68f358714c.mp3",
     3.17
+  ],
+  "Aquí está el pájaro": [
+    "e09fb077b36d.mp3",
+    2.11
+  ],
+  "Aquí está el pato": [
+    "5264cc2cd947.mp3",
+    3.17
+  ],
+  "Aquí está el perro": [
+    "8c3731c1a77c.mp3",
+    2.3
+  ],
+  "Aquí está el pez": [
+    "3ae3315dafc6.mp3",
+    2.16
+  ],
+  "Aquí está el plátano": [
+    "72a70205fe87.mp3",
+    2.86
   ],
   "Aquí está el rectángulo": [
     "017b3f229dc6.mp3",
@@ -875,6 +947,14 @@
     "f90e25d8fc2d.mp3",
     2.3
   ],
+  "Aquí está la fresa": [
+    "780984aa3a69.mp3",
+    2.9
+  ],
+  "Aquí está la gallina": [
+    "251e92d2d636.mp3",
+    2.66
+  ],
   "Aquí está la joya": [
     "12ad1d4ef531.mp3",
     2.02
@@ -883,6 +963,26 @@
     "5e000f776259.mp3",
     2.66
   ],
+  "Aquí está la manzana": [
+    "65d46407aea0.mp3",
+    2.26
+  ],
+  "Aquí está la naranja": [
+    "9e6d7407a4b1.mp3",
+    3.17
+  ],
+  "Aquí está la oveja": [
+    "fd7b6b673adb.mp3",
+    2.66
+  ],
+  "Aquí está la pera": [
+    "d3c0731251d5.mp3",
+    2.76
+  ],
+  "Aquí está la piña": [
+    "0773d435f047.mp3",
+    2.62
+  ],
   "Aquí está la rana": [
     "3c75c087ba49.mp3",
     3.5
@@ -890,6 +990,14 @@
   "Aquí está la rosa": [
     "e9e27ea7bbb7.mp3",
     2.11
+  ],
+  "Aquí está la sandía": [
+    "908f2a809ddd.mp3",
+    3
+  ],
+  "Aquí está la vaca": [
+    "42ae4bf5384d.mp3",
+    2.4
   ],
   "Aquí está la varita": [
     "463a14bfbf55.mp3",
@@ -1015,17 +1123,33 @@
     "3849f39c827a.mp3",
     3.17
   ],
+  "Busca el aguacate": [
+    "a049c33065c3.mp3",
+    2.02
+  ],
   "Busca el anillo": [
     "0af07ece725e.mp3",
     1.92
+  ],
+  "Busca el caballo": [
+    "5c9d0512156c.mp3",
+    2.45
   ],
   "Busca el castillo": [
     "87b9e6fb9f89.mp3",
     3.26
   ],
+  "Busca el cerdo": [
+    "eeb9dd9ed35d.mp3",
+    2.16
+  ],
   "Busca el círculo": [
     "ab5da2d48bd1.mp3",
     2.16
+  ],
+  "Busca el coco": [
+    "8c23479ab9a2.mp3",
+    1.85
   ],
   "Busca el color amarillo": [
     "05897b1e7c0a.mp3",
@@ -1067,6 +1191,10 @@
     "64e81522882b.mp3",
     2.66
   ],
+  "Busca el conejo": [
+    "458aa1f18497.mp3",
+    2.21
+  ],
   "Busca el corazón": [
     "a5976cee2185.mp3",
     2.57
@@ -1079,6 +1207,18 @@
     "5e08af69b3b1.mp3",
     2.35
   ],
+  "Busca el durazno": [
+    "d464d9120c77.mp3",
+    2.4
+  ],
+  "Busca el elefante": [
+    "b7d09a5f0572.mp3",
+    3.5
+  ],
+  "Busca el gato": [
+    "5cc29d0de47b.mp3",
+    1.61
+  ],
   "Busca el hada": [
     "97bfee8cc072.mp3",
     2.02
@@ -1087,9 +1227,49 @@
     "d511cb190bb0.mp3",
     2.3
   ],
+  "Busca el kiwi": [
+    "5bbd4992058c.mp3",
+    1.97
+  ],
+  "Busca el león": [
+    "5579c8748063.mp3",
+    1.85
+  ],
+  "Busca el limón": [
+    "dc35236b63e7.mp3",
+    2.16
+  ],
+  "Busca el mango": [
+    "789d058da566.mp3",
+    2.02
+  ],
+  "Busca el mono": [
+    "b81cb20d658f.mp3",
+    2.76
+  ],
   "Busca el óvalo": [
     "294aca0b39cd.mp3",
     2.3
+  ],
+  "Busca el pájaro": [
+    "919d08c57c46.mp3",
+    2.21
+  ],
+  "Busca el pato": [
+    "465a5d2e55c4.mp3",
+    1.66
+  ],
+  "Busca el perro": [
+    "f749d3fd9c2a.mp3",
+    2.52
+  ],
+  "Busca el pez": [
+    "cec2f01b6872.mp3",
+    1.8
+  ],
+  "Busca el plátano": [
+    "0038b73e47ce.mp3",
+    2.11
   ],
   "Busca el rectángulo": [
     "c02f358fdd4f.mp3",
@@ -1123,6 +1303,14 @@
     "4e3bec676b9c.mp3",
     2.11
   ],
+  "Busca la fresa": [
+    "70593f3ba3b2.mp3",
+    2.11
+  ],
+  "Busca la gallina": [
+    "10ca145d807e.mp3",
+    1.92
+  ],
   "Busca la joya": [
     "ec873182be9a.mp3",
     1.92
@@ -1131,6 +1319,26 @@
     "ccadb3d96a02.mp3",
     2.06
   ],
+  "Busca la manzana": [
+    "5fe224325d76.mp3",
+    1.8
+  ],
+  "Busca la naranja": [
+    "007c2792dba9.mp3",
+    2.57
+  ],
+  "Busca la oveja": [
+    "3430acfbb671.mp3",
+    1.8
+  ],
+  "Busca la pera": [
+    "06c88a93cbcd.mp3",
+    2.3
+  ],
+  "Busca la piña": [
+    "9746977be60d.mp3",
+    1.75
+  ],
   "Busca la rana": [
     "afc599a56b15.mp3",
     1.66
@@ -1138,6 +1346,14 @@
   "Busca la rosa": [
     "1d981b0a517c.mp3",
     1.97
+  ],
+  "Busca la sandía": [
+    "7623f0bc45c4.mp3",
+    3.86
+  ],
+  "Busca la vaca": [
+    "1904cf1bfecd.mp3",
+    2.35
   ],
   "Busca la varita": [
     "50e88c4218d1.mp3",

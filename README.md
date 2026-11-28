@@ -11,6 +11,8 @@ Pick a game on the start screen.
 - **Números (numbers):** small amounts as dots, comparing more and fewer, counting pictures and fingers, written numbers, what number comes next, then sums.
 - **Colores (colors):** see a color and find the door of that color, then find it from hearing its name alone. Ten colors in all.
 - **Princesa (princess):** see a crown, a castle, or a unicorn and find its picture, then find it from hearing its name alone. Thirteen things in all. Made for a three year old.
+- **Animales (animals):** the same game with a dog, a cat, a cow and twelve more animals.
+- **Frutas (fruit):** the same game with an apple, a banana, a strawberry and ten more.
 - **Figuras (shapes):** the same with a circle, a square, and a triangle, then a star, a heart, a rectangle, an oval, a diamond, and a hexagon.
 - **Patrones (patterns):** a repeating row, such as red, blue, red, blue: find what comes next. From age 4.
 
@@ -25,12 +27,12 @@ The start screen has one row of age buttons (3, 4, 5, and 6+) and, under it, the
 - Progress is saved for each age and each game, so two children of different ages can share a device by tapping their own age first.
 - A child who cannot read can keep going alone. The end screen has one big green button with a play triangle, the picture of the game, and the number of the level it starts: the next level if this one was cleared, the same one if not. After the tenth level of a game it moves on to the next game that still has levels to clear. The little house goes back to the start screen.
 
-| Age | Numbers | Colors | Princess things | Shapes | Patterns |
+| Age | Numbers | Colors | Princess things, animals, fruit | Shapes | Patterns |
 | --- | --- | --- | --- | --- | --- |
 | 3 | Amounts up to 3, then 4, seen at a glance; more and fewer with very different amounts | Match by sight up to 7 colors; find up to 5 by name | Match by sight up to 9; find up to 5 by name | Circle, square, and triangle, then star, heart, and rectangle | None |
 | 4 | Amounts up to 5; close amounts; written numbers up to 5, first with their dots | Find up to 7 by name, then colors that look alike | Find up to 9 by name | Up to 9 shapes by sight, 8 by name | Two-part rows (red, blue), then rows with a double (red, red, blue) |
-| 5 | Counting up to 10; what number comes next; amounts up to 10; sums up to 10 with pictures | All 10 by name, then colors that look alike | All 13 by name | All 9 by name, then shapes that look alike | Up to three-part rows and doubled pairs |
-| 6+ | Sums written only as numbers: up to 10, up to 20, then with two-digit numbers | All 10 by name, then every set of colors that look alike | All 13 by name | All 9 by name, then shapes that look alike | Four-part rows |
+| 5 | Counting up to 10; what number comes next; amounts up to 10; sums up to 10 with pictures | All 10 by name, then colors that look alike | All of them by name | All 9 by name, then shapes that look alike | Up to three-part rows and doubled pairs |
+| 6+ | Sums written only as numbers: up to 10, up to 20, then with two-digit numbers | All 10 by name, then every set of colors that look alike | All of them by name | All 9 by name, then shapes that look alike | Four-part rows |
 
 The exact levels are in `src/questions.js`, one line each.
 
@@ -106,6 +108,8 @@ How shapes are drawn, and how the game celebrates (checked on 27 November 2026):
 | Keeps celebrations short, only after a right answer, and biggest for a cleared level | An analysis of 124 children's apps marked apps down for praise and rewards after every action, and up for feedback tied to the answer. Getting to a new level is named as a better reward than stickers or badges. | 19, 20 |
 | Asks, then waits; keeps a steady pace; repeats | Children's programmes that pause for an answer, go slowly and repeat are the ones researchers single out as holding attention and teaching. In one study of 100 videos, the pace of most was too fast for most children to take in. | 21, 22 |
 
+The animal and fruit games were added after a three year old tried the game and loved the princess, color and shape games, which are all the same kind: find the one that was shown or named. They follow the princess game's levels exactly.
+
 The faces and the stickers are there to make the game friendlier, not because research says they teach. The sources above do not test faces, and they rate stickers below reaching a new level as a reward. So both are kept small: the faces do not move, and there is one sticker for a whole level, never one for each answer.
 
 Not built, though this research points to it: telling a child why a shape is that shape ("it has three sides") when the answer is shown. In one study, children taught that way sorted shapes they had never seen about 30% better (source 23).
@@ -154,7 +158,7 @@ Sources:
 
 The game speaks with recorded clips in both languages, so it says the same thing in the same voice on every phone, tablet, and computer. The Spanish voice is Mexican Spanish and the English voice is American English. Both are computer-generated (made with OpenAI text-to-speech), not a person.
 
-- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 393 in each language.
+- The clips are in `public/voice/es/` and `public/voice/en/`, one for each line the game can say: 447 in each language.
 - After each recording run, every clip was transcribed back and compared with its line.
 - Sums bigger than 10 have no clip. For those the game uses the voice built into the device. If the device has no voice for that language, the game stays quiet for those sums, and the written question under the banner is there for a grown-up to read aloud.
 - The sound button turns off the sound effects and the voice.

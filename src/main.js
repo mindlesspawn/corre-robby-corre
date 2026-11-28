@@ -170,7 +170,9 @@ function renderGames() {
   const current = store.game();
   const list = gamesFor(store.age());
   el.games.style.setProperty('--count', String(list.length));
-  el.games.classList.toggle('five', list.length > 4);
+  // Five games fit one row of narrow tiles; more than that go in rows of four.
+  el.games.classList.toggle('five', list.length === 5);
+  el.games.classList.toggle('many', list.length > 5);
   el.games.replaceChildren(
     ...list.map((id) => {
       const button = tag('button', 'game-btn');

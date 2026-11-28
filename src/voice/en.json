@@ -507,13 +507,41 @@
     "443aedf1c505.mp3",
     1.92
   ],
+  "Find the apple": [
+    "af4f78f9c5db.mp3",
+    2.71
+  ],
+  "Find the avocado": [
+    "2c89f1ee3662.mp3",
+    3.96
+  ],
+  "Find the banana": [
+    "2101c7fdc353.mp3",
+    3.26
+  ],
+  "Find the bird": [
+    "1a498726455e.mp3",
+    1.85
+  ],
   "Find the castle": [
     "e33f2f516045.mp3",
     2.06
   ],
+  "Find the cat": [
+    "d971ab45c60a.mp3",
+    2.86
+  ],
+  "Find the chicken": [
+    "9f3ecfb7b5d7.mp3",
+    1.8
+  ],
   "Find the circle": [
     "563c0a403bea.mp3",
     2.06
+  ],
+  "Find the coconut": [
+    "726c034ef0a8.mp3",
+    2.35
   ],
   "Find the color black": [
     "ea864c18171d.mp3",
@@ -555,6 +583,10 @@
     "0d86ff73eb4b.mp3",
     3.17
   ],
+  "Find the cow": [
+    "989ec75126d7.mp3",
+    2.16
+  ],
   "Find the crown": [
     "704d9643bbf5.mp3",
     1.97
@@ -562,6 +594,10 @@
   "Find the diamond": [
     "2db99c199855.mp3",
     3.05
+  ],
+  "Find the dog": [
+    "93ff2f98a716.mp3",
+    1.85
   ],
   "Find the dragon": [
     "37bd6acd2a3a.mp3",
@@ -571,9 +607,21 @@
     "43d2d90bd64d.mp3",
     3.31
   ],
+  "Find the duck": [
+    "d395e707dcd1.mp3",
+    2.02
+  ],
+  "Find the elephant": [
+    "f79d00e5e548.mp3",
+    3.26
+  ],
   "Find the fairy": [
     "c03662165ee4.mp3",
     2.06
+  ],
+  "Find the fish": [
+    "e8bd20e4f0c0.mp3",
+    1.97
   ],
   "Find the frog": [
     "f56d68d3c457.mp3",
@@ -591,13 +639,61 @@
     "9ef15eb4dc21.mp3",
     2.21
   ],
+  "Find the horse": [
+    "e9226089d1eb.mp3",
+    2.81
+  ],
   "Find the key": [
     "9d49c91f7e00.mp3",
     2.95
   ],
+  "Find the kiwi": [
+    "9c564d4b640d.mp3",
+    2.35
+  ],
+  "Find the lemon": [
+    "19f58641da4a.mp3",
+    2.4
+  ],
+  "Find the lion": [
+    "184f2e6c9445.mp3",
+    2.16
+  ],
+  "Find the mango": [
+    "d283bc6f7e6f.mp3",
+    2.26
+  ],
+  "Find the monkey": [
+    "7cd304348a2b.mp3",
+    2.21
+  ],
+  "Find the orange": [
+    "0c6b2bc08230.mp3",
+    3
+  ],
   "Find the oval": [
     "18fbc860ace4.mp3",
     1.8
+  ],
+  "Find the peach": [
+    "df9d58cbe259.mp3",
+    1.75
+  ],
+  "Find the pear": [
+    "03d6413ef385.mp3",
+    2.26
+  ],
+  "Find the pig": [
+    "b133331f1ef8.mp3",
+    2.06
+  ],
+  "Find the pineapple": [
+    "a43b2f3772dc.mp3",
+    3.17
+  ],
+  "Find the rabbit": [
+    "d7511d01d51f.mp3",
+    2.52
   ],
   "Find the rectangle": [
     "da928554398c.mp3",
@@ -611,6 +707,10 @@
     "5e5cb278b54c.mp3",
     3.36
   ],
+  "Find the sheep": [
+    "1ad14f728c02.mp3",
+    2.16
+  ],
   "Find the shoe": [
     "36633c56b1d7.mp3",
     2.57
@@ -623,6 +723,10 @@
     "082dc1bfda7e.mp3",
     2.52
   ],
+  "Find the strawberry": [
+    "a0dcffd1dc37.mp3",
+    2.3
+  ],
   "Find the triangle": [
     "4a32c36c387c.mp3",
     2.57
@@ -634,6 +738,10 @@
   "Find the wand": [
     "ca767a2e5d6e.mp3",
     2.35
+  ],
+  "Find the watermelon": [
+    "17cdc66a22b9.mp3",
+    1.85
   ],
   "Good try! Let's go again.": [
     "bedd68ced5a5.mp3",
@@ -683,13 +791,45 @@
     "ef82bbc1d36d.mp3",
     2.45
   ],
+  "Here is the apple": [
+    "658eadfa8b7b.mp3",
+    1.61
+  ],
+  "Here is the avocado": [
+    "a7c4bffef6db.mp3",
+    2.26
+  ],
+  "Here is the banana": [
+    "c54af0ce0cbc.mp3",
+    2.95
+  ],
+  "Here is the bird": [
+    "599e78c741ac.mp3",
+    2.06
+  ],
   "Here is the castle": [
     "2bd1a3420ed5.mp3",
     1.97
   ],
+  "Here is the cat": [
+    "07d87b41b74d.mp3",
+    2.21
+  ],
+  "Here is the chicken": [
+    "3a8ad8eaf6bb.mp3",
+    1.8
+  ],
   "Here is the circle": [
     "3cea0f798f3e.mp3",
     2.16
+  ],
+  "Here is the coconut": [
+    "35a0ef82e0dc.mp3",
+    1.92
+  ],
+  "Here is the cow": [
+    "24bbbb7ceecc.mp3",
+    2.26
   ],
   "Here is the crown": [
     "0da2451fb348.mp3",
@@ -699,6 +839,10 @@
     "c23f0b14b532.mp3",
     2.06
   ],
+  "Here is the dog": [
+    "b35fdae99352.mp3",
+    2.11
+  ],
   "Here is the dragon": [
     "959a2664cab8.mp3",
     2.02
@@ -707,9 +851,21 @@
     "fdc9164af579.mp3",
     3.12
   ],
+  "Here is the duck": [
+    "ed58bdedc2c3.mp3",
+    2.45
+  ],
+  "Here is the elephant": [
+    "8e604502e127.mp3",
+    2.71
+  ],
   "Here is the fairy": [
     "d705ff02c4af.mp3",
     2.06
+  ],
+  "Here is the fish": [
+    "51b77363b32f.mp3",
+    2.81
   ],
   "Here is the frog": [
     "386a6af01c97.mp3",
@@ -727,13 +883,61 @@
     "d3ccbe33dceb.mp3",
     2.62
   ],
+  "Here is the horse": [
+    "fc1acbb85cfe.mp3",
+    2.16
+  ],
   "Here is the key": [
     "f9e3c0bff2a0.mp3",
     2.66
   ],
+  "Here is the kiwi": [
+    "15da9b5e00bd.mp3",
+    1.97
+  ],
+  "Here is the lemon": [
+    "99f07d34abd1.mp3",
+    2.35
+  ],
+  "Here is the lion": [
+    "5a636eb79e9b.mp3",
+    2.57
+  ],
+  "Here is the mango": [
+    "ba2232fa47b3.mp3",
+    2.02
+  ],
+  "Here is the monkey": [
+    "7ada951cc349.mp3",
+    2.35
+  ],
+  "Here is the orange": [
+    "d29855e5d301.mp3",
+    3.86
+  ],
   "Here is the oval": [
     "a0347957372b.mp3",
     2.76
+  ],
+  "Here is the peach": [
+    "0eb41d8afe92.mp3",
+    2.62
+  ],
+  "Here is the pear": [
+    "fc388e0ac0f4.mp3",
+    2.35
+  ],
+  "Here is the pig": [
+    "f33dc33b4774.mp3",
+    2.02
+  ],
+  "Here is the pineapple": [
+    "7049a03d89f6.mp3",
+    3.05
+  ],
+  "Here is the rabbit": [
+    "4102af316134.mp3",
+    3.91
   ],
   "Here is the rectangle": [
     "957cacaaac65.mp3",
@@ -747,6 +951,10 @@
     "6b3ec7f42687.mp3",
     3.55
   ],
+  "Here is the sheep": [
+    "e146104efacf.mp3",
+    2.3
+  ],
   "Here is the shoe": [
     "ab7aa07361b5.mp3",
     2.16
@@ -759,6 +967,10 @@
     "e2cee5d9b036.mp3",
     2.4
   ],
+  "Here is the strawberry": [
+    "f0d049991f1f.mp3",
+    2.16
+  ],
   "Here is the triangle": [
     "688a61244261.mp3",
     2.45
@@ -770,6 +982,10 @@
   "Here is the wand": [
     "62a240ff4bf7.mp3",
     2.57
+  ],
+  "Here is the watermelon": [
+    "835ddeb29fc6.mp3",
+    3.36
   ],
   "How many apples?": [
     "267a94e1c159.mp3",
