@@ -25,6 +25,7 @@ The [Noto project license explanation](https://github.com/googlefonts/noto-emoji
 Prepared locally in this review:
 
 - Added the iOS privacy manifest for Preferences/UserDefaults (`CA92.1`) and included it in the Xcode Resources build phase, following the [Capacitor Preferences requirements](https://capacitorjs.com/docs/apis/preferences).
+- Declared SystemBootTime reason `35F9.1` for the parent gate's elapsed-time expiry. The timer stays on-device and is never transmitted, matching [Apple's approved timer use](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype).
 - Bundled third-party notices, made the privacy/credits page accessible from Settings, and corrected the policy's optional nickname wording.
 - Updated the listing draft to seven games, the current tutorial/replay behavior, four volume controls, and mandatory Mexico availability.
 - Implemented optional StoreKit 2 consumable tips in the iOS app. A typed parent question grants one purchase attempt, expires after three minutes, and is revoked when the adult leaves or backgrounds the app. Apple supplies the price and payment sheet; cancellation, pending approval, verification failure, and unavailable products have separate English/Spanish messages. Verified unfinished transactions are recovered without interrupting play.
@@ -45,7 +46,7 @@ Verification: the 27 JavaScript tests cover game/audio behavior, native storage 
 
 ## Mac handoff
 
-Guide Robby **one step at a time**, without repeating membership questions. The prepared implementation is on branch `codex/app-store-tips`; switch to that branch before installing/building if it has not yet been merged. First step: open Xcode and confirm its version. The full reference below is for later steps, not a single checklist to send him at once.
+Guide Robby **one step at a time**, without repeating membership questions. Use the current `main` branch after the prepared implementation's checks and merge. First step: open Xcode and confirm its version. The full reference below is for later steps, not a single checklist to send him at once.
 
 ## Listing walkthrough
 

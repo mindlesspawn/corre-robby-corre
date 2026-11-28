@@ -3,9 +3,9 @@ name: Check iOS app
 on:
   workflow_dispatch:
   push:
-    branches: ['codex/app-store-tips']
+    branches: ['main', 'codex/app-store-tips']
   pull_request:
-    paths: ['ios/**', 'src/**', 'public/**', 'index.html', 'package-lock.json', '.github/workflows/ios-check.yml']
+    paths: ['ios/**', 'src/**', 'public/**', 'tests/**', 'index.html', 'package.json', 'package-lock.json', '.github/workflows/ios-check.yml']
 
 permissions:
   contents: read
@@ -32,7 +32,9 @@ jobs:
       - run: npm run ios
       - name: Build iPhone and iPad app without signing
         run: xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/ios CODE_SIGNING_ALLOWED=NO build
-      - name: Check archived resources
+      - name: Check bundled privacy and license resources
         run: |
           test -f build/ios/Build/Products/Release-iphonesimulator/App.app/PrivacyInfo.xcprivacy
           test -f build/ios/Build/Products/Release-iphonesimulator/App.app/public/licenses/fredoka-OFL.txt
+          plutil -lint build/ios/Build/Products/Release-iphonesimulator/App.app/PrivacyInfo.xcprivacy
+          /usr/libexec/PlistBuddy -c 'Print :NSPrivacyAccessedAPITypes:1:NSPrivacyAccessedAPITypeReasons:0' build/ios/Build/Products/Release-iphonesimulator/App.app/PrivacyInfo.xcprivacy | grep -qx '35F9.1'

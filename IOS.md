@@ -42,7 +42,6 @@ Use Xcode 26 or later with an iOS 26 or later SDK, following [Apple's current up
    ```bash
    git clone https://github.com/mindlesspawn/corre-robby-corre.git
    cd corre-robby-corre
-   git switch codex/app-store-tips
    npm ci
    ```
 
