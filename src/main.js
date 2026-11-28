@@ -8,6 +8,7 @@ import { CHARACTERS } from './characters.js';
 import { Game } from './game.js';
 import { renderThumbnails } from './looks.js';
 import { faceParts, faceSpot } from './faces.js';
+import { emojiPicture, preloadEmoji, withPictures, write } from './emoji.js';
 import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor, stickerFor } from './questions.js';
 import { store } from './storage.js';
 import { setMuted, sfx, unlockAudio } from './audio.js';
@@ -101,7 +102,8 @@ function replay(element, className) {
 function tag(name, className, text) {
   const node = document.createElement(name);
   if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
+  // Any emoji in the text is shown as its picture (see emoji.js).
+  if (text !== undefined) node.append(...withPictures(text));
   return node;
 }
 
@@ -129,7 +131,7 @@ function renderCharacters() {
   )[0];
   // With nothing left to unlock, the line about unlocking is hidden.
   el.unlockNote.hidden = !nextLocked;
-  el.unlockNote.textContent = nextLocked ? unlockMessage(nextLocked, totalPoints) : '';
+  write(el.unlockNote, nextLocked ? unlockMessage(nextLocked, totalPoints) : '');
 
   el.characters.replaceChildren(
     ...CHARACTERS.map((def) => {
@@ -153,7 +155,7 @@ function renderCharacters() {
       card.addEventListener('click', () => {
         if (!unlocked) {
           replay(card, 'nudge');
-          el.unlockNote.textContent = unlockMessage(def, store.get().totalPoints);
+          write(el.unlockNote, unlockMessage(def, store.get().totalPoints));
           return;
         }
         store.update({ character: def.id });
@@ -245,7 +247,7 @@ function renderLevels() {
 
 function renderStart() {
   const { totalPoints, best } = store.get();
-  el.stats.textContent = best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`;
+  write(el.stats, best > 0 ? `⭐ ${t.points(totalPoints)} · ${t.bestRun(best)}` : `⭐ ${t.points(totalPoints)}`);
   // Points only matter while there is a character left to unlock, so the line is hidden otherwise.
   el.stats.hidden = CHARACTERS.every((def) => isUnlocked(def, totalPoints));
   renderCharacters();
@@ -309,7 +311,7 @@ function things(count, item = 'apple') {
   const group = tag('span', count > 5 ? 'apples many' : 'apples');
   for (let i = 0; i < count; i++) {
     if (i > 0 && i % 5 === 0) group.append(tag('br'));
-    group.append(ITEMS[item] ?? ITEMS.apple);
+    group.append(emojiPicture(ITEMS[item] ?? ITEMS.apple));
   }
   return group;
 }
@@ -650,8 +652,8 @@ function finishRun({ score, total, endless }) {
   el.overLevel.hidden = endless;
   $('btn-over-scores').hidden = !endless; // the high score table is for endless runs
   el.overLevel.classList.toggle('passed', passed);
-  if (passed) el.overLevel.textContent = store.cleared(runGame) >= LEVELS ? t.allCleared : t.levelCleared(runLevel + 1);
-  else el.overLevel.textContent = t.levelAgain(runLevel + 1, CONFIG.clearAt);
+  if (passed) write(el.overLevel, store.cleared(runGame) >= LEVELS ? t.allCleared : t.levelCleared(runLevel + 1));
+  else write(el.overLevel, t.levelAgain(runLevel + 1, CONFIG.clearAt));
   // A child who has cleared all ten levels of a game is moved on to the next game that
   // still has levels to clear, so the big button always leads somewhere new.
   if (!endless && store.cleared(runGame) >= LEVELS) {
@@ -668,7 +670,7 @@ function finishRun({ score, total, endless }) {
   );
   // A cleared level earns its sticker.
   el.overSticker.hidden = !passed;
-  el.overSticker.textContent = passed ? stickerFor(runGame, runLevel) : '';
+  write(el.overSticker, passed ? stickerFor(runGame, runLevel) : '');
 
   el.overTitle.textContent = friendlyTitle(score, total, endless);
   el.overScore.textContent = String(score);
@@ -774,7 +776,7 @@ function showScores(highlight = -1) {
 // Fills in every fixed word on the page from src/text.js.
 function applyWords() {
   document.documentElement.lang = getLanguage() === 'es' ? 'es-MX' : getLanguage();
-  for (const node of document.querySelectorAll('[data-t]')) node.textContent = t[node.dataset.t];
+  for (const node of document.querySelectorAll('[data-t]')) write(node, t[node.dataset.t]);
   for (const node of document.querySelectorAll('[data-t-label]')) {
     node.setAttribute('aria-label', t[node.dataset.tLabel]);
   }
@@ -812,35 +814,13 @@ function chooseLanguage(code) {
 // The first-time screen: one big button for each language, with its flag. The language
 // of the phone or tablet goes first. Picking one says "let us go" in that language and
 // opens the start screen.
-// Windows shows two letters where a flag should be. This tells whether flags can be drawn,
-// by drawing one and looking for color in it.
-function canDrawFlags() {
-  try {
-    const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
-    const g = canvas.getContext('2d', { willReadFrequently: true });
-    g.font = '24px sans-serif';
-    g.textBaseline = 'top';
-    g.fillText('🇲🇽', 0, 2);
-    const { data } = g.getImageData(0, 0, 32, 32);
-    for (let i = 0; i < data.length; i += 4) {
-      if (data[i + 3] > 0 && Math.max(data[i], data[i + 1], data[i + 2]) - Math.min(data[i], data[i + 1], data[i + 2]) > 40) return true;
-    }
-  } catch {
-    // Not being able to look counts as not being able to draw.
-  }
-  return false;
-}
-
 function buildLanguagePick() {
-  const flags = canDrawFlags();
   const device = (navigator.language ?? '').toLowerCase().slice(0, 2);
   const order = [...LANGUAGES].sort((a, b) => Number(b.code === device) - Number(a.code === device));
   $('language-pick').replaceChildren(
     ...order.map(({ code, label, flag }) => {
       const button = tag('button', 'language-btn');
-      if (flags) button.append(tag('span', 'flag', flag));
+      button.append(tag('span', 'flag', flag));
       button.append(tag('span', '', label));
       button.type = 'button';
       button.lang = code;
@@ -865,8 +845,8 @@ function applyMute() {
   setSpeechMuted(muted);
   setMusicVolume(musicVolume);
   setMusic(playing);
-  el.mute.textContent = muted ? '🔇' : '🔊';
-  el.muteStart.textContent = muted ? t.soundOff : t.soundOn;
+  write(el.mute, muted ? '🔇' : '🔊');
+  write(el.muteStart, muted ? t.soundOff : t.soundOn);
   el.muteStart.classList.toggle('off', muted);
   el.muteStart.setAttribute('aria-pressed', String(!muted));
   for (const row of el.musicRows) row.classList.toggle('off', !playing);
@@ -1054,6 +1034,8 @@ async function init() {
 
   // Fetch the hand pictures now, so they are ready when a question needs them.
   for (let fingers = 1; fingers <= 5; fingers++) new Image().src = handPicture(fingers);
+  // The same for the little pictures on the doors and in the banner (see emoji.js).
+  preloadEmoji([...Object.values(THINGS), ...Object.values(ITEMS), '⭐', '🔊']);
 
   await store.init();
   // With no language picked yet, the game opens on the screen for picking one.
@@ -1063,6 +1045,8 @@ async function init() {
   buildLanguageButtons();
   buildLanguagePick();
   applyWords();
+  // The buttons that are a picture and no words (the gear, the house, the music note).
+  for (const node of document.querySelectorAll('[data-emoji]')) write(node, node.dataset.emoji);
   thumbs = renderThumbnails(CHARACTERS);
 
   try {

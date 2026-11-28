@@ -23,15 +23,17 @@
     <!--
       The words on this page are filled in from src/text.js when the game starts:
       data-t="key" sets an element's text, data-t-label="key" sets its spoken label.
+      data-emoji="⭐" fills an element with a little picture: a file from public/art/emoji,
+      never the device's own emoji (see src/emoji.js).
     -->
     <canvas id="scene"></canvas>
 
     <!-- Shown while running -->
     <div id="hud" class="hud" hidden>
       <div class="hud-row">
-        <div class="pill" data-t-label="labelScore"><span aria-hidden="true">⭐</span> <span id="score">0</span></div>
+        <div class="pill" data-t-label="labelScore"><span aria-hidden="true" data-emoji="⭐"></span> <span id="score">0</span></div>
         <div class="hud-buttons">
-          <button id="btn-mute" class="icon-btn" type="button" data-t-label="labelSound">🔊</button>
+          <button id="btn-mute" class="icon-btn" type="button" data-t-label="labelSound"></button>
           <button id="btn-pause" class="icon-btn" type="button" data-t-label="labelPause">
             <span class="pause-icon" aria-hidden="true"></span>
           </button>
@@ -76,7 +78,7 @@
         <div class="play-row">
           <button id="btn-play" class="big-btn" type="button" data-t="play"></button>
           <!-- Speed, sound, music, language and endless mode are on the settings screen. -->
-          <button id="btn-settings" class="small-btn toggle-btn" type="button" data-t-label="labelSettings">⚙️</button>
+          <button id="btn-settings" class="small-btn toggle-btn" type="button" data-t-label="labelSettings" data-emoji="⚙️"></button>
         </div>
         <!-- Shown only when this device has no voice for the chosen language. -->
         <p id="voice-note" class="voice-note" hidden></p>
@@ -102,7 +104,7 @@
         <div class="setting">
           <p class="setting-name" data-t="settingMusic"></p>
           <div class="music-row">
-            <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
+            <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic" data-emoji="🎵"></button>
             <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
           </div>
         </div>
@@ -181,7 +183,7 @@
           <button id="btn-again" class="big-btn go-btn" type="button" data-t-label="playAgain"></button>
           <div class="button-row">
             <button id="btn-over-scores" class="small-btn" type="button" data-t="scoresButton"></button>
-            <button id="btn-home" class="small-btn home-btn" type="button" data-t-label="home">🏠</button>
+            <button id="btn-home" class="small-btn home-btn" type="button" data-t-label="home" data-emoji="🏠"></button>
           </div>
         </div>
       </div>
@@ -210,7 +212,7 @@
         </div>
         <!-- Music has its own volume. Sliding to zero, or tapping the note, turns only the music off. -->
         <div class="music-row">
-          <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic">🎵</button>
+          <button class="small-btn toggle-btn music-btn" type="button" data-t-label="labelMusic" data-emoji="🎵"></button>
           <input class="music-slider" type="range" min="0" max="100" step="1" data-t-label="labelMusicVolume" />
         </div>
       </div>
@@ -218,7 +220,7 @@
 
     <!-- Shown when a phone is held sideways: a phone turning back upright. -->
     <div id="rotate" class="rotate" role="img" data-t-label="labelRotate" hidden>
-      <div class="rotate-phone" aria-hidden="true">😀</div>
+      <div class="rotate-phone" aria-hidden="true" data-emoji="😀"></div>
     </div>
 
     <script type="module" src="./src/main.js"></script>

@@ -175,6 +175,15 @@ node scripts/record-voice.mjs --key-file "C:\path\to\.env" --check --fix
 
 The file must contain a line `OPENAI_API_KEY=...`. Only lines without a clip are recorded, so a small change costs very little. To change a language's voice, edit its entry under `VOICES` and add `--redo`, which records every line again. After recording, run `node scripts/trim-voice.mjs --language en` (or `es`) and then the recorder once more for that language without `--redo` (it needs no key when every line has a clip), so the clip lengths in `src/voice/en.json` match the files. The key is sent only to OpenAI and is never printed or saved by the script. Do not put the key in this folder: this repository is public.
 
+## The little pictures
+
+The small pictures (the crown, the dog, the banana, the game icons, the level stickers, the stars, the flags, and the pictures on buttons such as ⚙️ and 🏠) are written in the game's files as emoji, because that is the easiest way to name them. They are never drawn with the device's own emoji font, which would show Apple's artwork on an iPhone, Google's on Android and Microsoft's on Windows. Each one is shown as a picture file from Google's [Noto Emoji](https://github.com/googlefonts/noto-emoji), which comes with the game in `public/art/emoji/`, so the game looks the same on every device.
+
+- `src/emoji.js` turns an emoji into its picture, on the page and on the door signs. Only if a picture is missing or cannot be loaded does the device's own emoji show in its place.
+- After writing a new emoji anywhere in the game, run `node scripts/fetch-emoji.mjs`. It downloads the pictures that are not yet in the folder, from the release of Noto Emoji named at the top of the script, and lists the ones no longer used.
+
+Credits: the pictures are from Noto Emoji by Google, release `v2026-09-24-unicode18_0`, used unchanged. Noto Emoji's images are under the Apache License 2.0, and its flag images are in the public domain. The licence files are in `public/art/emoji/`, next to the pictures, so they go wherever the game goes; `public/art/emoji/README.md` says which file covers what.
+
 ## The music
 
 A quiet tune loops in the background: a marimba melody, a classical guitar picking the chords, and light percussion. The game makes it from simple sounds as it plays, so there is no music file, and the loop (16 bars, 40 seconds) joins without a gap.
@@ -242,6 +251,7 @@ The game only works this way while `npm run dev` is running on this computer.
 | Recording the voice clips | `scripts/record-voice.mjs` |
 | Where scores and progress are saved (the browser on the website, the phone inside the app) | `src/storage.js` |
 | The hand pictures (made with Image Studio) | `public/art/hands/` |
+| The little pictures shown in place of emoji (from Noto Emoji) | `public/art/emoji/`, `src/emoji.js`, `scripts/fetch-emoji.mjs` |
 | The background tune (its notes, speed, and loudness) | `src/music.js` |
 | The look of the menus and buttons | `src/style.css` |
 | The letters (Fredoka, a free rounded font bundled with the game) | the first line of `src/main.js` |

@@ -23,6 +23,18 @@
   display: none !important;
 }
 
+/* The little pictures shown in place of emoji (see emoji.js). Each one is as big as a
+   letter of the text it sits in, so the size of the text sets the size of the picture,
+   just as it did for the emoji. */
+.emoji {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.13em;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
 html,
 body {
   margin: 0;
@@ -485,7 +497,7 @@ h2 {
   white-space: nowrap;
 }
 
-.character img {
+.character > img {
   width: 100%;
   max-width: 96px;
   aspect-ratio: 1;
@@ -501,7 +513,7 @@ h2 {
   transform: translateY(-3px);
 }
 
-.character.locked img {
+.character.locked > img {
   filter: brightness(0);
   opacity: 0.35;
 }
@@ -665,7 +677,7 @@ h2 {
   .character {
     font-size: 20px;
   }
-  .character img {
+  .character > img {
     max-width: 130px;
   }
   .big-btn {
@@ -1215,7 +1227,7 @@ h2 {
     min-height: 40px;
     font-size: 16px;
   }
-  .characters .character img {
+  .characters .character > img {
     max-width: 70px;
   }
 }
@@ -1655,7 +1667,7 @@ h2 {
     padding-left: 30px;
     padding-right: 30px;
   }
-  #screen-start .characters .character img {
+  #screen-start .characters .character > img {
     max-width: 120px;
   }
   #screen-start .games.five .game-btn {
@@ -1715,7 +1727,7 @@ h2 {
     padding-top: 10px;
     padding-bottom: 10px;
   }
-  #screen-start .characters .character img {
+  #screen-start .characters .character > img {
     max-width: 46px;
   }
   #screen-start .big-btn {
@@ -1932,7 +1944,7 @@ h2 {
     letter-spacing: 0;
   }
 
-  #screen-start .characters .character img {
+  #screen-start .characters .character > img {
     width: 100%;
     max-width: none;
   }
@@ -1949,7 +1961,7 @@ h2 {
 
 /* A tablet shows every character at once, and has room for bigger level buttons. */
 @media (min-width: 600px) and (min-height: 700px) {
-  #screen-start .characters .character img {
+  #screen-start .characters .character > img {
     max-width: 150px;
   }
   #screen-start .characters .character {

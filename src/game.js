@@ -6,6 +6,7 @@ import { COLORS, CONFIG, DOOR_COLORS, THEME } from './config.js';
 import { buildCharacter, disposeObject } from './looks.js';
 import { drawFace, faceSpot } from './faces.js';
 import { LEVELS, SHAPES, THINGS, makeQuestion, shuffle } from './questions.js';
+import { emojiImage } from './emoji.js';
 
 const LANE_X = [-CONFIG.laneWidth, 0, CONFIG.laneWidth];
 const BELT_HALF = CONFIG.laneWidth * 1.5;
@@ -272,6 +273,7 @@ export class Game {
   // Writes a door's answer on its sign: a number, or that many dots.
   drawSign(door, value, mood = 'signPlain') {
     if (!door.signGroup.visible) return;
+    const turn = (door.signTurn = (door.signTurn ?? 0) + 1); // tells a late picture its sign has moved on
     const { canvas } = door;
     const g = canvas.getContext('2d');
     const { back, text: ink } = THEME[mood];
@@ -294,13 +296,25 @@ export class Game {
       return;
     }
 
-    // A little picture of a thing (the princess game).
+    // A little picture of a thing (the princess, animal and fruit games). The pictures
+    // come with the game (see emoji.js) and main.js fetches them when the game opens.
     if (this.row.question?.doors === 'things') {
-      g.font = `${Math.round(h * 0.62)}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
-      g.fillStyle = ink;
-      g.textAlign = 'center';
-      g.textBaseline = 'middle';
-      g.fillText(THINGS[value] ?? '', w / 2, h * 0.54);
+      const emoji = THINGS[value] ?? '';
+      // Should a picture still be on its way, the sign is drawn again when it arrives.
+      const picture = emojiImage(emoji, () => {
+        if (door.signTurn === turn) this.drawSign(door, value, mood);
+      });
+      if (picture?.img) {
+        const size = h * 0.7;
+        g.drawImage(picture.img, (w - size) / 2, (h - size) / 2, size, size);
+      } else if (picture?.failed) {
+        // Only when the picture cannot be loaded: the device's own emoji.
+        g.font = `${Math.round(h * 0.62)}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+        g.fillStyle = ink;
+        g.textAlign = 'center';
+        g.textBaseline = 'middle';
+        g.fillText(emoji, w / 2, h * 0.54);
+      }
       door.texture.needsUpdate = true;
       return;
     }
