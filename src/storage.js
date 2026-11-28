@@ -40,13 +40,15 @@ const DEFAULTS = {
 const inApp = () => typeof window !== 'undefined' && window.Capacitor?.isNativePlatform?.() === true;
 let phoneStore = null;
 async function nativeStore() {
-  phoneStore ??= (await import('@capacitor/preferences')).Preferences;
+  // Return the module, not the plugin proxy. An async function would treat the
+  // proxy's generated `then` method as a promise and stall native startup.
+  phoneStore ??= await import('@capacitor/preferences');
   return phoneStore;
 }
 
 async function readRaw() {
   try {
-    if (inApp()) return (await (await nativeStore()).get({ key: KEY })).value;
+    if (inApp()) return (await (await nativeStore()).Preferences.get({ key: KEY })).value;
     return window.localStorage.getItem(KEY);
   } catch {
     return null;
@@ -56,7 +58,7 @@ async function readRaw() {
 async function writeRaw(text) {
   try {
     if (inApp()) {
-      await (await nativeStore()).set({ key: KEY, value: text });
+      await (await nativeStore()).Preferences.set({ key: KEY, value: text });
       return;
     }
     window.localStorage.setItem(KEY, text);

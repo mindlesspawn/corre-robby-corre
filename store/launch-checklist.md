@@ -30,6 +30,7 @@ Prepared locally in this review:
 - Implemented optional StoreKit 2 consumable tips in the iOS app. A typed parent question grants one purchase attempt, expires after three minutes, and is revoked when the adult leaves or backgrounds the app. Apple supplies the price and payment sheet; cancellation, pending approval, verification failure, and unavailable products have separate English/Spanish messages. Verified unfinished transactions are recovered without interrupting play.
 - Prepared the exact product IDs and English/Spanish (Mexico) metadata in `store/tip-products.json`. Mexico must still be enabled in App Store Connect for both the app and each product. No prices or exchange rates are hard-coded in the app.
 - Updated privacy and store copy to describe optional tips. No purchase SDK, payment server, analytics, or game rewards were added.
+- Fixed an existing native startup issue: the Preferences plugin proxy must not be returned directly from an async function. Its generated `then` method could stall initialization. A regression test verifies loading Spanish preferences/progress and saving changes.
 
 Still required before submission:
 
@@ -40,7 +41,7 @@ Still required before submission:
 - Supply a reachable support contact and finish the current App Privacy and age-rating questionnaires. Gameplay data stays local. StoreKit transactions are verified on-device; the developer does not receive card details or retain purchase history. Reassess if data collection changes.
 - Confirm the raster-asset provenance noted above. Review exclusion of audio is not an all-assets clearance.
 
-Verification: the 26 JavaScript tests cover game/audio behavior plus parent authorization, duplicate taps, cancellation, pending approval, failure, unavailable products, stale responses, and exact Apple price strings. Five Swift tests cover the native gate's expiration, one-use grant, wrong answers, and revocation. `.github/workflows/ios-check.yml` runs both suites, synchronizes assets, builds the app with Xcode, and checks bundled privacy/license resources. Consult its latest successful run for native build evidence. Browser checks use a simulated StoreKit adapter; actual Apple checkout still requires sandbox/device testing. Nothing has been submitted to Apple.
+Verification: the 27 JavaScript tests cover game/audio behavior, native storage startup, parent authorization, duplicate taps, cancellation, pending approval, failure, unavailable products, stale responses, and exact Apple price strings. Five Swift tests cover the native gate's expiration, one-use grant, wrong answers, and revocation. `.github/workflows/ios-check.yml` runs both suites, synchronizes assets, builds the app with Xcode, and checks bundled privacy/license resources. The [first hosted Xcode build passed](https://github.com/mindlesspawn/corre-robby-corre/actions/runs/46123463278); consult the latest successful branch run for subsequent fixes. Production-build browser checks passed with the real Capacitor JavaScript adapter and simulated native responses: typed gate, Spanish/MXN, small-phone/tablet layout, success/cancel/pending/failure, restrictions, late responses, backgrounding, English, privacy/credit navigation, and bundled notices. Actual Apple checkout still requires sandbox/device testing. Nothing has been submitted to Apple.
 
 ## Mac handoff
 
