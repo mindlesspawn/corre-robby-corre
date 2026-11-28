@@ -90,15 +90,6 @@ function show(name) {
   for (const id of SCREENS) $(`screen-${id}`).hidden = id !== name;
   el.hud.hidden = name !== 'play' && name !== 'pause';
   screen = name;
-  if (name === 'start') centreCharacter();
-}
-
-// On a phone the characters are a row to swipe through. This brings the chosen one to
-// the middle of it. (On a tablet they all fit, and this does nothing.)
-function centreCharacter() {
-  const chosen = el.characters.querySelector('.selected');
-  if (!chosen || el.characters.clientWidth === 0) return;
-  el.characters.scrollLeft = chosen.offsetLeft - (el.characters.clientWidth - chosen.offsetWidth) / 2;
 }
 
 function replay(element, className) {
@@ -262,7 +253,6 @@ function renderStart() {
   renderAges();
   renderLevels();
   renderPaces();
-  centreCharacter();
   renderVoiceNote();
 }
 

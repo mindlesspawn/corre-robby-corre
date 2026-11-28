@@ -1871,10 +1871,6 @@ h2 {
 /* The character is the big choice, so it gets the room. The age and the levels matter
    less from moment to moment, so they are quieter: a thin row of pills, and one row of
    small level buttons. */
-#screen-start .characters {
-  position: relative;
-}
-
 #screen-start .age-btn {
   min-height: clamp(32px, 4.8vh, 44px);
   padding: 2px;
@@ -1909,33 +1905,31 @@ h2 {
   border-width: 3px;
 }
 
-/* On a phone the characters are a row to swipe through, with each one much bigger than
-   four side by side could be. The next one peeks in from the edge to show there are more,
-   and the row will hold as many characters as are added later. */
+/* On a phone every character is always on the screen, with nothing to swipe and nothing
+   cut off. The chosen one is big, with its name; the others stand smaller beside it and
+   grow when tapped. */
 @media (max-width: 599px) and (min-height: 481px) {
   #screen-start .characters {
     display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    /* room for the lifted, selected tile and its shadow; the row runs to the card's edge */
-    padding: 6px 18px 10px;
-    margin: -4px -18px -6px;
-  }
-
-  #screen-start .characters::-webkit-scrollbar {
-    display: none;
+    align-items: flex-end; /* the smaller ones stand on the same line as the big one */
+    gap: 8px;
   }
 
   #screen-start .characters .character {
-    flex: 0 0 37%;
-    scroll-snap-align: center;
-    font-size: 16px;
-    letter-spacing: 0;
-    padding: 8px 4px;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding: 6px 2px;
+    border-width: 3px;
+    font-size: 0; /* the name is only shown on the chosen one */
+  }
+
+  #screen-start .characters .character.selected {
+    flex: 2 1 0;
+    padding: 8px 6px;
     border-width: 4px;
+    font-size: 17px;
+    letter-spacing: 0;
   }
 
   #screen-start .characters .character img {
@@ -1944,12 +1938,12 @@ h2 {
   }
 }
 
-/* A short phone: the characters are a little smaller, so Play stays on the screen. */
+/* A short phone: the chosen character is a little less big, so Play stays on the screen. */
 @media (max-width: 599px) and (min-height: 481px) and (max-height: 620px) {
-  #screen-start .characters .character {
-    flex-basis: 29%;
+  #screen-start .characters .character.selected {
+    flex-grow: 1.55;
+    padding: 5px 4px;
     font-size: 13px;
-    padding: 5px 2px;
   }
 }
 
