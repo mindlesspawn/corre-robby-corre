@@ -1,3 +1,5 @@
 node_modules/
 dist/
 voice-samples/
+ios/TipRules/.build/
+build/

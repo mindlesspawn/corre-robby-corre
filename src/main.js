@@ -11,6 +11,7 @@ import { faceParts, faceSpot } from './faces.js';
 import { emojiPicture, preloadEmoji, withPictures, write } from './emoji.js';
 import { AGES, FINGERS, GAMES, ITEMS, LEVELS, SHAPES, THINGS, gamesFor, stickerFor } from './questions.js';
 import { store } from './storage.js';
+import { hasNativeTips, nativeApp, makeTipSession } from './tips.js';
 import { setMuted, setSoundVolumes, voiceLevel, sfx, unlockAudio } from './audio.js';
 import { AUDIO_DEFAULTS } from './audio-settings.js';
 import { setMusic, setMusicSpeed, setMusicVolume, wakeMusic } from './music.js';
@@ -88,12 +89,15 @@ let runResults = []; // right and wrong so far in this run
 let runEndless = false; // true while playing (or having just played) an endless run
 let currentQuestion = null;
 let tutorialStartsRun = false;
+const tips = makeTipSession(renderTips);
+let supportDestination = 'support';
 
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
 // --- Screens -----------------------------------------------------------------
 
 function show(name) {
+  if (screen === 'support' && name !== 'support') tips.close();
   for (const id of SCREENS) $(`screen-${id}`).hidden = id !== name;
   el.hud.hidden = name !== 'play' && (name !== 'pause' || game?.modeBeforePause === 'tutorial');
   screen = name;
@@ -772,17 +776,74 @@ function finishRun({ score, total, endless }) {
 
 // The places a grown-up can leave a tip, from src/config.js. Only https addresses count.
 const supportLinks = () =>
-  (CONFIG.support ?? []).filter((link) => typeof link?.url === 'string' && link.url.startsWith('https://'));
+  nativeApp() ? [] : (CONFIG.support ?? []).filter((link) => typeof link?.url === 'string' && link.url.startsWith('https://'));
 
 // The support button is only on the settings screen when there is somewhere for it to go.
 function renderSupportButton() {
-  $('btn-support').hidden = supportLinks().length === 0;
+  $('btn-support').hidden = !hasNativeTips() && supportLinks().length === 0;
+}
+
+function renderTips(state) {
+  if (screen !== 'support' || supportDestination !== 'support' || !hasNativeTips()) return;
+  const inGate = !$('support-gate').hidden;
+  $('tip-gate-status').hidden = !inGate || !['gateLoading', 'error'].includes(state.phase);
+  $('tip-gate-status').textContent = state.phase === 'gateLoading' ? t.tipLoading : t.tipMessages[state.status] ?? t.tipMessages.failed;
+  $('btn-tip-gate-submit').disabled = state.phase !== 'gate';
+  $('tip-gate-answer').disabled = state.phase !== 'gate';
+  $('tip-products').hidden = inGate || state.products.length === 0;
+  $('tip-products').replaceChildren(...state.products.map((product) => {
+    const button = tag('button', 'big-btn tip-product');
+    button.type = 'button';
+    button.append(tag('span', '', t[product.label]), tag('strong', '', product.displayPrice));
+    button.disabled = state.phase !== 'ready';
+    button.addEventListener('click', () => tips.purchase(product.id));
+    return button;
+  }));
+  const message = state.phase === 'loading' ? t.tipLoading : state.phase === 'purchasing' ? t.tipPurchasing : t.tipMessages[state.status];
+  $('tip-status').hidden = inGate || !message;
+  $('tip-status').textContent = message ?? '';
+  $('btn-tips-retry').hidden = inGate || !['error', 'finished'].includes(state.phase) || ['purchased', 'pending', 'restricted'].includes(state.status);
 }
 
 // The support page takes money matters out of a child's reach twice over: it is on the
 // settings screen, and it opens with a times-table question a small child cannot answer.
 // A wrong answer goes back to the settings screen.
-function openSupport() {
+async function openSupport(destination = 'support') {
+  tips.close();
+  supportDestination = destination;
+  stopSpeaking();
+  const native = destination === 'support' && hasNativeTips();
+  $('tip-gate-form').hidden = !native;
+  $('gate-answers').hidden = native;
+  $('tip-gate-status').hidden = true;
+  $('tip-products').hidden = true;
+  $('tip-status').hidden = true;
+  $('btn-tips-retry').hidden = true;
+  $('support-gate').hidden = false;
+  $('support-page').hidden = true;
+  $('support-links').replaceChildren();
+  show('support');
+  if (native) {
+    $('gate-ask').textContent = '';
+    $('tip-gate-answer').value = '';
+    const challenge = await tips.begin();
+    if (!challenge || screen !== 'support') return;
+    $('gate-ask').textContent = t.gateAsk(challenge.a, challenge.b);
+    $('tip-gate-form').onsubmit = async (event) => {
+      event.preventDefault();
+      const input = $('tip-gate-answer');
+      const answer = Number(input.value);
+      input.blur();
+      const granted = await tips.authorize(answer);
+      if (screen !== 'support') return;
+      if (!granted) { show('settings'); return; }
+      $('support-gate').hidden = true;
+      $('support-page').hidden = false;
+      renderTips(tips.state);
+      await tips.load();
+    };
+    return;
+  }
   const [a, b] = [6 + Math.floor(Math.random() * 4), 6 + Math.floor(Math.random() * 4)];
   const right = a * b;
   const answers = new Set([right]);
@@ -799,6 +860,10 @@ function openSupport() {
         button.addEventListener('click', () => {
           if (value !== right) {
             show('settings');
+            return;
+          }
+          if (destination === 'privacy') {
+            window.location.href = './privacy.html';
             return;
           }
           $('support-gate').hidden = true;
@@ -974,7 +1039,9 @@ function wireButtons() {
     renderSupportButton();
     show('settings');
   });
-  $('btn-support').addEventListener('click', openSupport);
+  $('btn-support').addEventListener('click', () => openSupport());
+  $('btn-tips-retry').addEventListener('click', () => openSupport());
+  $('btn-privacy').addEventListener('click', () => openSupport('privacy'));
   $('btn-gate-back').addEventListener('click', () => show('settings'));
   $('btn-support-back').addEventListener('click', () => show('settings'));
   $('btn-settings-done').addEventListener('click', () => {
@@ -1091,7 +1158,12 @@ function wireTouch() {
 
   // Pause when the game is put in the background.
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) pauseRun();
+    if (document.hidden) {
+      pauseRun();
+      // Leaving the app closes the adult area. A StoreKit result can finish safely
+      // in native code, but never reopens payment UI over the child's game.
+      if (screen === 'support' && hasNativeTips()) show('settings');
+    }
   });
 
   const refit = () => {

@@ -138,7 +138,8 @@
           </div>
         </div>
         <button id="btn-settings-done" class="big-btn" type="button" data-t="done"></button>
-        <!-- Only shown when a support link is listed in src/config.js. -->
+        <button id="btn-privacy" class="quiet-btn" type="button" data-t="privacyButton"></button>
+        <!-- Native Apple tips, or configured web-only support links. -->
         <button id="btn-support" class="quiet-btn" type="button" data-t="supportButton" hidden></button>
       </div>
     </section>
@@ -148,6 +149,12 @@
       <div id="support-gate" class="panel">
         <h2 data-t="gateTitle"></h2>
         <p id="gate-ask" class="gate-ask"></p>
+        <form id="tip-gate-form" class="tip-gate-form" hidden>
+          <label for="tip-gate-answer" data-t="gateAnswer"></label>
+          <input id="tip-gate-answer" type="text" inputmode="numeric" pattern="[0-9]{1,3}" maxlength="3" autocomplete="off" required />
+          <button id="btn-tip-gate-submit" class="small-btn" type="submit" data-t="gateContinue"></button>
+        </form>
+        <p id="tip-gate-status" role="status" hidden></p>
         <div id="gate-answers" class="gate-answers"></div>
         <div class="button-row">
           <button id="btn-gate-back" class="small-btn" type="button" data-t="back"></button>
@@ -157,6 +164,9 @@
         <h2 data-t="supportTitle"></h2>
         <p class="support-text" data-t="supportText"></p>
         <div id="support-links" class="support-links"></div>
+        <div id="tip-products" class="support-links" hidden></div>
+        <p id="tip-status" class="support-text" role="status" aria-live="polite" hidden></p>
+        <button id="btn-tips-retry" class="small-btn" type="button" data-t="tipRetry" hidden></button>
         <p class="support-thanks" data-t="supportThanks"></p>
         <div class="button-row">
           <button id="btn-support-back" class="small-btn" type="button" data-t="back"></button>

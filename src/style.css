@@ -14,6 +14,13 @@
   --safe-right: env(safe-area-inset-right, 0px);
 }
 
+.tip-gate-form { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.tip-gate-form input { width: 130px; padding: 10px; border: 2px solid var(--tile-edge); border-radius: 12px; text-align: center; font-size: 28px; background: white; }
+.tip-product { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; text-align: left; font-size: 20px; }
+.tip-product strong { white-space: nowrap; }
+.tip-product:disabled { opacity: .55; cursor: wait; transform: none; }
+#tip-status { line-height: 1.4; }
+
 /* The first-level practice stays on the real belt. Only the instruction card catches taps. */
 .screen.tutorial {
   background: none;

@@ -1,0 +1,38 @@
+name: Check iOS app
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['codex/app-store-tips']
+  pull_request:
+    paths: ['ios/**', 'src/**', 'public/**', 'index.html', 'package-lock.json', '.github/workflows/ios-check.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node --experimental-vm-modules --test tests/*.test.mjs
+      - run: swift test --package-path ios/TipRules
+      - run: npm run ios
+      - name: Build iPhone and iPad app without signing
+        run: xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/ios CODE_SIGNING_ALLOWED=NO build
+      - name: Check archived resources
+        run: |
+          test -f build/ios/Build/Products/Release-iphonesimulator/App.app/PrivacyInfo.xcprivacy
+          test -f build/ios/Build/Products/Release-iphonesimulator/App.app/public/licenses/fredoka-OFL.txt

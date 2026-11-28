@@ -1,0 +1,28 @@
+{
+  "bundleId": "com.mindlesspawn.correrobbycorre",
+  "type": "Consumable",
+  "requiredTerritories": ["MEX"],
+  "recommendedAdditionalTerritories": ["USA"],
+  "status": "Prepared for App Store Connect; not yet registered or approved",
+  "pricing": "Choose actual price points in App Store Connect. The app displays StoreKit displayPrice, never these suggestions.",
+  "products": [
+    {
+      "id": "com.mindlesspawn.correrobbycorre.tip.small",
+      "suggestedUSD": "0.99",
+      "en-US": {"name": "Small tip", "description": "Optional one-time support. No game content is unlocked."},
+      "es-MX": {"name": "Propina pequeña", "description": "Apoyo opcional de una sola vez. No desbloquea contenido."}
+    },
+    {
+      "id": "com.mindlesspawn.correrobbycorre.tip.medium",
+      "suggestedUSD": "2.99",
+      "en-US": {"name": "Medium tip", "description": "Optional one-time support. No game content is unlocked."},
+      "es-MX": {"name": "Propina mediana", "description": "Apoyo opcional de una sola vez. No desbloquea contenido."}
+    },
+    {
+      "id": "com.mindlesspawn.correrobbycorre.tip.large",
+      "suggestedUSD": "4.99",
+      "en-US": {"name": "Large tip", "description": "Optional one-time support. No game content is unlocked."},
+      "es-MX": {"name": "Propina grande", "description": "Apoyo opcional de una sola vez. No desbloquea contenido."}
+    }
+  ]
+}
