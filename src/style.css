@@ -2215,14 +2215,28 @@ h2 {
   font-size: clamp(17px, 2.4vh, 20px);
 }
 
-/* Levels: the one about to be played stands out the same way. */
+/* Levels: the one about to be played stands out the same way, and has a ring of light
+   around it as well: a white ring with a soft glow. The levels are small and sit close
+   together, so gold alone was easy to miss next to the pale gold of a cleared level. */
 #screen-start .level-btn.selected {
   position: relative;
   z-index: 1;
   background: #ffe59a;
   border-color: var(--sun-dark);
-  box-shadow: 0 3px 0 var(--sun-dark);
+  box-shadow:
+    0 0 0 3px #fff,
+    0 0 9px 6px rgba(255, 179, 0, 0.6);
   transform: scale(1.1);
+}
+
+/* A short phone shows the levels as one tight row: the ring is thinner there, so it does
+   not cover the levels on either side. */
+@media (max-height: 720px) {
+  #screen-start .level-btn.selected {
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 6px 3px rgba(255, 179, 0, 0.65);
+  }
 }
 
 /* A tablet: the same, with the tablet's bigger letters. */
